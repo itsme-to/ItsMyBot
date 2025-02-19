@@ -1,13 +1,15 @@
 import { Logger } from '@utils';
 import Utils from '@utils';
+import * as fs from 'fs/promises';
+import { parseDocument } from 'yaml';
 
 export class Config {
   public values: Map<string, any>;
   public logger: Logger;
-  public currentPath: string;
-  public fileName: string;
+  public currentPath: string | undefined;
+  public fileName: string | undefined
 
-  constructor(logger: Logger, fileName: string = '', currentPath = '') {
+  constructor(logger: Logger, fileName: string | undefined = undefined, currentPath: string | undefined  = undefined) {
     this.values = new Map();
     this.logger = logger;
     this.currentPath = currentPath;
@@ -21,10 +23,6 @@ export class Config {
     for (const [key, value] of normalizedValues) {
       this.values.set(key, value);
     }
-  }
-
-  public toPlaintext(): string {
-    return JSON.stringify(Object.fromEntries(this.values));
   }
 
   public has(path: string): boolean {
@@ -52,7 +50,7 @@ export class Config {
   private get(path: string): unknown {
     const value = this.getOrNull(path);
     if (value === null || value === undefined) {
-      const totalPath = this.currentPath ? `${this.currentPath}.${path}` : path;
+      const totalPath = this.getPath(path);
       throw this.logger.error(`No config value found for "${totalPath}"` + (this.fileName ? ` in file ${this.fileName}` : ""));
     }
     return value;
@@ -229,6 +227,20 @@ export class Config {
     }
   }
 
+  public async setFileContent(path: string, obj: unknown) {
+    if (!this.fileName) return false
+
+    const file = parseDocument(await fs.readFile(this.fileName, 'utf8'))
+    const fullPath = this.getPath(path);
+
+    file.setIn(fullPath.split('.'), obj);
+    this.set(path, obj);
+    await fs.writeFile(this.fileName, file.toString(), 'utf8');
+
+    return true;
+  }
+    
+
   private normalizeToConfig(obj: unknown): Map<string, any> {
     const normalized = new Map();
 
@@ -271,6 +283,10 @@ export class Config {
     return value;
   }
 
+  public toPlaintext(): string {
+    return JSON.stringify(Object.fromEntries(this.values));
+  }
+
   public toJSON() {
     const obj: { [key: string]: unknown } = {};
     for (const [key, value] of this.values) {
@@ -281,6 +297,10 @@ export class Config {
       }
     }
     return obj;
+  }
+
+  private getPath(path: string): string {
+    return this.currentPath ? `${this.currentPath}.${path}` : path;
   }
 }
 
