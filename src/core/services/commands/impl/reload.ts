@@ -10,7 +10,7 @@ export default class ReloadCommand extends Command {
 
     return new CommandBuilder()
       .setName('reload')
-      .using({ config: command })
+      .using(command)
   }
 
   async execute(interaction: CommandInteraction, user: User) {
