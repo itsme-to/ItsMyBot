@@ -3,6 +3,11 @@ import manager from '@itsmybot';
 
 /**
  * Find a role by its name or id
+ * 
+ * @param identifier The role name or id
+ * @param guild The guild to search the role in, if not provided, the primary guild will be used
+ * 
+ * @returns The role if found, otherwise undefined
  */
 export async function findRole(identifier: string, guild?: Guild): Promise<Role | undefined> {
   const search = String(identifier).toLowerCase();
@@ -32,6 +37,11 @@ async function rawFindRole(identifier: string, guild: Guild): Promise<Role | und
 
 /**
  * Find a channel by its name or id
+ * 
+ * @param identifier The channel name or id
+ * @param guild The guild to search the channel in, if not provided, the primary guild will be used
+ * 
+ * @returns The channel if found, otherwise undefined
  */
 export async function findChannel(identifier: string, guild?: Guild): Promise<GuildBasedChannel | undefined> {
   const search = String(identifier)
@@ -57,6 +67,11 @@ function isGuildTextBasedChannel(channel?: Channel): channel is TextChannel {
 
 /**
  * Find a text channel by its name or id
+ *
+ * @param identifier The channel name or id
+ * @param guild The guild to search the channel in, if not provided, the primary guild will be used
+ * 
+ * @returns The text channel if found, otherwise undefined
  */
 export async function findTextChannel(identifier: string, guild?: Guild): Promise<TextChannel | undefined> {
   const channel = await findChannel(identifier, guild);

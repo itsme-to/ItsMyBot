@@ -8,7 +8,7 @@ export class CommandBuilder extends Mixin(SlashCommandBuilder, ComponentBuilder)
   aliases: string[] = [];
   enabled: boolean = true;
 
-  public using(config: Config) {
+  public using({ config }: { config: Config; }) {
     super.using(config);
     
     if (config.has("description")) this.setDescription(config.getString("description"));

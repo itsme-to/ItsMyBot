@@ -9,7 +9,7 @@ export default class ParseCommand extends Command {
 
     return new CommandBuilder()
       .setName('parse')
-      .using(command)
+      .using({ config: command })
       .addStringOption(option =>
         option.setName("text")
           .setDescription(command.getString("options.text"))

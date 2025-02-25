@@ -12,7 +12,7 @@ export default class PluginCommand extends Command {
 
     return new CommandBuilder()
       .setName('plugin')
-      .using(command)
+      .using({ config: command })
       .addSubcommand(subcommand =>
         subcommand
           .setName('list')

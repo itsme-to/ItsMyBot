@@ -12,7 +12,7 @@ export default class HelloWorldCommand extends Command<ExamplePlugin> {
 
     return new CommandBuilder()
       .setName('commission')
-      .using(command)
+      .using({ config: command })
       .setPublic()
       .addSubcommand(subcommand =>
         subcommand
