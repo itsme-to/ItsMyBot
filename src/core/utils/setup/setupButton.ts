@@ -26,8 +26,8 @@ export async function setupButton(settings: ButtonSettings) {
   let style = settings.style || config.getStringOrNull("style", true);
   let customId = settings.customId || config.getStringOrNull("custom-id", true);
   const disabled = settings.disabled || config.getBoolOrNull("disabled") || false;
-  let label = settings.config.getStringOrNull("label", true);
-  let emoji = settings.config.getStringOrNull("emoji", true);
+  let label = settings.label || settings.config.getStringOrNull("label", true);
+  let emoji = settings.emoji || settings.config.getStringOrNull("emoji", true);
   let url = settings.url || settings.config.getStringOrNull("url", true);
 
   style = await Utils.applyVariables(style, variables, context);

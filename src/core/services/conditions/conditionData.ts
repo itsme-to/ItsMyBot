@@ -3,8 +3,7 @@ import { Config, ActionData, Manager } from '@itsmybot';
 
 export class ConditionData {
   public id: string;
-  private fileName: string;
-  private path: string;
+  public config: Config;
   public logger: Logger;
   public args: Config;
   public notMetActions: ActionData[];
@@ -12,8 +11,7 @@ export class ConditionData {
 
   constructor(manager: Manager, condition: Config, notMetAction: boolean = true) {
     this.id = condition.getString("id");
-    this.fileName = condition.fileName;
-    this.path = condition.currentPath;
+    this.config = condition;
     this.manager = manager;
     this.logger = new Logger(`Condition/${this.id}`);
     this.args = condition.getSubsection("args");
@@ -21,7 +19,7 @@ export class ConditionData {
   }
 
   public logError(message: string) {
-    this.logger.error(`${message} in ${this.fileName} at ${this.path}`);
+    this.logger.error(`${message} in ${this.config.fileName} at ${this.config.currentPath}`);
     return false;
   }
 

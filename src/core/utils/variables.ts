@@ -79,6 +79,9 @@ export const channelVariables = (channel: Channel, prefix = "channel") => {
   }, {
     searchFor: `%${prefix}_url%`,
     replaceWith: channel.url,
+  }, {
+    searchFor: `%${prefix}_parent_id%`,
+    replaceWith: channel.isDMBased() ? 'N/A' : channel.parent?.id || 'N/A',
   }]
 }
 

@@ -60,18 +60,3 @@ database:
   password: "password" # Database password
   database: "database" # Database name
   debug: false # Debug mode for database
-
-# Where the bot should log messages
-log-channels:
-  - id: minor # Log id, used to reference the log channel in other parts of the bot
-    channel: "LOG_CHANNEL_ID" # Channel ID where the bot should log minor messages
-  - id: moderate
-    channel: "LOG_CHANNEL_ID"
-  - id: high
-    channel: "GUILD_ID:LOG_CHANNEL_ID" # You can also specify a guild ID to log messages in a different guild 
-  - id: major
-    channel: "LOG_CHANNEL_ID"
-  - id: critical
-    channel: "LOG_CHANNEL_ID"
-
-  

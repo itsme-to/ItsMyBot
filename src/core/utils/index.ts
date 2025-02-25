@@ -182,10 +182,7 @@ export default class Utils {
   static async logToDiscord(id: string, message: MessageOutput) {
     if (id === 'none') return;
 
-    const log = manager.configs.config.getSubsections('log-channels').find(log => log.getString("id") === id);
-    if (!log) return;
-
-    const channel = await findTextChannel(log.getString('channel'));
+    const channel = await findTextChannel(id);
     if (!channel) return;
 
     channel.send(message)

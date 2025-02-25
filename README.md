@@ -28,3 +28,4 @@ If you wish to develop and distribute paid plugins for ItsMyBot, you must obtain
 - **Community Exposure**: Get featured in our plugin marketplace, reaching a broader audience.
 
 For more information or to apply for a Commercial Developer License, please join our [discord](https://discord.gg/itsme-to).
+
