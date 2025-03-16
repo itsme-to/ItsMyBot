@@ -13,6 +13,7 @@ export default class PluginCommand extends Command {
     return new CommandBuilder()
       .setName('plugin')
       .using(command)
+      .setPublic()
       .addSubcommand(subcommand =>
         subcommand
           .setName('list')
