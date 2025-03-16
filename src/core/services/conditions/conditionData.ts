@@ -19,7 +19,7 @@ export class ConditionData {
   }
 
   public logError(message: string) {
-    this.logger.error(`${message} in ${this.config.fileName} at ${this.config.currentPath}`);
+    this.logger.error(`${message} in ${this.config.filePath} at ${this.config.currentPath}`);
     return false;
   }
 
