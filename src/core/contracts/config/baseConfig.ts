@@ -11,17 +11,21 @@ export class BaseConfig extends Config {
   public configClass?: any
   public update: boolean
 
+  /** Id of the file, it's the relative path without the extension */
+  public id: string
+
   private configContent: Document
   private defaultContent: Document
 
   private configFilePath: string;
   private defaultFilePath?: string;
 
-  constructor(settings: { logger: Logger, configFilePath: string, defaultFilePath?: string, ConfigClass?: unknown, update?: boolean }) {
+  constructor(settings: { logger: Logger, configFilePath: string, defaultFilePath?: string, ConfigClass?: unknown, update?: boolean; id: string }) {
     super(settings.logger, settings.configFilePath);
     this.configClass = settings.ConfigClass
 
     this.update = settings.update || false
+    this.id = settings.id
     this.configFilePath = join(resolve(), settings.configFilePath);
     this.defaultFilePath = settings.defaultFilePath ? join(resolve(), settings.defaultFilePath) : undefined;
   }

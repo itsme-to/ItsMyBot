@@ -62,7 +62,7 @@ export class BaseConfigSection {
       const destPath = join(this.configFolderPath, file);
       const id = file.slice(0, -4); // remove .yml extension
 
-      const config = new BaseConfig({ ConfigClass: this.configClass, logger: this.logger, configFilePath: destPath });
+      const config = new BaseConfig({ ConfigClass: this.configClass, logger: this.logger, configFilePath: destPath, id });
       await config.initialize();
       this.configs.set(id, config);
     }

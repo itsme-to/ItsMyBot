@@ -96,7 +96,8 @@ export class Manager {
       logger: this.logger,
       configFilePath: `configs/${filePath}`,
       defaultFilePath: `build/core/resources/${filePath}`,
-      ConfigClass
+      ConfigClass,
+      id: filePath.slice(0, -4)
     }).initialize();
   }
 
