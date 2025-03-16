@@ -78,10 +78,15 @@ export class EventExecutor {
     while (i < this.events.length) {
       const event = this.events[i];
       try {
-        await event.execute(...args);
+        if (event.every > 1 && event.current < event.every) {
+          event.current++;
+        } else {
+          event.current = 1;
+          await event.execute(...args);
+        }
       } catch (error: any) {
         if (error === 'stop') break;
-        event.logger.error('Error executing event', error);
+        event.logger.error(`Error executing event '${event.name}'`, error);
       }
       i++;
     }

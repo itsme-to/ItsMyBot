@@ -12,7 +12,7 @@ export class CommandBuilder extends Mixin(SlashCommandBuilder, ComponentBuilder)
     super.using(config);
     
     if (config.has("description")) this.setDescription(config.getString("description"));
-    if (config.has("permission")) this.setDefaultMemberPermissions(Utils.permissionFlags(config.getString("permission")));
+    if (config.has("permission")) this.setDefaultMemberPermissions(Utils.getPermissionFlags(config.getString("permission")));
     if (config.has("aliases")) this.setAliases(config.getStrings("aliases"));
     if (config.getBoolOrNull("enabled") === false) this.setEnabled(false);
 
@@ -37,7 +37,7 @@ export class ContextMenuBuilder extends Mixin(ContextMenuCommandBuilder, Compone
     super.using(config);
 
     if (config.has("permission")) {
-      this.setDefaultMemberPermissions(Utils.permissionFlags(config.getString("permission")));
+      this.setDefaultMemberPermissions(Utils.getPermissionFlags(config.getString("permission")));
     }
     if (config.getBoolOrNull("enabled") === false) this.setEnabled(false);
 

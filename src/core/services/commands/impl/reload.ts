@@ -10,6 +10,7 @@ export default class ReloadCommand extends Command {
 
     return new CommandBuilder()
       .setName('reload')
+      .setPublic()
       .using(command)
   }
 

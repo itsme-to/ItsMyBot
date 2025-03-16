@@ -51,7 +51,7 @@ export async function setupButton(settings: ButtonSettings) {
     button.setStyle(ButtonStyle.Link);
     button.setURL(url);
   } else {
-    button.setStyle(Utils.buttonStyle(style) || ButtonStyle.Primary);
+    button.setStyle(Utils.getButtonStyle(style) || ButtonStyle.Primary);
     button.setCustomId(customId);
   }
 

@@ -7,13 +7,13 @@ export class Config {
   public values: Map<string, any>;
   public logger: Logger;
   public currentPath: string | undefined;
-  public fileName: string | undefined
+  public filePath: string | undefined
 
-  constructor(logger: Logger, fileName: string | undefined = undefined, currentPath: string | undefined  = undefined) {
+  constructor(logger: Logger, filePath: string | undefined = undefined, currentPath: string | undefined  = undefined) {
     this.values = new Map();
     this.logger = logger;
     this.currentPath = currentPath;
-    this.fileName = fileName;
+    this.filePath = filePath;
   }
 
   public init(values: unknown) {
@@ -30,7 +30,7 @@ export class Config {
   }
 
   public empty() {
-    return new Config(this.logger, this.fileName, this.currentPath);
+    return new Config(this.logger, this.filePath, this.currentPath);
   }
 
   private getOrNull(path: string): unknown {
@@ -51,7 +51,7 @@ export class Config {
     const value = this.getOrNull(path);
     if (value === null || value === undefined) {
       const totalPath = this.getPath(path);
-      throw this.logger.error(`No config value found for "${totalPath}"` + (this.fileName ? ` in file ${this.fileName}` : ""));
+      throw this.logger.error(`No config value found for "${totalPath}"` + (this.filePath ? ` in file ${this.filePath}` : ""));
     }
     return value;
   }
@@ -141,8 +141,6 @@ export class Config {
     return undefined;
   }
 
-
-
   public getNumbers(path: string): number[] {
     const value = this.get(path);
 
@@ -214,7 +212,7 @@ export class Config {
     if (path.includes('.')) {
       const remainingPath = path.substring(nearestPath.length + 1);
 
-      const section = this.getOrNull(nearestPath) as Config || new Config(this.logger, this.fileName, updatedPath);
+      const section = this.getOrNull(nearestPath) as Config || new Config(this.logger, this.filePath, updatedPath);
       section.set(remainingPath, obj);
       this.values.set(updatedPath, section);
       return;
@@ -228,17 +226,23 @@ export class Config {
   }
 
   public async setFileContent(path: string, obj: unknown) {
-    if (!this.fileName) return false
+    if (!this.filePath) return false;
 
-    const file = parseDocument(await fs.readFile(this.fileName, 'utf8'))
+    const file = parseDocument(await fs.readFile(this.filePath, 'utf8'));
     const fullPath = this.getPath(path);
 
-    file.setIn(fullPath.split('.'), obj);
+    const pathSegments = fullPath.split('.').reduce((acc, segment) => {
+        const match = segment.match(/([^[\]]+)|(\d+)/g);
+        if (match) acc.push(...match);
+        return acc;
+    }, [] as (string | number)[]);
+
+    file.setIn(pathSegments.map(seg => (isNaN(Number(seg)) ? seg : Number(seg))), obj);
     this.set(path, obj);
-    await fs.writeFile(this.fileName, file.toString(), 'utf8');
+    await fs.writeFile(this.filePath, file.toString(), 'utf8');
 
     return true;
-  }
+}
     
 
   private normalizeToConfig(obj: unknown): Map<string, any> {
@@ -261,7 +265,7 @@ export class Config {
       if (!value.length) return [];
       return value.map((item, index) => {
         if (typeof item === 'object') {
-          const config = new Config(this.logger, this.fileName, `${updatedPath}[${index}]`);
+          const config = new Config(this.logger, this.filePath, `${updatedPath}[${index}]`);
           config.init(item);
           return config;
         } else {
@@ -271,7 +275,7 @@ export class Config {
     }
 
     if (typeof value === 'object') {
-      const config = new Config(this.logger, this.fileName, updatedPath);
+      const config = new Config(this.logger, this.filePath, updatedPath);
       config.init(value);
       return config;
     }

@@ -122,7 +122,7 @@ export default class EngineService extends Service {
             name: optionConfig.getString("name"),
             description: optionConfig.getString("description"),
             required: optionConfig.getBoolOrNull("required") || false,
-            type: Utils.commandOptionType(optionConfig.getString("type"))!,
+            type: Utils.getCommandOptionType(optionConfig.getString("type"))!,
             max_length: undefined,
             min_length: undefined,
             max_value: undefined,
@@ -136,7 +136,7 @@ export default class EngineService extends Service {
 
           if (option.type === ApplicationCommandOptionType.Channel) {
             if (optionConfig.has("channel-type")) {
-              const channelType = Utils.channelType(optionConfig.getString("channel-type"))
+              const channelType = Utils.getChannelType(optionConfig.getString("channel-type"))
               if (channelType) option.channel_types = [channelType]
             }
           }

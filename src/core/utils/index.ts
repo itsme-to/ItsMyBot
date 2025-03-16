@@ -1,4 +1,4 @@
-import { permissionFlags, buttonStyle, activityType, textInputStyle, presenceStatus, commandOptionType, channelType } from './enumerations.js';
+import { getPermissionFlags, getButtonStyle, getActivityType, getTextInputStyle, getPresenceStatus, getCommandOptionType, getChannelType } from './converters.js';
 import * as fs from 'fs/promises';
 import { findRole, findChannel, findTextChannel } from './find.js';
 import { setupEmbed } from './setup/setupEmbed.js';
@@ -20,16 +20,40 @@ import { Context, Variable, MessageOutput } from '@contracts';
 const discordEpoch = 1420070400000;
 
 export default class Utils {
-  static permissionFlags = permissionFlags;
-  static buttonStyle = buttonStyle;
-  static activityType = activityType;
-  static textInputStyle = textInputStyle;
-  static presenceStatus = presenceStatus;
-  static commandOptionType = commandOptionType;
-  static channelType = channelType;
+  /** Try to return the closest permission flag to the given string */
+  static getPermissionFlags = getPermissionFlags;
+  /** Try to return the closest button style to the given string */
+  static getButtonStyle = getButtonStyle;
+  /** Try to return the closest activity type to the given string */
+  static getActivityType = getActivityType;
+  /** Try to return the closest text input style to the given string */
+  static getTextInputStyle = getTextInputStyle;
+  /** Try to return the closest presence status to the given string */
+  static getPresenceStatus = getPresenceStatus;
+  /** Try to return the closest command option type to the given string */
+  static getCommandOptionType = getCommandOptionType;
+  /** Try to return the closest channel type to the given string */
+  static getChannelType = getChannelType;
 
+  /**
+   * Find a role by its name or id
+   * @param identifier The role name or id
+   * @param guild The guild to search the role in, if not provided, the primary guild will be used
+   */
   static findRole = findRole;
+
+  /**
+   * Find a channel by its name or id
+   * @param identifier The channel name or id
+   * @param guild The guild to search the channel in, if not provided, the primary guild will be used
+   */
   static findChannel = findChannel;
+
+  /**
+   * Find a text channel by its name or id
+   * @param identifier The channel name or id
+   * @param guild The guild to search the channel in, if not provided, the primary guild will be used
+   */
   static findTextChannel = findTextChannel;
 
   static setupEmbed = setupEmbed;
@@ -52,6 +76,12 @@ export default class Utils {
     }
   }
 
+  /**
+   * Apply variables and placeholder to a string
+   * @param value The string to apply variables to
+   * @param variables The variables to apply
+   * @param context The context to apply variables and placeholders from 
+   */
   static async applyVariables(value: string | undefined, variables: Variable[], context?: Context) {
     if (!value) return ""
 
@@ -71,6 +101,10 @@ export default class Utils {
     return manager.services.expansion.resolvePlaceholders(value, context);
   }
 
+  /**
+   * Wait for a specific amount of time
+   * @param ms The amount of time to wait in milliseconds
+   */
   static async wait(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
@@ -84,6 +118,10 @@ export default class Utils {
     }
   }
 
+  /**
+   * Get a random element from an array
+   * @param array The array to get a random element from
+   */
   static getRandom<T>(array: T[]): T {
     return array[Math.floor(Math.random() * array.length)]
   }
@@ -97,7 +135,13 @@ export default class Utils {
     return texts.join('\n');
   }
 
-  static async hasRole(member: GuildMember, identifiers: string, inherited = false) {
+  /**
+   * Check if a member has a role and optionally check if the role is inherited
+   * @param member The member to check the role for
+   * @param identifiers The role name or id to check for, can be an array of roles
+   * @param inherited Whether to check if the role is inherited
+   */
+  static async hasRole(member: GuildMember, identifiers: string | string[], inherited = false) {
     const searchIdentifiers = Array.isArray(identifiers) ? identifiers : [identifiers];
 
     for (const identifier of searchIdentifiers) {
@@ -128,6 +172,13 @@ export default class Utils {
     return new Date(timestamp);
   }
 
+  /**
+   * Format a time in seconds to a human readable format
+   * @param seconds The time in seconds to format
+   * @example
+   * formatTime(3600) // 1h
+   * formatTime(90061) // 1d 1h 1m 1s
+   */
   static formatTime(seconds: number) {
     const timeUnits: { [key: string]: number } = {
       month: 30 * 24 * 60 * 60,
@@ -159,6 +210,13 @@ export default class Utils {
     }).join(' ');
   }
 
+  /**
+   * Parse a time string to milliseconds
+   * @param time The time string to parse
+   * @example
+   * parseTime('1d 2h 3m') // 93780000
+   * parseTime('1d2h3m') // 93780000
+   */
   static parseTime(time: string): number {
     const timeUnits: { [key: string]: number } = {
       d: 24 * 60 * 60,
@@ -179,6 +237,11 @@ export default class Utils {
     return result * 1000;
   }
 
+  /**
+   * Log a message to a discord channel
+   * @param id The channel id to log the message to or 'none' to disable logging
+   * @param message The message to log
+   */
   static async logToDiscord(id: string, message: MessageOutput) {
     if (id === 'none') return;
 

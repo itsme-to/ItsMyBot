@@ -103,7 +103,8 @@ export abstract class Plugin {
       logger: this.logger,
       configFilePath: join('configs', this.name, configFilePath),
       defaultFilePath: join("build", "plugins", this.name, "resources", configFilePath),
-      update: update
+      update: update,
+      id: configFilePath.slice(0, -4)
     }).initialize();
   }
 
