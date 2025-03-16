@@ -49,7 +49,7 @@ export class ComponentBuilder {
 
   setPermissions(permissions: string[]) {
     for (const permission of permissions) {
-      const flag = Utils.permissionFlags(permission);
+      const flag = Utils.getPermissionFlags(permission);
       if (flag) this.permissions.push(flag);
     }
     return this;

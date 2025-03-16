@@ -1,4 +1,4 @@
-import { permissionFlags, buttonStyle, activityType, textInputStyle, presenceStatus, commandOptionType, channelType } from './enumerations.js';
+import { getPermissionFlags, getButtonStyle, getActivityType, getTextInputStyle, getPresenceStatus, getCommandOptionType, getChannelType } from './converters.js';
 import * as fs from 'fs/promises';
 import { findRole, findChannel, findTextChannel } from './find.js';
 import { setupEmbed } from './setup/setupEmbed.js';
@@ -20,13 +20,20 @@ import { Context, Variable, MessageOutput } from '@contracts';
 const discordEpoch = 1420070400000;
 
 export default class Utils {
-  static permissionFlags = permissionFlags;
-  static buttonStyle = buttonStyle;
-  static activityType = activityType;
-  static textInputStyle = textInputStyle;
-  static presenceStatus = presenceStatus;
-  static commandOptionType = commandOptionType;
-  static channelType = channelType;
+  /** Try to return the closest permission flag to the given string */
+  static getPermissionFlags = getPermissionFlags;
+  /** Try to return the closest button style to the given string */
+  static getButtonStyle = getButtonStyle;
+  /** Try to return the closest activity type to the given string */
+  static getActivityType = getActivityType;
+  /** Try to return the closest text input style to the given string */
+  static getTextInputStyle = getTextInputStyle;
+  /** Try to return the closest presence status to the given string */
+  static getPresenceStatus = getPresenceStatus;
+  /** Try to return the closest command option type to the given string */
+  static getCommandOptionType = getCommandOptionType;
+  /** Try to return the closest channel type to the given string */
+  static getChannelType = getChannelType;
 
   /**
    * Find a role by its name or id

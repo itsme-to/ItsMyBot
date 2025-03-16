@@ -63,7 +63,7 @@ const permissionFlagsValue = {
   'ViewCreatorMonetizationAnalytics': ['viewcreatormonetizationanalytics'],
   'ViewGuildInsights': ['viewguildinsights'],
 };
-export function permissionFlags(value: string): bigint | undefined {
+export function getPermissionFlags(value: string): bigint | undefined {
   const result = checkEnum(value, permissionFlagsValue)
   return result ? PermissionFlagsBits[result as keyof typeof PermissionFlagsBits] : undefined
 }
@@ -75,7 +75,7 @@ const buttonStyleValue = {
   'Danger': ['danger', 'red', '4'],
   'Link': ['link', 'url', '5'],
 };
-export function buttonStyle(value: string): ButtonStyle | undefined {
+export function getButtonStyle(value: string): ButtonStyle | undefined {
   const result = checkEnum(value, buttonStyleValue)
   return result ? ButtonStyle[result as keyof typeof ButtonStyle] : undefined
 }
@@ -84,7 +84,7 @@ const textInputStyleValue = {
   'Short': ['short', '1', 'singleline'],
   'Paragraph': ['paragraph', '2', 'multiline'],
 }
-export function textInputStyle(value: string): TextInputStyle | undefined {
+export function getTextInputStyle(value: string): TextInputStyle | undefined {
   const result = checkEnum(value, textInputStyleValue)
   return result ? TextInputStyle[result as keyof typeof TextInputStyle] : undefined
 }
@@ -97,7 +97,7 @@ const activityTypeValue = {
   'Custom': ['custom', '4'],
   'Competing': ['competing', 'compete', '5'],
 };
-export function activityType(value: string): ActivityType | undefined {
+export function getActivityType(value: string): ActivityType | undefined {
   const result = checkEnum(value, activityTypeValue)
   return result ? ActivityType[result as keyof typeof ActivityType] : undefined
 }
@@ -108,7 +108,7 @@ const presenceStatusValue = {
   'idle': ['idle', '2', 'away', 'afk'],
   'online': ['online', '3', 'available', 'on'],
 };
-export function presenceStatus(value: string): PresenceStatusData | undefined {
+export function getPresenceStatus(value: string): PresenceStatusData | undefined {
   const result = checkEnum(value, presenceStatusValue)
   return result ? result as PresenceStatusData : undefined
 }
@@ -124,7 +124,7 @@ const commandOptionTypeValue = {
   'Number': ['number', '10'],
   'Attachement': ['attachement', '11'],
 }
-export function commandOptionType(value: string): ApplicationCommandOptionType | undefined {
+export function getCommandOptionType(value: string): ApplicationCommandOptionType | undefined {
   const result = checkEnum(value, commandOptionTypeValue)
   return result ? ApplicationCommandOptionType[result as keyof typeof ApplicationCommandOptionType] : undefined
 }
@@ -144,7 +144,7 @@ const channelTypeValue = {
   'GuildForum': ['GuildForum', '15'],
   'GuildMedia': ['GuildMedia', '16'],
 }
-export function channelType(value: string): ChannelType | undefined {
+export function getChannelType(value: string): ChannelType | undefined {
   const result = checkEnum(value, channelTypeValue)
   return result ? ChannelType[result as keyof typeof ChannelType] : undefined
 }

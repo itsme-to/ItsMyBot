@@ -53,7 +53,7 @@ export async function setupModal(settings: ModalSettings) {
           .setRequired(cRequired)
           .setMaxLength(parseInt(cMaxLength) || 1000)
           .setValue(cValue || "")
-          .setStyle((cStyle ? Utils.textInputStyle(cStyle) || TextInputStyle.Short : TextInputStyle.Short))
+          .setStyle((cStyle ? Utils.getTextInputStyle(cStyle) || TextInputStyle.Short : TextInputStyle.Short))
       );
     modal.addComponents(row);
   }

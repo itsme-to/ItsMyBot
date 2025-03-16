@@ -9,7 +9,7 @@ export default class BotReadyEvent extends Event {
   async execute() {
     const presence = this.manager.configs.config.getSubsection("presence");
     const activities = presence.getSubsections("activities");
-    const status = Utils.presenceStatus(presence.getString("status"))
+    const status = Utils.getPresenceStatus(presence.getString("status"))
     let currentIndex = 0;
 
     if (status) this.manager.client.user.setStatus(status);
@@ -27,7 +27,7 @@ export default class BotReadyEvent extends Event {
 
       if (!activity) return manager.logger.warn(`Activity text is empty. Skipping...`);
 
-      const type = Utils.activityType(activities[currentIndex].getString("type"));
+      const type = Utils.getActivityType(activities[currentIndex].getString("type"));
       manager.client.user.setActivity(activity, { type: type });
 
       currentIndex++;

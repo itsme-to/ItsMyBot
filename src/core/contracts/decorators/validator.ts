@@ -4,7 +4,7 @@ import { ValidationArguments, ValidatorConstraintInterface, ValidatorConstraint 
 @ValidatorConstraint({ name: 'isPermissionFlag', async: false })
 export class IsPermissionFlag implements ValidatorConstraintInterface {
   validate(value: string, args: ValidationArguments) {
-    const permission = Utils.permissionFlags(value.toString());
+    const permission = Utils.getPermissionFlags(value.toString());
     return permission !== undefined;
   }
 
@@ -17,7 +17,7 @@ export class IsPermissionFlag implements ValidatorConstraintInterface {
 @ValidatorConstraint({ name: 'isActivityType', async: false })
 export class IsActivityType implements ValidatorConstraintInterface {
   validate(value: string, args: ValidationArguments) {
-    const activityType = Utils.activityType(value.toString());
+    const activityType = Utils.getActivityType(value.toString());
     return activityType !== undefined;
   }
 
@@ -30,7 +30,7 @@ export class IsActivityType implements ValidatorConstraintInterface {
 @ValidatorConstraint({ name: 'isTextInputStyle', async: false })
 export class IsTextInputStyle implements ValidatorConstraintInterface {
   validate(value: string, args: ValidationArguments) {
-    const textInputStyle = Utils.textInputStyle(value.toString());
+    const textInputStyle = Utils.getTextInputStyle(value.toString());
     return textInputStyle !== undefined;
   }
 
@@ -43,7 +43,7 @@ export class IsTextInputStyle implements ValidatorConstraintInterface {
 @ValidatorConstraint({ name: 'isCommandOptionType', async: false })
 export class IsCommandOptionType implements ValidatorConstraintInterface {
   validate(value: string, args: ValidationArguments) {
-    const commandOptionType = Utils.commandOptionType(value.toString());
+    const commandOptionType = Utils.getCommandOptionType(value.toString());
     return commandOptionType !== undefined;
   }
 
@@ -56,7 +56,7 @@ export class IsCommandOptionType implements ValidatorConstraintInterface {
 @ValidatorConstraint({ name: 'isChannelType', async: false })
 export class IsChannelType implements ValidatorConstraintInterface {
   validate(value: string, args: ValidationArguments) {
-    const channelType = Utils.channelType(value.toString());
+    const channelType = Utils.getChannelType(value.toString());
     return channelType !== undefined;
   }
 
