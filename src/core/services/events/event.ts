@@ -6,6 +6,8 @@ export abstract class Event<T extends Plugin | undefined = undefined> extends Ba
   abstract name: string
   once: boolean = false;
   priority: number = 3;
+  every: number = 1;
+  current: number = 1;
 
   public abstract execute(...args: any): any | void;
 
