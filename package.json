@@ -1,6 +1,6 @@
 {
   "name": "itsmybot",
-  "version": "2.2.11",
+  "version": "2.2.12",
   "description": "",
   "main": "build/core/index.js",
   "scripts": {

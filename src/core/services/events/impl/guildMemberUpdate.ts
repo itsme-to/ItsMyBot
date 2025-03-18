@@ -11,15 +11,25 @@ export default class GuildMemberUpdateEvent extends Event {
     if (oldMember === newMember) return;
 
     const user = await this.manager.services.user.findOrCreate(newMember);
+    const context: Context = {
+      member: newMember,
+      user: user,
+      guild: newMember.guild
+    };
+
     if (oldMember.pending && !newMember.pending) {
-      const context: Context = {
-        member: newMember,
-        user: user,
-        guild: newMember.guild,
-        content: newMember.displayName
-      };
-      
+      context.content = newMember.displayName
       this.manager.services.engine.event.emit('guildMemberAdd', context);
+    }
+
+    if (oldMember.presence?.status !== newMember.presence?.status) {
+      context.content = newMember.presence?.status
+      this.manager.services.engine.event.emit('presenceUpdate', context);
+    }
+
+    if (oldMember.displayName !== newMember.displayName) {
+      context.content = newMember.displayName
+      this.manager.services.engine.event.emit('displayNameUpdate', context);
     }
   }
 };
