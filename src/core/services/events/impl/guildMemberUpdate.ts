@@ -22,11 +22,6 @@ export default class GuildMemberUpdateEvent extends Event {
       this.manager.services.engine.event.emit('guildMemberAdd', context);
     }
 
-    if (oldMember.presence?.status !== newMember.presence?.status) {
-      context.content = newMember.presence?.status
-      this.manager.services.engine.event.emit('presenceUpdate', context);
-    }
-
     if (oldMember.displayName !== newMember.displayName) {
       context.content = newMember.displayName
       this.manager.services.engine.event.emit('displayNameUpdate', context);
