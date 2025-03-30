@@ -6,7 +6,7 @@ export default class DefaultConfig {
   @IsDefined()
   @ValidateNested()
   @Type(() => CommandValidator)
-  plugin: CommandValidator
+  addons: CommandValidator
 
   @IsDefined()
   @ValidateNested()

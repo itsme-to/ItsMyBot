@@ -1,5 +1,5 @@
 import { BitFieldResolvable, ChatInputCommandInteraction } from 'discord.js';
-import { Manager, Plugin } from '@itsmybot';
+import { Manager, Addon } from '@itsmybot';
 import { Logger } from '@utils';
 import { APIActionRowComponent, APIEmbed, APIMessageActionRowComponent, Attachment, AttachmentBuilder, BufferResolvable, MessageMentionOptions, PollData } from 'discord.js';
 import { Stream } from 'stream';
@@ -38,7 +38,6 @@ export interface MessageOutput {
   components: APIActionRowComponent<APIMessageActionRowComponent>[],
   content: string | undefined,
   embeds: APIEmbed[],
-  withResponse?: boolean,
   files: (Attachment | AttachmentBuilder | Stream | BufferResolvable)[],
   poll?: PollData
   flags: BitFieldResolvable<any, any>
@@ -47,15 +46,15 @@ export interface MessageOutput {
 
 export type CommandInteraction = ChatInputCommandInteraction<'cached'>;
 
-export class Base<T extends Plugin | undefined = undefined> {
+export class Base<T extends Addon | undefined = undefined> {
   public manager: Manager;
-  public plugin: T;
+  public addon: T;
   public logger: Logger;
 
-  constructor(manager: Manager, plugin?: T) {
+  constructor(manager: Manager, addon?: T) {
     this.manager = manager;
-    this.plugin = plugin as T;
-    this.logger = plugin ? plugin.logger : manager.logger;
+    this.addon = addon as T;
+    this.logger = addon ? addon.logger : manager.logger;
   }
 }
 

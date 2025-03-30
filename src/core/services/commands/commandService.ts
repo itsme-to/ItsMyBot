@@ -3,14 +3,14 @@ import { sync } from 'glob';
 import { fileURLToPath } from 'url';
 
 import { Collection } from 'discord.js';
-import { Manager, Command, Plugin } from '@itsmybot';
+import { Manager, Command, Addon } from '@itsmybot';
 import { Service } from '@contracts';
 
 /**
  * Service to manage commands in the bot.
  */
 export default class CommandService extends Service {
-  commands: Collection<string, Command<Plugin | undefined>>
+  commands: Collection<string, Command<Addon | undefined>>
 
   constructor(manager: Manager) {
     super(manager)
@@ -30,18 +30,18 @@ export default class CommandService extends Service {
     return this.commands;
   }
 
-  async registerFromDir(commandsDir: string, plugin: Plugin | null = null) {
+  async registerFromDir(commandsDir: string, addon: Addon | null = null) {
     const commandFiles = sync(join(commandsDir, '**', '*.js').replace(/\\/g, '/'));
 
     for (const filePath of commandFiles) {
       const commandPath = new URL('file://' + filePath.replace(/\\/g, '/')).href;
       const { default: CommandInstance } = await import(commandPath);
 
-      await this.registerCommand(new CommandInstance(this.manager, plugin));
+      await this.registerCommand(new CommandInstance(this.manager, addon));
     };
   }
 
-  async registerCommand(command: Command<Plugin | undefined>) {
+  async registerCommand(command: Command<Addon | undefined>) {
     try {
       if (!command.data) throw new Error("Command needs a data object.");
       if (this.commands.has(command.data.name)) throw new Error("Command already exists.");

@@ -4,7 +4,7 @@ import ComponentService from 'core/services/components/componentService'
 import EngineService from 'core/services/engine/engineService'
 import EventService from 'core/services/events/eventService'
 import ExpansionService from 'core/services/expansions/expansionService'
-import PluginService from 'core/services/plugins/pluginService'
+import AddonService from 'core/services/addons/addonService'
 import UserService from 'core/services/users/userService'
 import LeaderboardService from 'core/services/leaderboards/leaderboardService'
 import ConditionService from 'core/services/conditions/conditionService'
@@ -21,7 +21,7 @@ export interface ManagerOptions {
   dir: {
     base: string,
     configs: string,
-    plugins: string,
+    addons: string,
     scripts: string,
     customCommands: string,
     logs: string
@@ -48,8 +48,8 @@ export interface Services {
   /**  that manages all the scripts and custom commands. */
   engine: EngineService,
 
-  /** Service to manage plugins in the bot. */
-  plugin: PluginService,
+  /** Service to manage addons in the bot. */
+  addon: AddonService,
 
   /** Service to manage expansions in the bot. Expansions are used to add custom placeholders to the bot. */
   expansion: ExpansionService,

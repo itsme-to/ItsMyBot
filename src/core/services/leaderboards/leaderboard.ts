@@ -1,7 +1,7 @@
 import { Base } from '@contracts';
-import { Plugin } from '@itsmybot';
+import { Addon } from '@itsmybot';
 
-export abstract class Leaderboard<T extends Plugin | undefined = undefined> extends Base<T>{
+export abstract class Leaderboard<T extends Addon | undefined = undefined> extends Base<T>{
   abstract name: string;
   abstract description: string;
 

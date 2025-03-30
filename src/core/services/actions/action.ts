@@ -1,7 +1,7 @@
-import { Plugin, ActionData } from '@itsmybot';
+import { Addon, ActionData } from '@itsmybot';
 import { Base, Context, Variable } from '@contracts';
 
-export abstract class Action<T extends Plugin | undefined = undefined> extends Base<T>{
+export abstract class Action<T extends Addon | undefined = undefined> extends Base<T>{
   abstract id: string;
 
   public trigger(script: ActionData, context: Context, variables: Variable[]) {

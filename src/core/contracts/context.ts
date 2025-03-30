@@ -1,5 +1,5 @@
 import { CommandInteraction } from '@contracts';
-import { Plugin, User } from '@itsmybot';
+import { Addon, User } from '@itsmybot';
 import { Channel, Guild, GuildMember, Message, MessageComponentInteraction, Role } from 'discord.js';
 
 export interface Context {
@@ -9,7 +9,7 @@ export interface Context {
   message?: Message;
   guild?: Guild;
   content?: string;
-  plugin?: Plugin;
+  addon?: Addon;
   interaction?: CommandInteraction | MessageComponentInteraction;
   role?: Role;
 }

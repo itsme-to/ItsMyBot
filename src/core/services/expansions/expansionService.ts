@@ -1,5 +1,5 @@
 import { Collection } from 'discord.js';
-import { Manager, Expansion, Plugin } from '@itsmybot';
+import { Manager, Expansion, Addon } from '@itsmybot';
 import { Context, Service } from '@contracts';
 import { sync } from 'glob';
 import { join, dirname } from 'path';
@@ -10,7 +10,7 @@ import { fileURLToPath } from 'url';
  * Expansions are used to add custom placeholders to the bot.
  */
 export default class ExpansionService extends Service{
-  expansions: Collection<string, Expansion<Plugin | undefined>>;
+  expansions: Collection<string, Expansion<Addon | undefined>>;
 
   constructor(manager: Manager) {
     super(manager);
@@ -22,18 +22,18 @@ export default class ExpansionService extends Service{
     await this.registerFromDir(join(dirname(fileURLToPath(import.meta.url)), 'impl'))
   }
 
-  async registerFromDir(expansionsDir: string, plugin: Plugin | undefined = undefined) {
+  async registerFromDir(expansionsDir: string, addon: Addon | undefined = undefined) {
     const expansionFiles = sync(join(expansionsDir, '**', '*.js').replace(/\\/g, '/'));
 
     for (const filePath of expansionFiles) {
       const expansionPath = new URL('file://' + filePath.replace(/\\/g, '/')).href;
       const { default: expansion } = await import(expansionPath);
 
-      this.registerExpansion(new expansion(this.manager, plugin));
+      this.registerExpansion(new expansion(this.manager, addon));
     };
   }
 
-  registerExpansion(expansion: Expansion<Plugin | undefined>) {
+  registerExpansion(expansion: Expansion<Addon | undefined>) {
     if (this.expansions.has(expansion.name)) {
       return this.manager.logger.error(`An expansion with the identifier ${expansion.name} is already registered.`);
     }

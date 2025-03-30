@@ -19,7 +19,7 @@ class Interaction {
   'channel-restricted': MessageValidator
 }
 
-class Plugin {
+class Addon {
   @IsDefined()
   @IsString()
   information: string
@@ -130,8 +130,8 @@ export default class DefaultConfig {
 
   @IsDefined()
   @ValidateNested()
-  @Type(() => Plugin)
-  plugin: Plugin
+  @Type(() => Addon)
+  addon: Addon
 
   @IsDefined()
   @ValidateNested()

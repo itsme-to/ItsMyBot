@@ -1,17 +1,17 @@
-plugin:
+addons:
   permission: "ADMINISTRATOR"
-  description: "Manage plugins."
+  description: "Manage addons."
   subcommands:
     list:
-      description: "Show the list of plugins."
+      description: "Show the list of addons."
     enable: 
-      description: "Enable a plugin."
+      description: "Enable a addon."
       options:
-        plugin: "The plugin to enable."
+        addon: "The addon to enable."
     disable:
-      description: "Disable a plugin."
+      description: "Disable a addon."
       options:
-        plugin: "The plugin to disabled."
+        addon: "The addon to disabled."
 
 reload:
   permission: "ADMINISTRATOR"
