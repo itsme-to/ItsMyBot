@@ -7,7 +7,6 @@ interface MessageSettings {
   config: Config,
   variables?: Variable[],
   context: Context,
-  withResponse?: boolean,
   allowedMentions?: any,
   ephemeral?: boolean
   components?: any[],
@@ -21,7 +20,6 @@ export async function setupMessage(settings: MessageSettings): Promise<MessageOu
     embeds: [],
     components: [],
     files: [],
-    withResponse: settings.withResponse || false,
     allowedMentions: settings.allowedMentions || undefined,
     poll: undefined,
     flags: []
