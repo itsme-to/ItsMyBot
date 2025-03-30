@@ -1,14 +1,11 @@
-import { IsString, IsInt, IsArray, IsBoolean, IsOptional, IsDefined, NotEquals, Validate } from 'class-validator';
-import { IsPermissionFlag } from '@contracts';
+import { IsString, IsInt, IsArray, IsBoolean, IsOptional, IsDefined, NotEquals, Validate, ValidateNested } from 'class-validator';
+import { ConditionValidator, IsPermissionFlag } from '@contracts';
+import { Type } from 'class-transformer';
 
 export class CommandValidator {
   @IsOptional()
   @IsBoolean()
   enabled: boolean
-
-  @IsOptional()
-  @IsBoolean()
-  inherited: boolean
 
   @IsOptional()
   @IsArray()
@@ -21,30 +18,15 @@ export class CommandValidator {
   cooldown: number
 
   @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  roles: string[]
-
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  channels: string[]
-
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  users: string[]
-
-  @IsOptional()
   @IsString()
   @Validate(IsPermissionFlag)
   permission: string
 
   @IsOptional()
   @IsArray()
-  @IsString({ each: true })
-  @Validate(IsPermissionFlag, { each: true })
-  permissions: string
+  @ValidateNested({ each: true })
+  @Type(() => ConditionValidator)
+  conditions: ConditionValidator[]
 
   @IsDefined()
   @IsString()

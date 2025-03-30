@@ -1,7 +1,8 @@
 import Utils from '@utils';
-import { Command, Component, Event, User, Plugin } from '@itsmybot';
+import { Command, Component, Event, User, Addon } from '@itsmybot';
 import { Events, Context } from '@contracts';
 import { CommandInteraction, Interaction, ButtonInteraction, RepliableInteraction, AnySelectMenuInteraction, ModalSubmitInteraction } from 'discord.js';
+import { CommandSubcommandBuilder } from 'core/builders/command';
 
 
 export default class InteractionCreateEvent extends Event {
@@ -13,19 +14,18 @@ export default class InteractionCreateEvent extends Event {
       ? await this.manager.services.user.findOrCreate(interaction.member)
       : await this.manager.services.user.findOrNull(interaction.user.id) as User;
 
-    if (interaction.isCommand() || interaction.isContextMenuCommand()) {
+    if (interaction.isCommand() || interaction.isContextMenuCommand() || interaction.isAutocomplete()) {
       const command = this.manager.services.command.getCommand(interaction.commandName);
       if (!command) return;
 
-      this.handleInteraction(interaction, command, user);
-    } else if (interaction.isAutocomplete()) {
-      const command = this.manager.services.command.getCommand(interaction.commandName);
-      if (!command || !command.autocomplete) return
-
-      try {
-        await command.autocomplete(interaction)
-      } catch (error: any) {
-        this.logger.error(`Error executing autocomplete command '${command.data.name}`, error);
+      if (interaction.isAutocomplete()) {
+        try {
+          await command.autocomplete(interaction)
+        } catch (error: any) {
+          this.logger.error(`Error executing autocomplete command '${command.data.name}`, error);
+        }
+      } else {
+        this.handleInteraction(interaction, command, user);
       }
     } else if (interaction.isButton()) {
       const button = this.manager.services.component.getButton(interaction.customId);
@@ -47,13 +47,13 @@ export default class InteractionCreateEvent extends Event {
 
   private async handleInteraction(
     interaction: CommandInteraction<'cached'>,
-    component: Command<Plugin | undefined>,
+    component: Command<Addon | undefined>,
     user: User
   ): Promise<void>;
 
   private async handleInteraction(
     interaction: ButtonInteraction<'cached'> | AnySelectMenuInteraction<'cached'> | ModalSubmitInteraction<'cached'>,
-    component: Component<Plugin | undefined>,
+    component: Component<Addon | undefined>,
     user: User
   ): Promise<void>;
 
@@ -73,6 +73,17 @@ export default class InteractionCreateEvent extends Event {
     if (!requirementsMet) return;
 
     try {
+      if (component instanceof Command) {
+        if (component.data.subcommands.length) {
+          const subcommand = component.data.subcommands.find((subcommand: CommandSubcommandBuilder) => subcommand.name === interaction.options.getSubcommand());
+          if (!subcommand) return;
+
+          if (subcommand.execute) {
+            await subcommand.execute(interaction, user);
+            return;
+          }
+        }
+      }
       await component.execute(interaction, user);
     } catch (error: any) {
       this.logger.error(`Error executing ${component.data.name}`, error);
@@ -82,12 +93,10 @@ export default class InteractionCreateEvent extends Event {
   }
 
   async checkRequirements(interaction: RepliableInteraction<'cached'>, component: Command | Component, user: User) {
-    if (!interaction.member || !interaction.channel) return true;
-
     const context: Context = {
       user: user,
       member: interaction.member,
-      guild: interaction.guild || undefined,
+      guild: interaction.guild,
       channel: interaction.channel || undefined
     }
 
@@ -102,68 +111,14 @@ export default class InteractionCreateEvent extends Event {
       return false;
     }
 
-    if (component.data.requiredUsers.length) {
-      const userId = interaction.user.id;
-      const username = interaction.user.username.toLowerCase();
+    const isMet = await this.manager.services.condition.meetsConditions(component.conditions, context, []);
 
-      if (!component.data.requiredUsers.some((requiredUser: string) =>
-        requiredUser === userId || requiredUser.toLowerCase() === username)) {
-
-        await interaction.reply(await Utils.setupMessage({
-          config: this.manager.configs.lang.getSubsection("interaction.no-permission"),
-          context
-        }));
-        return false;
-      }
-    }
-
-    if (!interaction.channel.isDMBased()) {
-      const hasRole = await Utils.hasRole(interaction.member, component.data.requiredRoles, component.data.inherited);
-      if (component.data.requiredRoles.length && !hasRole) {
-        await interaction.reply(await Utils.setupMessage({
-          config: this.manager.configs.lang.getSubsection("interaction.no-permission"),
-          context
-        }));
-        return false;
-      }
-    }
-
-    if (component.data.permissions.length) {
-      const permissions = component.data.permissions
-      if (component.data.permission) permissions.push(component.data.permission);
-
-      const memberPermissions = interaction.member.permissionsIn(interaction.channel);
-      const missingPermissions = component.data.permissions.filter((permission: bigint) => !memberPermissions.has(permission));
-
-      if (missingPermissions.length) {
-        await interaction.reply(await Utils.setupMessage({
-          config: this.manager.configs.lang.getSubsection("interaction.no-permission"),
-          context
-        }));
-        return false;
-      }
-    }
-
-    if (component.data.requiredChannels.length) {
-      const channelId = interaction.channel.id;
-      const channelName = interaction.channel.name.toLowerCase();
-
-      if (!component.data.requiredChannels.some((requiredChannel: string) =>
-        requiredChannel === channelId || requiredChannel.toLowerCase() === channelName)) {
-
-        const channels = component.data.requiredChannels.map((channelIdOrName: string) => {
-          return channelIdOrName.match(/^\d+$/) ? `<#${channelIdOrName}>` : channelIdOrName;
-        }).join(', ');
-
-        await interaction.reply(await Utils.setupMessage({
-          config: this.manager.configs.lang.getSubsection("interaction.channel-restricted"),
-          variables: [
-            { searchFor: "%channels%", replaceWith: channels },
-          ],
-          context
-        }));
-        return false;
-      }
+    if (!isMet) {
+      await interaction.reply(await Utils.setupMessage({
+        config: this.manager.configs.lang.getSubsection("interaction.no-permission"),
+        context
+      }));
+      return false;
     }
 
     return true;
