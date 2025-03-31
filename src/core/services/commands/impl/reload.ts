@@ -17,6 +17,7 @@ export default class ReloadCommand extends Command {
     this.logger.info(`Reloading the bot...`);
     this.manager.commands.clear()
     await this.manager.services.command.initialize()
+    await this.manager.services.leaderboard.registerLeaderboards()
     this.manager.services.engine.event.removeAllListeners()
     this.manager.services.engine.scripts.clear()
 
