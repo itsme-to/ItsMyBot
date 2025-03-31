@@ -1,5 +1,4 @@
-import { Service } from '@contracts';
-import { Manager, User } from '@itsmybot';
+import { Manager, User, Service } from '@itsmybot';
 import { GuildMember } from 'discord.js';
 
 /**

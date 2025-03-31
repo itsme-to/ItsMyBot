@@ -1,7 +1,6 @@
 import Utils from '@utils';
 import { StringSelectMenuBuilder } from 'discord.js';
-import { Config } from '@itsmybot';
-import { Context, Variable } from '@contracts';
+import { Config, Context, Variable } from '@itsmybot';
 
 interface ComponentSettings {
   config: Config,

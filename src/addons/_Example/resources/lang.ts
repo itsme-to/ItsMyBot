@@ -1,4 +1,4 @@
-import { MessageValidator } from '@contracts';
+import { MessageValidator } from '@itsmybot';
 import { Type } from 'class-transformer';
 import { IsDefined, ValidateNested } from 'class-validator';
 

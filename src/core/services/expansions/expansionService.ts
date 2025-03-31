@@ -1,6 +1,5 @@
 import { Collection } from 'discord.js';
-import { Manager, Expansion, Addon } from '@itsmybot';
-import { Context, Service } from '@contracts';
+import { Manager, Expansion, Addon, Context, Service } from '@itsmybot';
 import { sync } from 'glob';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';

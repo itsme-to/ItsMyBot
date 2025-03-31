@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsString, ValidateNested, IsOptional, IsDefined, IsArray, IsBoolean, IsNumber, Validate } from 'class-validator';
-import { CommandValidator, ConditionValidator, ActionValidator, IsChannelType, IsCommandOptionType } from '@contracts';
+import { CommandValidator, ActionValidator, IsChannelType, IsCommandOptionType } from '@itsmybot';
 
 class ChoiceOptionValidator {
   @IsDefined()
@@ -74,10 +74,4 @@ export default class DefaultConfig extends CommandValidator {
   @ValidateNested()
   @Type(() => ActionValidator)
   actions: ActionValidator
-
-  @IsOptional()
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => ConditionValidator)
-  conditions: ConditionValidator[]
 }

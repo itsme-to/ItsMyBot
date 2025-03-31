@@ -1,5 +1,4 @@
-import { Addon, ActionData } from '@itsmybot';
-import { Base, Context, Variable } from '@contracts';
+import { Addon, ActionData, Base, Context, Variable } from '@itsmybot';
 
 export abstract class Action<T extends Addon | undefined = undefined> extends Base<T>{
   abstract id: string;

@@ -24,10 +24,7 @@
       ],
       "@builders": [
         "./core/builders/index.js"
-      ],
-      "@contracts": [
-        "./core/contracts/index.js"
-      ],
+      ]
     }
   }
 }

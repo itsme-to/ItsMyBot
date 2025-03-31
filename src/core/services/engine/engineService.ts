@@ -1,9 +1,8 @@
 import { Collection, ApplicationCommandOptionType, ChannelType } from 'discord.js';
 import Utils from '@utils';
 
-import { Manager, Script, CustomCommand, Command, User } from '@itsmybot';
+import { Manager, Script, CustomCommand, Command, User, BaseConfigSection, BaseConfig, Config, Variable, CommandInteraction, Service } from '@itsmybot';
 import { Logger } from '@utils';
-import { BaseConfigSection, BaseConfig, Config, Variable, CommandInteraction, Service } from '@contracts';
 
 import ScriptConfig from '../../resources/engine/script.js';
 import CustomCommandConfig from '../../resources/engine/customCommand.js';

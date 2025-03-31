@@ -1,6 +1,4 @@
-import { Context, Variable } from '@contracts';
-import { Action } from '../action.js';
-import { ActionData } from '@itsmybot';
+import { Action, ActionData, Context, Variable } from '@itsmybot';
 import Utils from '@utils';
 
 export default class SendPrivateMessageAction extends Action {

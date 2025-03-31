@@ -1,6 +1,5 @@
 import { Message } from 'discord.js';
-import { Events } from '@contracts';
-import { Event, } from '@itsmybot';
+import { Event, Events } from '@itsmybot';
 import ExampleAddon from '..';
 
 export default class MessageCreateEvent extends Event<ExampleAddon> {

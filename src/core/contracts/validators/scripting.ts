@@ -1,7 +1,7 @@
 
 import { Type } from 'class-transformer';
 import { IsString, IsInt, ValidateNested, IsOptional, IsDefined, Max, Min, IsPositive, IsArray, IsBoolean, IsNumber } from 'class-validator';
-import { MessageValidator } from '@contracts';
+import { MessageValidator } from '@itsmybot';
 
 class ConditionArgumentValidator {
   @IsOptional()

@@ -1,5 +1,4 @@
-import { Context, Base } from '@contracts';
-import { Addon } from '@itsmybot';
+import { Addon, Context, Base } from '@itsmybot';
 
 export abstract class Expansion<T extends Addon | undefined = undefined> extends Base<T>{
   abstract name: string;

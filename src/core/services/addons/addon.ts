@@ -1,8 +1,7 @@
-import { Manager } from '@itsmybot';
+import { Manager, BaseConfig, BaseConfigSection } from '@itsmybot';
 import { Logger } from '@utils';
 import { join } from 'path';
 import { sync } from 'glob';
-import { BaseConfig, BaseConfigSection } from '@contracts';
 import { Collection } from 'discord.js';
 import { existsSync, mkdirSync, readdirSync, statSync } from 'fs';
 

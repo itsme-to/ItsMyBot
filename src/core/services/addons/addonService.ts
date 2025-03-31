@@ -3,11 +3,10 @@ import { join } from 'path';
 import { sync } from 'glob';
 import { promises as fs } from 'fs';
 
-import { Manager, Addon } from '@itsmybot';
+import { Manager, Addon, Service } from '@itsmybot';
 import { Collection } from 'discord.js';
 import { Logger } from '@utils';
 import AddonModel from './addon.model.js';
-import { Service } from '@contracts';
 
 /**
  * Service to manage addons in the bot.

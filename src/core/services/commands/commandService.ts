@@ -3,8 +3,7 @@ import { sync } from 'glob';
 import { fileURLToPath } from 'url';
 
 import { Collection } from 'discord.js';
-import { Manager, Command, Addon } from '@itsmybot';
-import { Service } from '@contracts';
+import { Manager, Command, Addon, Service } from '@itsmybot';
 
 /**
  * Service to manage commands in the bot.

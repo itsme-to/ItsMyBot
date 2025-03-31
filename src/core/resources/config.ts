@@ -1,4 +1,4 @@
-import { IsActivityType } from '@contracts';
+import { IsActivityType } from '@itsmybot';
 import { Type } from 'class-transformer';
 import { IsString, IsInt, ValidateNested, IsBoolean, Validate, IsDefined, NotEquals, IsHexColor, IsIn, IsPositive } from 'class-validator';
 

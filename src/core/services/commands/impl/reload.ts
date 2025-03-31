@@ -1,6 +1,5 @@
 import { CommandBuilder } from '@builders';
-import { Command, User } from '@itsmybot';
-import { CommandInteraction } from '@contracts';
+import { Command, User, CommandInteraction } from '@itsmybot';
 import Utils from '@utils';
 
 export default class ReloadCommand extends Command {

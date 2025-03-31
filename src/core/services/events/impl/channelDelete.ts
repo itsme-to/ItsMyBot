@@ -1,5 +1,4 @@
-import { Events, Context } from '@contracts';
-import { Event } from '@itsmybot';
+import { Event, Events, Context } from '@itsmybot';
 import { Channel } from 'discord.js';
 
 export default class ChannelDeleteEvent extends Event {

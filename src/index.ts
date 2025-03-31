@@ -21,6 +21,7 @@ export { Command } from './core/services/commands/command.js';
 export { Component } from './core/services/components/component.js';
 export { Leaderboard } from './core/services/leaderboards/leaderboard.js';
 export { CustomCommand } from './core/services/engine/customCommand.js';
+export * from './core/contracts/index.js';
 export { Manager };
 
 const logger = new Logger();

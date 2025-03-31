@@ -1,8 +1,7 @@
 import { Client, Collection } from 'discord.js';
 import { existsSync, mkdirSync } from 'fs';
 import { Logger } from '@utils';
-import { Command, Component, Expansion, Leaderboard, Addon } from '@itsmybot'
-import { ClientOptions, ManagerOptions, Services, ManagerConfigs, BaseConfig } from '@contracts';
+import { Command, Component, Expansion, Leaderboard, Addon, ClientOptions, ManagerOptions, Services, ManagerConfigs, BaseConfig } from '@itsmybot'
 import { Sequelize } from 'sequelize-typescript';
 
 import EventService, { EventExecutor } from './services/events/eventService.js';

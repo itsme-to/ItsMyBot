@@ -1,5 +1,4 @@
-import { Context, Events } from '@contracts';
-import { Event } from '@itsmybot';
+import { Event, Context, Events } from '@itsmybot';
 import { GuildMember } from 'discord.js';
 
 export default class GuildMemberRemoveEvent extends Event {

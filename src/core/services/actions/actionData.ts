@@ -1,6 +1,5 @@
 import { Logger } from '@utils';
-import { Config, BaseScript, Manager } from '@itsmybot';
-import { Context, Variable } from '@contracts';
+import { Config, BaseScript, Manager, Context, Variable } from '@itsmybot';
 import Utils from '@utils';
 import manager from '@itsmybot';
 

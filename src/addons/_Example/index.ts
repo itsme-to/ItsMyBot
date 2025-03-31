@@ -1,11 +1,10 @@
-import { Addon } from '@itsmybot';
+import { Addon, BaseConfig } from '@itsmybot';
 
 import AddonConfig from './resources/config.js'; // Import configuration validators
 import LangConfig from './resources/lang.js';
 import CommandsConfig from './resources/commands.js';
 import CategoryConfig from './resources/category.js';
 import { Collection } from 'discord.js';
-import { BaseConfig } from '@contracts';
 
 // This is an example of how to define a configurations object, used for typing and tab completion
 interface Configs {

@@ -1,5 +1,5 @@
 import { IsString, IsInt, IsArray, IsBoolean, IsOptional, IsDefined, NotEquals, Validate, ValidateNested } from 'class-validator';
-import { ConditionValidator, IsPermissionFlag } from '@contracts';
+import { ConditionValidator, IsPermissionFlag } from '@itsmybot';
 import { Type } from 'class-transformer';
 
 export class CommandValidator {

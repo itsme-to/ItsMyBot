@@ -1,6 +1,5 @@
 import Utils from '@utils';
-import { Manager, Event } from '@itsmybot';
-import { Events } from '@contracts';
+import { Manager, Event, Events } from '@itsmybot';
 
 export default class BotReadyEvent extends Event {
   name = Events.BotReady;
@@ -20,15 +19,15 @@ export default class BotReadyEvent extends Event {
 
     async function updateActivity(manager: Manager) {
       if (currentIndex >= activities.length) currentIndex = 0;
-
-      const activity = await Utils.applyVariables(activities[currentIndex].getString("text"), [], {
+      const activity = activities[currentIndex];
+      const text = await Utils.applyVariables(activity.getString("text"), [], {
         guild: manager.client.guilds.cache.get(manager.primaryGuildId)!
       });
 
-      if (!activity) return manager.logger.warn(`Activity text is empty. Skipping...`);
+      if (!text) return manager.logger.warn(`Activity text is empty. Skipping...`);
 
-      const type = Utils.getActivityType(activities[currentIndex].getString("type"));
-      manager.client.user.setActivity(activity, { type: type });
+      const type = Utils.getActivityType(activity.getString("type"));
+      manager.client.user.setActivity(text, { type: type });
 
       currentIndex++;
     };

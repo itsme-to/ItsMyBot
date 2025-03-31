@@ -1,5 +1,4 @@
-import { Context } from '@contracts';
-import { Expansion } from '../expansion.js';
+import { Expansion, Context } from '@itsmybot';
 import Utils from '@utils';
 
 export default class OwnerExpansion extends Expansion {

@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsString, IsArray, IsBoolean, IsOptional, IsDefined, ValidateNested } from 'class-validator';
-import { ComponentValidator } from '@contracts';
+import { ComponentValidator } from '@itsmybot';
 
 class MessageComponentValidator {
   @IsDefined()

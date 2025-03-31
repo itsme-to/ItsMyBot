@@ -1,6 +1,5 @@
 import { ButtonStyle, ActivityType, TextInputStyle, PresenceStatusData, PermissionFlagsBits, ChannelType, ApplicationCommandOptionType } from 'discord.js';
 
-
 function checkEnum(value: string, data: { [key: string]: string[] }): string | undefined {
   if (!value) return undefined;
 

@@ -1,6 +1,5 @@
 import { Collection } from 'discord.js';
-import { Condition, Addon, ConditionData, Manager } from '@itsmybot';
-import { Context, Variable, Config, Service } from '@contracts';
+import { Condition, Addon, ConditionData, Manager, Context, Variable, Config, Service } from '@itsmybot';
 import { sync } from 'glob';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -40,6 +39,7 @@ export default class ConditionService extends Service {
   }
 
   buildConditions(conditions: Config[], notMetAction: boolean = true): ConditionData[] {
+    if (!conditions) return [];
     return conditions.map(condition => new ConditionData(this.manager, condition, notMetAction));
   }
 

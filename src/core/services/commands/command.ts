@@ -1,6 +1,5 @@
-import { Manager, Addon, User, ConditionData } from '@itsmybot';
+import { Manager, Addon, User, ConditionData, CommandInteraction, Base } from '@itsmybot';
 import { AutocompleteInteraction, ContextMenuCommandInteraction } from 'discord.js';
-import { CommandInteraction, Base } from '@contracts';
 
 export abstract class Command<T extends Addon | undefined = undefined>  extends Base<T> {
   public data: any;

@@ -1,6 +1,5 @@
-import { Event } from '@itsmybot';
+import { Event, Context, Events } from '@itsmybot';
 import { ActivityType, Presence } from 'discord.js';
-import { Context, Events } from '@contracts';
 
 export default class PresenceUpdateEvent extends Event {
   name = Events.PresenceUpdate;

@@ -1,5 +1,4 @@
-import { Context, Variable } from '@contracts';
-import { ActionData, BaseScript } from '@itsmybot';
+import { ActionData, BaseScript, Context, Variable } from '@itsmybot';
 import { Collection } from 'discord.js';
 
 export class Script extends BaseScript {

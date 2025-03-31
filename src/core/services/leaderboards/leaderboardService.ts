@@ -1,8 +1,7 @@
-import { Manager, Leaderboard, Command, Addon } from '@itsmybot';
+import { Manager, Leaderboard, Command, Addon, CommandInteraction, Service } from '@itsmybot';
 import { Collection } from 'discord.js';
 import { CommandBuilder } from '@builders';
 import Utils, { Pagination } from '@utils';
-import { PaginationType, CommandInteraction, Service } from '@contracts';
 import { sync } from 'glob';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -79,7 +78,7 @@ export default class LeaderboardService extends Service{
 
 
     new Pagination(interaction, leaderboardData.map(item => { return { message: item } }), this.manager.configs.lang.getSubsection('leaderboard'))
-      .setType(PaginationType.Button)
+      .setType('button')
       .setVariables([{ searchFor: "%leaderboard_name%", replaceWith: Utils.capitalizeFirst(leaderboard.name) }])
       .setItemsPerPage(10)
       .send();

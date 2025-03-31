@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { ValidateNested, IsDefined } from 'class-validator';
-import { CommandValidator } from '@contracts';
+import { CommandValidator } from '@itsmybot';
 
 export default class DefaultConfig {
   @IsDefined()

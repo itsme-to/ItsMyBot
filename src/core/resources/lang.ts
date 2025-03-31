@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsString, ValidateNested, IsDefined } from 'class-validator';
-import { MessageValidator, ButtonValidator } from '@contracts';
+import { MessageValidator, ButtonValidator } from '@itsmybot';
 
 class Interaction {
   @IsDefined()

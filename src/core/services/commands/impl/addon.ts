@@ -1,9 +1,7 @@
 import { hyperlink, hideLinkEmbed, AutocompleteInteraction } from 'discord.js';
-import { CommandInteraction } from '@contracts';
-import Utils from '@utils';
+import Utils, { Pagination } from '@utils';
 import { CommandBuilder } from '@builders';
-import { Pagination } from '@utils';
-import { Command, Addon, User } from '@itsmybot';
+import { Command, Addon, User, CommandInteraction } from '@itsmybot';
 import AddonModel from '../../addons/addon.model.js';
 
 export default class AddonCommand extends Command {
@@ -92,7 +90,7 @@ export default class AddonCommand extends Command {
     new Pagination(interaction, addons, lang.getSubsection("addon.list"))
       .setContext({
         user: user,
-        guild: interaction.guild,
+        guild: interaction.guild || undefined,
         channel: interaction.channel || undefined
       })
       .send();

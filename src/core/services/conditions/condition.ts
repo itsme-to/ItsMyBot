@@ -1,5 +1,4 @@
-import { Addon, ConditionData } from '@itsmybot';
-import { Base, Context, Variable } from '@contracts';
+import { Addon, ConditionData, Base, Context, Variable } from '@itsmybot';
 
 export abstract class Condition<T extends Addon | undefined = undefined> extends Base<T> {
   abstract id: string;

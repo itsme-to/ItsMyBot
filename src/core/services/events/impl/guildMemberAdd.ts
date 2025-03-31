@@ -1,6 +1,5 @@
-import { Event } from '@itsmybot';
+import { Event, Events } from '@itsmybot';
 import { GuildMember } from 'discord.js';
-import { Events } from '@contracts';
 
 export default class GuildMemberAddEvent extends Event {
   name = Events.GuildMemberAdd;

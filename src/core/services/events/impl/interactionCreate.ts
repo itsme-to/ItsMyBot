@@ -1,6 +1,5 @@
 import Utils from '@utils';
-import { Command, Component, Event, User, Addon } from '@itsmybot';
-import { Events, Context } from '@contracts';
+import { Command, Component, Event, User, Addon, Events, Context } from '@itsmybot';
 import { CommandInteraction, Interaction, ButtonInteraction, RepliableInteraction, AnySelectMenuInteraction, ModalSubmitInteraction } from 'discord.js';
 import { CommandSubcommandBuilder } from 'core/builders/command';
 

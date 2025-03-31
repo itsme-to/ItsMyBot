@@ -1,8 +1,7 @@
 import { ContextMenuCommandBuilder, SlashCommandBuilder, SlashCommandSubcommandBuilder, SlashCommandStringOption, SlashCommandAttachmentOption, SlashCommandChannelOption, SlashCommandBooleanOption, SlashCommandIntegerOption, SlashCommandMentionableOption, SlashCommandNumberOption, SlashCommandRoleOption, SlashCommandUserOption } from 'discord.js';
 import { ComponentBuilder } from '@builders';
-import { CommandInteraction,  } from '@contracts';
 import Utils from '@utils';
-import { Config, User } from '@itsmybot';
+import { Config, User, CommandInteraction } from '@itsmybot';
 import { Mixin } from 'ts-mixer';
 
 export class CommandSubcommandBuilder extends SlashCommandSubcommandBuilder {

@@ -1,8 +1,7 @@
 import { join } from 'path';
 import { sync } from 'glob';
-import { Component, Manager, Addon } from '@itsmybot';
+import { Component, Manager, Addon, Service } from '@itsmybot';
 import { Collection } from 'discord.js';
-import { Service } from '@contracts';
 
 /**
  * Service to manage components in the bot.

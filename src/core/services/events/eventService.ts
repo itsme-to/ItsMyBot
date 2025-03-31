@@ -3,7 +3,7 @@ import { sync } from 'glob';
 import { fileURLToPath } from 'url';
 import { Manager, Event, Addon } from '@itsmybot';
 import { Collection } from 'discord.js';
-import { Service } from '@contracts';
+import { Service } from '../../contracts/index.js';
 
 /**
  * Service to manage events in the bot.

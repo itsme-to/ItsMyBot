@@ -1,5 +1,4 @@
-import { Context, Variable } from '@contracts';
-import { BaseScript } from '@itsmybot';
+import { BaseScript, Context, Variable } from '@itsmybot';
 
 export class CustomCommand extends BaseScript {
 

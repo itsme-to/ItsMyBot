@@ -1,7 +1,6 @@
 import chalk from 'chalk';
 import { schedule } from 'node-cron';
-import { Event } from '@itsmybot';
-import { Events } from '@contracts';
+import { Event, Events } from '@itsmybot';
 import { Client } from 'discord.js';
 
 export default class ClientReadyEvent extends Event {
