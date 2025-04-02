@@ -1,12 +1,11 @@
-import { Manager } from '@itsmybot';
+import { Manager, BaseConfig, BaseConfigSection } from '@itsmybot';
 import { Logger } from '@utils';
 import { join } from 'path';
 import { sync } from 'glob';
-import { BaseConfig, BaseConfigSection } from '@contracts';
 import { Collection } from 'discord.js';
 import { existsSync, mkdirSync, readdirSync, statSync } from 'fs';
 
-export abstract class Plugin {
+export abstract class Addon {
   manager: Manager
   logger: Logger
 
@@ -23,7 +22,7 @@ export abstract class Plugin {
     this.manager = manager;
     this.name = this.sanitizeName(name);
     this.logger = new Logger(this.name);
-    this.path = join(manager.managerOptions.dir.plugins, name);
+    this.path = join(manager.managerOptions.dir.addons, name);
   }
 
 
@@ -47,7 +46,7 @@ export abstract class Plugin {
     await this.load()
     await this.initialize();
     await this.loadComponents();
-    this.logger.info(`Plugin loaded in v${this.version}`);
+    this.logger.info(`Addon loaded in v${this.version}`);
   }
 
   public async loadComponents(includes: string[] = []) {
@@ -95,28 +94,28 @@ export abstract class Plugin {
   }
 
   async createConfig(configFilePath: string, config?: unknown, update: boolean = false): Promise<BaseConfig> {
-    const pluginFolder = join(this.manager.managerOptions.dir.configs, this.name);
-    if (!existsSync(pluginFolder)) mkdirSync(pluginFolder);
+    const addonFolder = join(this.manager.managerOptions.dir.configs, this.name);
+    if (!existsSync(addonFolder)) mkdirSync(addonFolder);
 
     return new BaseConfig({
       ConfigClass: config,
       logger: this.logger,
       configFilePath: join('configs', this.name, configFilePath),
-      defaultFilePath: join("build", "plugins", this.name, "resources", configFilePath),
+      defaultFilePath: join("build", "addons", this.name, "resources", configFilePath),
       update: update,
       id: configFilePath.slice(0, -4)
     }).initialize();
   }
 
   async createConfigSection(configFolderPath: string, config: unknown): Promise<Collection<string, BaseConfig>> {
-    const pluginFolder = join(this.manager.managerOptions.dir.configs, this.name);
-    if (!existsSync(pluginFolder)) mkdirSync(pluginFolder);
+    const addonFolder = join(this.manager.managerOptions.dir.configs, this.name);
+    if (!existsSync(addonFolder)) mkdirSync(addonFolder);
 
     return new BaseConfigSection(
       config,
       this.logger,
       join('configs', this.name, configFolderPath),
-      join("build", "plugins", this.name, "resources", configFolderPath)
+      join("build", "addons", this.name, "resources", configFolderPath)
     ).initialize();
   }
 }

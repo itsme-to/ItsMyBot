@@ -1,14 +1,15 @@
-import { Manager, Plugin, User } from '@itsmybot';
+import { Manager, Addon, User, ConditionData, CommandInteraction, Base } from '@itsmybot';
 import { AutocompleteInteraction, ContextMenuCommandInteraction } from 'discord.js';
-import { CommandInteraction, Base } from '@contracts';
 
-export abstract class Command<T extends Plugin | undefined = undefined>  extends Base<T> {
+export abstract class Command<T extends Addon | undefined = undefined>  extends Base<T> {
   public data: any;
+  public conditions: ConditionData[]
 
-  constructor(manager: Manager, plugin?: T) {
-    super(manager, plugin);
+  constructor(manager: Manager, addon?: T) {
+    super(manager, addon);
 
     this.data = this.build();
+    this.conditions = this.manager.services.condition.buildConditions(this.data.conditions, false)
   }
 
   public abstract build(): any;
@@ -17,5 +18,7 @@ export abstract class Command<T extends Plugin | undefined = undefined>  extends
     throw new Error('Method not implemented.');
   }
 
-  public abstract execute(interaction: CommandInteraction | ContextMenuCommandInteraction<'cached'>, user: User): Promise<void | any>
+  public execute(interaction: CommandInteraction | ContextMenuCommandInteraction<'cached'>, user: User): Promise<void | any> {
+    throw new Error('Method not implemented.');
+  }
 }

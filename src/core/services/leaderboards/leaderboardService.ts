@@ -1,8 +1,7 @@
-import { Manager, Leaderboard, Command, Plugin } from '@itsmybot';
+import { Manager, Leaderboard, Command, Addon, CommandInteraction, Service } from '@itsmybot';
 import { Collection } from 'discord.js';
 import { CommandBuilder } from '@builders';
 import Utils, { Pagination } from '@utils';
-import { PaginationType, CommandInteraction, Service } from '@contracts';
 import { sync } from 'glob';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -11,7 +10,7 @@ import { fileURLToPath } from 'url';
  * Service to manage leaderboards in the bot.
  */
 export default class LeaderboardService extends Service{
-  leaderboards: Collection<string, Leaderboard<Plugin | undefined>>;
+  leaderboards: Collection<string, Leaderboard<Addon | undefined>>;
 
   constructor(manager: Manager) {
     super(manager);
@@ -23,18 +22,18 @@ export default class LeaderboardService extends Service{
     await this.registerFromDir(join(dirname(fileURLToPath(import.meta.url)), 'impl'))
   }
 
-  async registerFromDir(leaderboardsDir: string, plugin: Plugin | undefined = undefined) {
+  async registerFromDir(leaderboardsDir: string, addon: Addon | undefined = undefined) {
     const leaderboardFiles = sync(join(leaderboardsDir, '**', '*.js').replace(/\\/g, '/'));
 
     for (const filePath of leaderboardFiles) {
       const leaderboardPath = new URL('file://' + filePath.replace(/\\/g, '/')).href;
       const { default: leaderboard } = await import(leaderboardPath);
 
-      this.registerLeaderboard(new leaderboard(this.manager, plugin));
+      this.registerLeaderboard(new leaderboard(this.manager, addon));
     };
   }
 
-  registerLeaderboard(leaderboard: Leaderboard<Plugin | undefined>) {
+  registerLeaderboard(leaderboard: Leaderboard<Addon | undefined>) {
     if (this.leaderboards.has(leaderboard.name)) {
       return this.manager.logger.error(`An leaderboard with the identifier ${leaderboard.name} is already registered.`);
     }
@@ -79,7 +78,7 @@ export default class LeaderboardService extends Service{
 
 
     new Pagination(interaction, leaderboardData.map(item => { return { message: item } }), this.manager.configs.lang.getSubsection('leaderboard'))
-      .setType(PaginationType.Button)
+      .setType('button')
       .setVariables([{ searchFor: "%leaderboard_name%", replaceWith: Utils.capitalizeFirst(leaderboard.name) }])
       .setItemsPerPage(10)
       .send();

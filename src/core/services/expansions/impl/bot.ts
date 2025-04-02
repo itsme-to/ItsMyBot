@@ -1,5 +1,4 @@
-import { Context } from '@contracts';
-import { Expansion } from '../expansion.js';
+import { Expansion, Context } from '@itsmybot';
 import { userMention } from 'discord.js';
 
 export default class BotExpansion extends Expansion {

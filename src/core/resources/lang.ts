@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsString, ValidateNested, IsDefined } from 'class-validator';
-import { MessageValidator, ButtonValidator } from '@contracts';
+import { MessageValidator, ButtonValidator } from '@itsmybot';
 
 class Interaction {
   @IsDefined()
@@ -19,7 +19,7 @@ class Interaction {
   'channel-restricted': MessageValidator
 }
 
-class Plugin {
+class Addon {
   @IsDefined()
   @IsString()
   information: string
@@ -130,8 +130,8 @@ export default class DefaultConfig {
 
   @IsDefined()
   @ValidateNested()
-  @Type(() => Plugin)
-  plugin: Plugin
+  @Type(() => Addon)
+  addon: Addon
 
   @IsDefined()
   @ValidateNested()

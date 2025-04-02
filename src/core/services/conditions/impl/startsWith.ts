@@ -1,5 +1,4 @@
-import { Condition, ConditionData } from '@itsmybot';
-import { Context, Variable } from '@contracts';
+import { Condition, ConditionData, Context, Variable } from '@itsmybot';
 
 export default class StartsWithCondition extends Condition {
   id = "startsWith";

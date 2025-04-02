@@ -12,7 +12,7 @@ export { Condition } from './core/services/conditions/condition.js';
 export { BaseScript } from './core/services/engine/baseScript.js';
 export { Script } from './core/services/engine/script.js';
 export { ActionData } from './core/services/actions/actionData.js';
-export { Plugin } from './core/services/plugins/plugin.js';
+export { Addon } from './core/services/addons/addon.js';
 export { Expansion } from './core/services/expansions/expansion.js';
 export { User } from './core/services/users/user.model.js';
 export { Event } from './core/services/events/event.js';
@@ -21,6 +21,7 @@ export { Command } from './core/services/commands/command.js';
 export { Component } from './core/services/components/component.js';
 export { Leaderboard } from './core/services/leaderboards/leaderboard.js';
 export { CustomCommand } from './core/services/engine/customCommand.js';
+export * from './core/contracts/index.js';
 export { Manager };
 
 const logger = new Logger();
@@ -56,7 +57,7 @@ const manager = new Manager({
     dir: {
         base: processFolder,
         configs: join(processFolder, 'configs'),
-        plugins: join(processFolder, 'build', 'plugins'),
+        addons: join(processFolder, 'build', 'addons'),
         scripts: join(processFolder, 'scripts'),
         customCommands: join(processFolder, 'custom-commands'),
         logs: join(processFolder, 'logs'),

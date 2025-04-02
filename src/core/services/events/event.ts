@@ -1,8 +1,7 @@
 
-import { Base } from '@contracts';
-import { Plugin } from '@itsmybot';
+import { Addon, Base } from '@itsmybot';
 
-export abstract class Event<T extends Plugin | undefined = undefined> extends Base<T>{
+export abstract class Event<T extends Addon | undefined = undefined> extends Base<T>{
   abstract name: string
   once: boolean = false;
   priority: number = 3;

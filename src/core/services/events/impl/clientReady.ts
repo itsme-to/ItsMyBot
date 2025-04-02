@@ -1,7 +1,6 @@
 import chalk from 'chalk';
 import { schedule } from 'node-cron';
-import { Event } from '@itsmybot';
-import { Events } from '@contracts';
+import { Event, Events } from '@itsmybot';
 import { Client } from 'discord.js';
 
 export default class ClientReadyEvent extends Event {
@@ -15,14 +14,14 @@ export default class ClientReadyEvent extends Event {
     this.logger.info(`Conditions registered: ${this.manager.services.condition.conditions.size}`);
     this.logger.info(`Commands registered: ${this.manager.commands.size}`);
     this.logger.info(`Events registered: ${this.manager.events.size}`);
-    this.logger.info(`Plugins registered: ${this.manager.plugins.size}`);
+    this.logger.info(`Addons registered: ${this.manager.addons.size}`);
     this.logger.info(`Placeholder Expansions registered: ${this.manager.expansions.size}`);
 
     this.logger.empty("#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#");
     this.logger.empty(" ");
     this.logger.empty(`                    • ${chalk.hex("#57ff6b").bold(`ItsMyBot v${this.manager.managerOptions.package.version}`)} is now Online! •`);
     this.logger.empty(" ");
-    this.logger.empty("         • Join our Discord Server for any Issues/Custom Plugin •");
+    this.logger.empty("         • Join our Discord Server for any Issues/Custom Addon •");
     this.logger.empty(`                       ${chalk.blue(chalk.underline(`https://discord.gg/itsme-to`))}`);
     this.logger.empty(" ");
     this.logger.empty("#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#");

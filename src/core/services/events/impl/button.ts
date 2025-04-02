@@ -1,5 +1,4 @@
-import { Context, Events } from '@contracts';
-import { Event, User } from '@itsmybot';
+import { Event, User, Context, Events } from '@itsmybot';
 import { ButtonInteraction } from 'discord.js';
 
 export default class ButtonEvent extends Event {

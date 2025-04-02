@@ -1,5 +1,4 @@
-import { Context } from '@contracts';
-import { Expansion } from '../expansion.js';
+import { Expansion, Context } from '@itsmybot';
 import { channelMention, roleMention, time, ChannelType } from 'discord.js';
 
 export default class GuildExpansion extends Expansion {

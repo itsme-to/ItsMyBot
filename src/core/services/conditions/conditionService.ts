@@ -1,6 +1,5 @@
 import { Collection } from 'discord.js';
-import { Condition, Plugin, ConditionData, Manager } from '@itsmybot';
-import { Context, Variable, Config, Service } from '@contracts';
+import { Condition, Addon, ConditionData, Manager, Context, Variable, Config, Service } from '@itsmybot';
 import { sync } from 'glob';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -10,7 +9,7 @@ import { fileURLToPath } from 'url';
  * Conditions are used to check if a condition is met in the scripting system in the engine.
  */
 export default class ConditionService extends Service {
-  conditions: Collection<string, Condition<Plugin | undefined>>;
+  conditions: Collection<string, Condition<Addon | undefined>>;
 
   constructor(manager: Manager) {
     super(manager);
@@ -22,24 +21,25 @@ export default class ConditionService extends Service {
     this.manager.logger.info("Condition service initialized.");
   }
 
-  async registerFromDir(conditionsDir: string, plugin: Plugin | undefined = undefined) {
+  async registerFromDir(conditionsDir: string, addon: Addon | undefined = undefined) {
     const conditionFiles = sync(join(conditionsDir, '**', '*.js').replace(/\\/g, '/'));
 
     for (const filePath of conditionFiles) {
       const conditionPath = new URL('file://' + filePath.replace(/\\/g, '/')).href;
       const { default: condition } = await import(conditionPath);
 
-      this.registerCondition(new condition(this.manager, plugin));
+      this.registerCondition(new condition(this.manager, addon));
     };
   }
 
-  registerCondition(condition: Condition<Plugin | undefined>) {
+  registerCondition(condition: Condition<Addon | undefined>) {
     if (this.conditions.has(condition.id)) return condition.logger.warn(`Condition ${condition.id} is already registered`);
 
     this.conditions.set(condition.id, condition);
   }
 
   buildConditions(conditions: Config[], notMetAction: boolean = true): ConditionData[] {
+    if (!conditions) return [];
     return conditions.map(condition => new ConditionData(this.manager, condition, notMetAction));
   }
 

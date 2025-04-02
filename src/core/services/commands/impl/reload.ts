@@ -1,6 +1,5 @@
 import { CommandBuilder } from '@builders';
-import { Command, User } from '@itsmybot';
-import { CommandInteraction } from '@contracts';
+import { Command, User, CommandInteraction } from '@itsmybot';
 import Utils from '@utils';
 
 export default class ReloadCommand extends Command {
@@ -18,6 +17,7 @@ export default class ReloadCommand extends Command {
     this.logger.info(`Reloading the bot...`);
     this.manager.commands.clear()
     await this.manager.services.command.initialize()
+    await this.manager.services.leaderboard.registerLeaderboards()
     this.manager.services.engine.event.removeAllListeners()
     this.manager.services.engine.scripts.clear()
 
@@ -27,10 +27,10 @@ export default class ReloadCommand extends Command {
       await this.manager.services.engine.loadScripts();
       await this.manager.services.engine.loadCustomCommands();
 
-      await Promise.all(this.manager.plugins.map(async plugin => {
-        await plugin.unload()
-        await plugin.load()
-        await plugin.loadComponents(['commands'])
+      await Promise.all(this.manager.addons.map(async addon => {
+        await addon.unload()
+        await addon.load()
+        await addon.loadComponents(['commands'])
       }))
     } catch (e) {
       error = e

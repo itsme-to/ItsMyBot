@@ -43,7 +43,7 @@ leaderboard:
       description: "%current_item%"
       footer: '%current_page%/%total_pages%'
 
-plugin:
+addon:
   information: |
       ### %status% %name% v%version%
       show=%has_description% - %description%
@@ -52,23 +52,23 @@ plugin:
 
   list:
     content: |
-      Find below the list of plugins available:
+      Find below the list of addons available:
       %current_item%
     ephemeral: true
   enabled:
-    content: "The plugin `%plugin_name%` has been enabled. Restart the bot to apply the changes."
+    content: "The addon `%addon_name%` has been enabled. Restart the bot to apply the changes."
     ephemeral: true
   disabled:
-    content: "The plugin `%plugin_name%` has been disabled. Restart the bot to apply the changes."
+    content: "The addon `%addon_name%` has been disabled. Restart the bot to apply the changes."
     ephemeral: true
   already-enabled:
-    content: "The plugin `%plugin_name%` is already enabled."
+    content: "The addon `%addon_name%` is already enabled."
     ephemeral: true
   already-disabled:
-    content: "The plugin `%plugin_name%` is already disabled."
+    content: "The addon `%addon_name%` is already disabled."
     ephemeral: true
   not-found:
-    content: "The plugin `%plugin_name%` doesn't exist."
+    content: "The addon `%addon_name%` doesn't exist."
     ephemeral: true
 
 reloaded:

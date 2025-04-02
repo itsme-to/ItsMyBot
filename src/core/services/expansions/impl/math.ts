@@ -1,5 +1,4 @@
-import { Context } from '@contracts';
-import { Expansion } from '../expansion.js';
+import { Expansion, Context } from '@itsmybot';
 
 export default class MathExpansion extends Expansion {
   name = 'math';

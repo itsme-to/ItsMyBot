@@ -1,9 +1,8 @@
 import { Message } from 'discord.js';
-import { Events } from '@contracts';
-import { Event, } from '@itsmybot';
-import ExamplePlugin from '..';
+import { Event, Events } from '@itsmybot';
+import ExampleAddon from '..';
 
-export default class MessageCreateEvent extends Event<ExamplePlugin> {
+export default class MessageCreateEvent extends Event<ExampleAddon> {
   name = Events.MessageCreate; // This is the event name
   priority = 3; // This is the priority of the event, the lower the number, the higher the priority (default is 3)
 

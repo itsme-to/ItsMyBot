@@ -1,6 +1,5 @@
-import { Leaderboard } from '../leaderboard.js';
 import { Op } from 'sequelize';
-import { User } from '@itsmybot';
+import { User, Leaderboard } from '@itsmybot';
 import Utils from '@utils';
 
 export default class MessagesLeaderboard extends Leaderboard {

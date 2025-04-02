@@ -2,15 +2,15 @@ import { DataTypes, Optional } from 'sequelize';
 import { Table, Model, Column } from 'sequelize-typescript';
 
 
-interface PluginAttributes {
+interface AddonAttributes {
   name: string;
   enabled: boolean;
 }
 
-interface PluginCreationAttributes extends Optional<PluginAttributes, 'name'> { }
+interface AddonCreationAttributes extends Optional<AddonAttributes, 'name'> { }
 
 @Table
-export default class Plugin extends Model<PluginAttributes, PluginCreationAttributes> {
+export default class Addon extends Model<AddonAttributes, AddonCreationAttributes> {
   @Column({
     type: DataTypes.STRING,
     primaryKey: true

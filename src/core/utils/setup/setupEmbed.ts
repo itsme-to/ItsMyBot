@@ -1,8 +1,6 @@
 import { ColorResolvable, EmbedBuilder } from 'discord.js';
-import manager from '@itsmybot';
-import { Config } from '@itsmybot';
+import manager, { Config, Context, Variable } from '@itsmybot';
 import Utils from '@utils';
-import { Context, Variable } from '@contracts';
 
 interface EmbedSettings {
   config: Config,

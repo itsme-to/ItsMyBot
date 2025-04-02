@@ -1,4 +1,4 @@
-import { Context, Variable } from '@contracts';
+import { Context, Variable } from '@itsmybot';
 import { EventEmitter } from 'events';
 
 type Listener = (context: Context, variable: Variable[]) => void;

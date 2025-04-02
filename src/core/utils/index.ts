@@ -12,10 +12,8 @@ export { Logger } from './logger/index.js';
 export { Cooldown } from './cooldown.js';
 export { Pagination } from './pagination.js';
 
-import manager from '@itsmybot';
-
+import manager, { Context, Variable, MessageOutput }from '@itsmybot';
 import { GuildMember } from 'discord.js';
-import { Context, Variable, MessageOutput } from '@contracts';
 
 const discordEpoch = 1420070400000;
 
@@ -93,7 +91,7 @@ export default class Utils {
       { searchFor: "%message_content%", replaceWith: context.message.content },
       { searchFor: "%message_url%", replaceWith: context.message.url })
 
-    variables.forEach((variable) => {
+    variables.forEach(variable => {
       if (!value) return "";
       value = value.replaceAll(variable.searchFor, variable.replaceWith?.toString() || 'undefined');
     });

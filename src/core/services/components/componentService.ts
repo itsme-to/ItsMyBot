@@ -1,17 +1,16 @@
 import { join } from 'path';
 import { sync } from 'glob';
-import { Component, Manager, Plugin } from '@itsmybot';
+import { Component, Manager, Addon, Service } from '@itsmybot';
 import { Collection } from 'discord.js';
-import { Service } from '@contracts';
 
 /**
  * Service to manage components in the bot.
  * Components are used to create buttons, select menus, and modals.
  */
 export default class ComponentService extends Service {
-  buttons: Collection<string, Component<Plugin | undefined>>;
-  selectMenus: Collection<string, Component<Plugin | undefined>>;
-  modals: Collection<string, Component<Plugin | undefined>>;
+  buttons: Collection<string, Component<Addon | undefined>>;
+  selectMenus: Collection<string, Component<Addon | undefined>>;
+  modals: Collection<string, Component<Addon | undefined>>;
 
   constructor(manager: Manager) {
     super(manager);
@@ -48,7 +47,7 @@ export default class ComponentService extends Service {
     return this.modals;
   }
 
-  async registerFromDir(componentDir: string, type: string, plugin: Plugin | undefined = undefined) {
+  async registerFromDir(componentDir: string, type: string, addon: Addon | undefined = undefined) {
     const componentFiles = sync(join(componentDir, '**', '*.js').replace(/\\/g, '/'));
 
     for (const filePath of componentFiles) {
@@ -57,19 +56,19 @@ export default class ComponentService extends Service {
 
       switch (type) {
         case 'button':
-          await this.registerButton(new Component(this.manager, plugin));
+          await this.registerButton(new Component(this.manager, addon));
           break;
         case 'selectMenu':
-          await this.registerSelectMenu(new Component(this.manager, plugin));
+          await this.registerSelectMenu(new Component(this.manager, addon));
           break;
         case 'modal':
-          await this.registerModal(new Component(this.manager, plugin));
+          await this.registerModal(new Component(this.manager, addon));
           break;
       }
     };
   }
 
-  async registerButton(button: Component<Plugin | undefined>) {
+  async registerButton(button: Component<Addon | undefined>) {
     try {
       if (this.buttons.has(button.customId)) throw new Error("Button already exists.");
 
@@ -79,7 +78,7 @@ export default class ComponentService extends Service {
     }
   }
 
-  async registerSelectMenu(selectMenu: Component<Plugin | undefined>) {
+  async registerSelectMenu(selectMenu: Component<Addon | undefined>) {
     try {
       if (this.selectMenus.has(selectMenu.customId)) throw new Error("SelectMenu already exists.");
 
@@ -89,7 +88,7 @@ export default class ComponentService extends Service {
     }
   }
 
-  async registerModal(modal: Component<Plugin | undefined>) {
+  async registerModal(modal: Component<Addon | undefined>) {
     try {
       if (this.modals.has(modal.customId)) throw new Error("Modal already exists.");
 

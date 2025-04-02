@@ -1,5 +1,4 @@
-import { Context, Events } from '@contracts';
-import { Event } from '@itsmybot';
+import { Event, Context, Events } from '@itsmybot';
 
 export default class EveryHourEvent extends Event {
   name = Events.EveryHour;

@@ -1,15 +1,14 @@
 import { Client, Collection } from 'discord.js';
 import { existsSync, mkdirSync } from 'fs';
 import { Logger } from '@utils';
-import { Command, Component, Expansion, Leaderboard, Plugin } from '@itsmybot'
-import { ClientOptions, ManagerOptions, Services, ManagerConfigs, BaseConfig } from '@contracts';
+import { Command, Component, Expansion, Leaderboard, Addon, ClientOptions, ManagerOptions, Services, ManagerConfigs, BaseConfig } from '@itsmybot'
 import { Sequelize } from 'sequelize-typescript';
 
 import EventService, { EventExecutor } from './services/events/eventService.js';
 import UserService from './services/users/userService.js';
 import CommandService from './services/commands/commandService.js';
 import EngineService from './services/engine/engineService.js';
-import PluginService from './services/plugins/pluginService.js';
+import AddonService from './services/addons/addonService.js';
 import ExpansionService from './services/expansions/expansionService.js';
 import ComponentService from './services/components/componentService.js';
 import LeaderboardService from './services/leaderboards/leaderboardService.js';
@@ -28,7 +27,7 @@ export class Manager {
   public managerOptions: ManagerOptions;
   public commands = new Collection<string, Command>();
   public events = new Collection<string, EventExecutor>();
-  public plugins = new Collection<string, Plugin>();
+  public addons = new Collection<string, Addon>();
   public expansions = new Collection<string, Expansion>();
   public leaderboards = new Collection<string, Leaderboard>();
   public components = {
@@ -44,7 +43,7 @@ export class Manager {
     this.managerOptions = managerOptions;
 
     if (!existsSync(managerOptions.dir.configs)) mkdirSync(managerOptions.dir.configs);
-    if (!existsSync(managerOptions.dir.plugins)) mkdirSync(managerOptions.dir.plugins);
+    if (!existsSync(managerOptions.dir.addons)) mkdirSync(managerOptions.dir.addons);
     if (!existsSync(managerOptions.dir.logs)) mkdirSync(managerOptions.dir.logs);
   }
 
@@ -67,7 +66,7 @@ export class Manager {
       command: new CommandService(this),
       component: new ComponentService(this),
       leaderboard: new LeaderboardService(this),
-      plugin: new PluginService(this)
+      addon: new AddonService(this)
     }
 
     await this.initializeServices();

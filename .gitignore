@@ -4,11 +4,10 @@
 /custom-commands/
 /build/
 
-/src/plugins/**
-src/plugins/.git
+/src/addons/**
 
-!src/plugins/_Example/
-!src/plugins/_Example/**
+!src/addons/_Example/
+!src/addons/_Example/**
 
 .vagrant/
 .vscode

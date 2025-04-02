@@ -1,4 +1,4 @@
-import { CommandValidator } from '@contracts';
+import { CommandValidator } from '@itsmybot';
 import { Type } from 'class-transformer';
 import { IsDefined, ValidateNested } from 'class-validator';
 

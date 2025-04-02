@@ -1,8 +1,6 @@
 import Utils from '@utils';
 import { ActionRowBuilder, MessageComponentInteraction, StringSelectMenuBuilder, StringSelectMenuInteraction, ButtonBuilder, RepliableInteraction, InteractionResponse, InteractionCollector, CollectedMessageInteraction } from 'discord.js';
-import { Config } from '@itsmybot';
-import manager from '@itsmybot'
-import { Context, Variable, PaginationType } from '@contracts';
+import manager, { Config, Context, Variable } from '@itsmybot'
 
 interface Item {
   label?: string;
@@ -22,7 +20,7 @@ interface Category {
 export class Pagination {
   interaction: RepliableInteraction
 
-  type: PaginationType = PaginationType.SelectMenu
+  type: 'select_menu' | 'button' = 'select_menu'
   ephemeral: boolean = false
   context: Context = {}
   categories: Category[] = []
@@ -57,7 +55,7 @@ export class Pagination {
   /**
     * Set the type of pagination
     */
-  setType(type: PaginationType) {
+  setType(type: 'select_menu' | 'button') {
     this.type = type;
 
     return this;
@@ -230,7 +228,7 @@ export class Pagination {
     const totalPages = this.getTotalPages();
     const currentPage = this.getCurrentPage();
 
-    if (this.type === PaginationType.SelectMenu && this.filteredItems.length) {
+    if (this.type === 'select_menu' && this.filteredItems.length) {
       const selectMenu = currentPage.map(item => {
         return {
           label: item.label!,

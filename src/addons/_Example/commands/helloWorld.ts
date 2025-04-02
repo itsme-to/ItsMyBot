@@ -1,14 +1,13 @@
 import { CommandBuilder } from '@builders';
-import { CommandInteraction } from '@contracts';
-import { Command, User } from '@itsmybot';
-import ExamplePlugin from '..';
+import { Command, User, CommandInteraction } from '@itsmybot';
+import ExampleAddon from '..';
 import { AutocompleteInteraction } from 'discord.js';
 
-export default class HelloWorldCommand extends Command<ExamplePlugin> {
+export default class HelloWorldCommand extends Command<ExampleAddon> {
 
 
   build() {
-    const command = this.plugin.configs.commands.getSubsection("hello-world");
+    const command = this.addon.configs.commands.getSubsection("hello-world");
 
     return new CommandBuilder()
       .setName('commission')

@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { ValidateNested, IsOptional, IsDefined, IsArray } from 'class-validator';
-import { TriggerActionValidator, ConditionValidator } from '@contracts';
+import { TriggerActionValidator, ConditionValidator } from '@itsmybot';
 
 export default class DefaultConfig {
   @IsDefined()
