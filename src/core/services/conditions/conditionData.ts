@@ -12,6 +12,15 @@ export class ConditionData {
   constructor(manager: Manager, condition: Config, notMetAction: boolean = true) {
     this.id = condition.getString("id");
     this.config = condition;
+
+    if (!this.config.has("args")) this.config.set("args", this.config.empty('args'));
+
+    if (this.id.startsWith('!')) {
+      this.id = this.id.substring(1);
+      this.config.set("id", this.id);
+      this.config.set("args.inverse", true);
+    }
+
     this.manager = manager;
     this.logger = new Logger(`Condition/${this.id}`);
     this.args = condition.getSubsection("args");
