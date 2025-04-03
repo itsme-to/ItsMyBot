@@ -29,8 +29,9 @@ export class Config {
     return this.getOrNull(path) !== undefined;
   }
 
-  public empty() {
-    return new Config(this.logger, this.filePath, this.currentPath);
+  public empty(path?: string): Config {
+    if (!path) return new Config(this.logger, this.filePath);
+    return new Config(this.logger, this.filePath, this.getPath(path));
   }
 
   private getOrNull(path: string): unknown {
@@ -207,21 +208,20 @@ export class Config {
   public set(path: string, obj: unknown) {
     const pathParts = path.split('.');
     const nearestPath = pathParts[0];
-    const updatedPath = this.currentPath ? `${this.currentPath}.${nearestPath}` : nearestPath;
 
     if (path.includes('.')) {
       const remainingPath = path.substring(nearestPath.length + 1);
 
-      const section = this.getOrNull(nearestPath) as Config || new Config(this.logger, this.filePath, updatedPath);
+      const section = this.getSubsectionOrNull(nearestPath) || this.empty(path);
       section.set(remainingPath, obj);
-      this.values.set(updatedPath, section);
+      this.values.set(path, section);
       return;
     }
 
     if (obj === null) {
-      this.values.delete(updatedPath);
+      this.values.delete(path);
     } else {
-      this.values.set(updatedPath, obj);
+      this.values.set(path, obj);
     }
   }
 

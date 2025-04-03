@@ -19,24 +19,21 @@ class ConditionArgumentValidator {
   value: string[] | string
 
   @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => ConditionValidator)
+  conditions: ConditionValidator[]
+
+  @IsOptional()
+  @IsBoolean()
+  'ignore-case': boolean
+
+  @IsOptional()
   @IsNumber()
   amount: number
 
   @IsOptional()
   @IsBoolean()
   inherit: boolean
-
-  @IsOptional()
-  @IsString()
-  input: string
-
-  @IsOptional()
-  @IsString()
-  operator: string
-
-  @IsOptional()
-  @IsString()
-  output: string
 }
 
 export class ConditionValidator {

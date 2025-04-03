@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsString, IsArray, IsBoolean, IsOptional, IsDefined, ValidateNested } from 'class-validator';
-import { ComponentValidator } from '@itsmybot';
+import { ComponentValidator, ConditionValidator } from '@itsmybot';
 
 class MessageComponentValidator {
   @IsDefined()
@@ -50,8 +50,10 @@ class MessageEmbedFieldValidator {
   inline: boolean
 
   @IsOptional()
-  @IsString()
-  show: string
+  @ValidateNested({ each: true })
+  @IsArray()
+  @Type(() => ConditionValidator)
+  conditions: ConditionValidator[]
 }
 
 
@@ -109,6 +111,12 @@ class MessageEmbedValidator {
   @ValidateNested({ each: true })
   @Type(() => MessageEmbedFieldValidator)
   fields: MessageEmbedFieldValidator[]
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ConditionValidator)
+  conditions: ConditionValidator[]
 }
 
 export class MessageValidator {
