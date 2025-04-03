@@ -1,6 +1,6 @@
 import Utils from '@utils';
 import { StringSelectMenuBuilder } from 'discord.js';
-import { Config, Context, Variable } from '@itsmybot';
+import manager, { Config, Context, Variable } from '@itsmybot';
 
 interface ComponentSettings {
   config: Config,
@@ -9,27 +9,31 @@ interface ComponentSettings {
 }
 
 export async function setupComponent(settings: ComponentSettings) {
-  const component = settings.config;
+  const config = settings.config;
   const variables = settings.variables || [];
   const context = settings.context;
 
-  const type = component.getStringOrNull("type") || "button";
-  const customId = component.getStringOrNull("custom-id");
-  const disabled = component.getBoolOrNull("disabled") || false;
+  const type = config.getStringOrNull("type") || "button";
+  const customId = config.getStringOrNull("custom-id");
+  const disabled = config.getBoolOrNull("disabled") || false;
 
-  const show = await Utils.applyVariables(component.getStringOrNull("show"), variables, context);
-  if (show === "false") return;
+  const conditionConfig = config.getSubsections("conditions");
+  if (conditionConfig) {
+    const conditions = manager.services.condition.buildConditions(conditionConfig, false);
+    const isMet = await manager.services.condition.meetsConditions(conditions, context, variables);
+    if (!isMet) return
+  }
 
   switch (type) {
     case "button": {
-      return Utils.setupButton({ config: component, variables, context });
+      return Utils.setupButton({ config, variables, context });
     }
 
     case "select-menu": {
-      const placeholder = component.getStringOrNull("placeholder");
-      const minSelect = component.getNumberOrNull("min-values") || 0;
-      const maxSelect = component.getNumberOrNull("max-values") || 1;
-      const options = component.getSubsectionsOrNull("options");
+      const placeholder = config.getStringOrNull("placeholder");
+      const minSelect = config.getNumberOrNull("min-values") || 0;
+      const maxSelect = config.getNumberOrNull("max-values") || 1;
+      const options = config.getSubsectionsOrNull("options");
 
       if (customId) {
         const selectMenu = new StringSelectMenuBuilder()
@@ -48,6 +52,13 @@ export async function setupComponent(settings: ComponentSettings) {
             const emoji = option.getStringOrNull("emoji");
             const defaultOption = option.getBoolOrNull("default") || false;
             const description = option.getStringOrNull("description");
+
+            const conditionConfig = option.getSubsections("conditions");
+            if (conditionConfig) {
+              const conditions = manager.services.condition.buildConditions(conditionConfig, false);
+              const isMet = await manager.services.condition.meetsConditions(conditions, context, variables);
+              if (!isMet) continue;
+            }
 
             const data = {
               label: label ?? await Utils.applyVariables(label, variables, context),

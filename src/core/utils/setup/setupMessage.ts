@@ -38,12 +38,13 @@ export async function setupMessage(settings: MessageSettings): Promise<MessageOu
 
   const embeds = settings.config.getSubsectionsOrNull("embeds") || [];
   if (embeds && embeds[0]) {
-    for (const embed of embeds) {
-      message.embeds.push(await Utils.setupEmbed({
-        config: embed,
+    for (const embedConfig of embeds) {
+      const embed = await Utils.setupEmbed({
+        config: embedConfig,
         variables: variables,
         context: context,
-      }));
+      });
+      if (embed) message.embeds.push(embed);
     }
   }
 
@@ -67,8 +68,7 @@ export async function setupMessage(settings: MessageSettings): Promise<MessageOu
         variables: variables,
         context: context,
       });
-      if (!buildComponent) continue;
-      row.addComponents(buildComponent);
+      if (buildComponent) row.addComponents(buildComponent);
     }
   }
 

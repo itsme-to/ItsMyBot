@@ -13,6 +13,15 @@ export async function setupEmbed(settings: EmbedSettings) {
   const context = settings.context;
   const config = settings.config;
 
+  const conditionConfig = config.getSubsections("conditions");
+  if (conditionConfig) {
+    const conditions = manager.services.condition.buildConditions(conditionConfig, false);
+    const isMet = await manager.services.condition.meetsConditions(conditions, context, variables);
+    if (!isMet) {
+      return null;
+    }
+  }
+
   const author = config.getStringOrNull("author", true);
   const authorIcon = config.getStringOrNull("author-icon", true);
   const authorUrl = config.getStringOrNull("author-url", true);
@@ -51,12 +60,18 @@ export async function setupEmbed(settings: EmbedSettings) {
   if (Array.isArray(fields)) {
     for (const field of fields) {
       const show = await Utils.applyVariables(field.getStringOrNull('show'), variables, context);
-      
       if (show === "false") continue;
 
+      const conditionConfig = field.getSubsections("conditions");
+      if (conditionConfig) {
+        const conditions = manager.services.condition.buildConditions(conditionConfig, false);
+        const isMet = await manager.services.condition.meetsConditions(conditions, context, variables);
+        if (!isMet) continue;
+      }
+
       embed.addFields({
-        name: await Utils.applyVariables(field.getString("name"), variables, context),
-        value: Utils.removeHiddenLines(await Utils.applyVariables(field.getString("value"), variables, context)),
+        name: await Utils.applyVariables(field.getString("name", true), variables, context),
+        value: Utils.removeHiddenLines(await Utils.applyVariables(field.getString("value", true), variables, context)),
         inline: field.getBoolOrNull("inline") || false,
       });
     }
