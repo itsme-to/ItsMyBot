@@ -109,6 +109,16 @@ class ActionArgumentValidator extends MessageValidator {
   @IsInt()
   @IsPositive()
   duration: number
+
+  @IsOptional()
+  @IsString()
+  method: string
+
+  @IsOptional()
+  body: any
+
+  @IsOptional()
+  headers: any
 }
 
 export class ActionValidator {
