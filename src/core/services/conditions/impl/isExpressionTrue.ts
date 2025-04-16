@@ -15,7 +15,7 @@ export default class IsExpressionTrueCondition extends Condition {
       const parsedExpression = Parser.parse(expression);
       const result = parsedExpression.evaluate();
 
-      if (typeof result !== 'boolean') {
+      if (typeof result !== 'boolean' && result !== 0 && result !== 1) {
         return condition.logError("Expression did not evaluate to a boolean");
       }
 
