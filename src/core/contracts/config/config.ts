@@ -205,6 +205,34 @@ export class Config {
     return undefined;
   }
 
+  public getObject(path: string): any {
+    const value = this.get(path);
+    if (TypeCheckers.isConfig(value)) return value.transformToObject(path)
+
+    throw this.logger.error(`Expected object at path "${path}"`);
+  }
+
+  public getObjectOrNull(path: string): any | undefined {
+    const value = this.getOrNull(path);
+    if (value === null || value === undefined) return undefined;
+    if (TypeCheckers.isConfig(value)) return value.transformToObject(path)
+
+    return undefined;
+  }
+
+  private transformToObject(path: string): any {
+    const value = this.getSubsection(path);
+    const obj: { [key: string]: unknown } = {};
+    for (const [key, val] of value.values) {
+      if (val instanceof Config) {
+        obj[key] = value.transformToObject(key);
+      } else {
+        obj[key] = val;
+      }
+    }
+    return obj;
+  }
+
   public set(path: string, obj: unknown) {
     const pathParts = path.split('.');
     const nearestPath = pathParts[0];

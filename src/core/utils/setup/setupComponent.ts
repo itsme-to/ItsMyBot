@@ -17,7 +17,7 @@ export async function setupComponent(settings: ComponentSettings) {
   const customId = config.getStringOrNull("custom-id");
   const disabled = config.getBoolOrNull("disabled") || false;
 
-  const conditionConfig = config.getSubsections("conditions");
+  const conditionConfig = config.getSubsectionsOrNull("conditions");
   if (conditionConfig) {
     const conditions = manager.services.condition.buildConditions(conditionConfig, false);
     const isMet = await manager.services.condition.meetsConditions(conditions, context, variables);
@@ -53,7 +53,7 @@ export async function setupComponent(settings: ComponentSettings) {
             const defaultOption = option.getBoolOrNull("default") || false;
             const description = option.getStringOrNull("description");
 
-            const conditionConfig = option.getSubsections("conditions");
+            const conditionConfig = option.getSubsectionsOrNull("conditions");
             if (conditionConfig) {
               const conditions = manager.services.condition.buildConditions(conditionConfig, false);
               const isMet = await manager.services.condition.meetsConditions(conditions, context, variables);
