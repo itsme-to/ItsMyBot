@@ -13,7 +13,7 @@ export async function setupEmbed(settings: EmbedSettings) {
   const context = settings.context;
   const config = settings.config;
 
-  const conditionConfig = config.getSubsections("conditions");
+  const conditionConfig = config.getSubsectionsOrNull("conditions");
   if (conditionConfig) {
     const conditions = manager.services.condition.buildConditions(conditionConfig, false);
     const isMet = await manager.services.condition.meetsConditions(conditions, context, variables);
@@ -59,10 +59,7 @@ export async function setupEmbed(settings: EmbedSettings) {
 
   if (Array.isArray(fields)) {
     for (const field of fields) {
-      const show = await Utils.applyVariables(field.getStringOrNull('show'), variables, context);
-      if (show === "false") continue;
-
-      const conditionConfig = field.getSubsections("conditions");
+      const conditionConfig = field.getSubsectionsOrNull("conditions");
       if (conditionConfig) {
         const conditions = manager.services.condition.buildConditions(conditionConfig, false);
         const isMet = await manager.services.condition.meetsConditions(conditions, context, variables);
