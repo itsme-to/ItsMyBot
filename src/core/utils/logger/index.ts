@@ -31,7 +31,17 @@ export class Logger {
     for (const item of text) {
       if (item instanceof Error) {
         messageParts.push(item.message);
-        if (item.stack) messageParts.push(item.stack);
+        if ('errors' in item) {
+          messageParts.push('Validation errors:\n' + JSON.stringify((item as any).errors, null, 2));
+        }
+      
+        if ('cause' in item) {
+          messageParts.push('Cause:\n' + JSON.stringify((item as any).cause, null, 2));
+        }
+      
+        if (item.stack) {
+          messageParts.push(item.stack);
+        }
       } else {
         messageParts.push(item);
       }
