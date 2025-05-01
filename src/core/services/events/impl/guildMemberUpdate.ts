@@ -25,5 +25,16 @@ export default class GuildMemberUpdateEvent extends Event {
       context.content = newMember.displayName
       this.manager.services.engine.event.emit('displayNameUpdate', context);
     }
+
+    if (!oldMember.premiumSince && newMember.premiumSince) {
+      context.content = newMember.displayName
+      this.manager.services.engine.event.emit('guildBoostAdd', context);
+    }
+
+
+    if (oldMember.premiumSince && !newMember.premiumSince) {
+      context.content = newMember.displayName
+      this.manager.services.engine.event.emit('guildBoostRemove', context);
+    }
   }
 };
