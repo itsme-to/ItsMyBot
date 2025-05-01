@@ -151,7 +151,6 @@ export class ActionValidator {
 
 export class TriggerActionValidator extends ActionValidator {
   @IsDefined()
-  @IsArray()
   @IsString({ each: true })
-  triggers: string[]
+  triggers: string[] | string
 }
