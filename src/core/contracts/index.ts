@@ -1,7 +1,6 @@
-import { BitFieldResolvable, ChatInputCommandInteraction } from 'discord.js';
+import { ActionRowData, APIMessageTopLevelComponent, BitFieldResolvable, APIEmbed, Attachment, AttachmentBuilder, BufferResolvable, MessageMentionOptions, PollData, ChatInputCommandInteraction, MessageActionRowComponentBuilder, MessageActionRowComponentData, TopLevelComponentData, JSONEncodable } from 'discord.js';
 import { Manager, Addon } from '@itsmybot';
 import { Logger } from '@utils';
-import { APIActionRowComponent, APIEmbed, APIMessageActionRowComponent, Attachment, AttachmentBuilder, BufferResolvable, MessageMentionOptions, PollData } from 'discord.js';
 import { Stream } from 'stream';
 
 export { Context } from './context.js';
@@ -11,8 +10,8 @@ export { IsPermissionFlag, IsActivityType, IsTextInputStyle, IsChannelType, IsCo
 export { BaseConfig } from './config/baseConfig.js';
 export { BaseConfigSection } from './config/baseConfigSection.js';
 export { CommandValidator } from './validators/command.js';
-export { MessageValidator } from './validators/message.js';
-export { ButtonValidator, ComponentValidator, ModalValidator } from './validators/component.js';
+export { MessageValidator, ButtonValidator, SelectMenuValidator } from './validators/message.js';
+export { ModalValidator } from './validators/component.js';
 export { ConditionValidator, MutatorValidator, ActionValidator, TriggerActionValidator } from './validators/scripting.js';
 export { Config } from './config/config.js';
 
@@ -21,16 +20,14 @@ export interface Variable {
   replaceWith: string | number | undefined | null | boolean;
 }
 
-export type LogConfigOptions = "minor" | "moderate" | "high" | "major" | "critical";
-
 export interface MessageOutput {
   allowedMentions: MessageMentionOptions,
-  components: APIActionRowComponent<APIMessageActionRowComponent>[],
+  components: (ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder> | TopLevelComponentData | APIMessageTopLevelComponent | JSONEncodable<APIMessageTopLevelComponent>)[],
   content: string | undefined,
   embeds: APIEmbed[],
   files: (Attachment | AttachmentBuilder | Stream | BufferResolvable)[],
   poll?: PollData
-  flags: BitFieldResolvable<any, any>
+  flags?: BitFieldResolvable<any, number> | undefined
 }
 
 export type CommandInteraction = ChatInputCommandInteraction<'cached'>;

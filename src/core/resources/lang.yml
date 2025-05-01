@@ -19,9 +19,11 @@ pagination:
     content: "Nothing to display."
     ephemeral: true
   button-next:
+    type: button
     label: "Next"
     style: "Secondary"
   button-previous:
+    type: button
     label: "Previous"
     style: "Secondary"
   

@@ -5,7 +5,11 @@ import { setupEmbed } from './setup/setupEmbed.js';
 import { setupMessage } from './setup/setupMessage.js';
 import { setupComponent } from './setup/setupComponent.js';
 import { setupButton } from './setup/setupButton.js';
+import { setupSelectMenu } from './setup/setupSelectMenu.js';
+import { setupContainer } from './setup/setupContainer.js';
 import { setupModal } from './setup/setupModal.js';
+import { setupThumbnail } from './setup/setupThumbnail.js';
+import { setupTextDisplay } from './setup/setupTextDisplay.js';
 import { userVariables, channelVariables, roleVariables, timeVariables } from './variables.js';
 
 export { Logger } from './logger/index.js';
@@ -58,7 +62,11 @@ export default class Utils {
   static setupMessage = setupMessage;
   static setupComponent = setupComponent;
   static setupButton = setupButton;
+  static setupSelectMenu = setupSelectMenu;
+  static setupContainer = setupContainer;
   static setupModal = setupModal;
+  static setupThumbnail = setupThumbnail;
+  static setupTextDisplay = setupTextDisplay
 
   static userVariables = userVariables;
   static channelVariables = channelVariables;
