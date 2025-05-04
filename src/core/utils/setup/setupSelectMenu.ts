@@ -1,4 +1,4 @@
-import { StringSelectMenuBuilder } from 'discord.js';
+import { StringSelectMenuBuilder, StringSelectMenuOptionBuilder } from 'discord.js';
 import Utils from '@utils';
 import manager, { Config, Context, Variable } from '@itsmybot';
 
@@ -23,41 +23,80 @@ export async function setupSelectMenu(settings: SelectMenuSettings) {
   const maxSelect = config.getNumberOrNull("max-values") || 1;
   const options = config.getSubsectionsOrNull("options");
 
+  const dataSource = config.getStringOrNull("data-source");
+  const template = config.getSubsectionOrNull("template");
+
   const selectMenu = new StringSelectMenuBuilder()
     .setCustomId(customId || 'undefined')
     .setDisabled(disabled)
-    .setMaxValues(maxSelect)
     .setMinValues(minSelect)
 
   const placeholderValue = await Utils.applyVariables(placeholder, variables, context);
   if (placeholderValue) selectMenu.setPlaceholder(placeholderValue);
 
-  if (options && options[0]) {
+  if (dataSource && template) {
+    const data = context.list?.get(dataSource);
+    if (!data) {
+      config.logger.warn(`List data source "${dataSource}" not found.`);
+      return
+    }
+    for (const item of data) {
+      const varbles = [...variables, ...item.variables]
+      const ctxt = { ...context, ...item.context }
+
+      const optionData = await setupOption(template, varbles, ctxt);
+      if (!optionData) continue;
+      selectMenu.addOptions(optionData);
+    }
+  } else if (options && options[0]) {
     for (const option of options) {
-      const label = option.getStringOrNull("label");
-      const value = option.getStringOrNull("value");
-      const emoji = option.getStringOrNull("emoji");
-      const defaultOption = option.getBoolOrNull("default") || false;
-      const description = option.getStringOrNull("description");
+      const optionData = await setupOption(option, variables, context);
+      if (!optionData) continue;
 
-      const conditionConfig = option.getSubsectionsOrNull("conditions");
-      if (conditionConfig) {
-        const conditions = manager.services.condition.buildConditions(conditionConfig, false);
-        const isMet = await manager.services.condition.meetsConditions(conditions, context, variables);
-        if (!isMet) continue;
-      }
-
-      const data = {
-        label: label ?? await Utils.applyVariables(label, variables, context),
-        value: value ?? await Utils.applyVariables(value, variables, context),
-        emoji: emoji ? await Utils.applyVariables(emoji, variables, context) : undefined,
-        description: description ? await Utils.applyVariables(description, variables, context) : undefined,
-        default: defaultOption
-      };
-
-      selectMenu.addOptions(data);
+      selectMenu.addOptions(optionData);
     }
   }
 
+  if (!selectMenu.options.length) return
+
+  if (maxSelect > selectMenu.options.length) {
+    selectMenu.setMaxValues(selectMenu.options.length);
+  } else {
+    selectMenu.setMaxValues(maxSelect);
+  }
+
   return selectMenu;
+}
+
+
+async function setupOption(
+  config: Config,
+  variables: Variable[],
+  context: Context,
+) {
+  const label = await Utils.applyVariables(config.getString("label"), variables, context)
+  const value = await Utils.applyVariables(config.getString("value"), variables, context)
+  const emoji = await Utils.applyVariables(config.getStringOrNull("emoji"), variables, context);
+  const defaultOption = await Utils.applyVariables(config.getStringOrNull("default"), variables, context);
+  const description = await Utils.applyVariables(config.getStringOrNull("description"), variables, context);
+
+  const conditionConfig = config.getSubsectionsOrNull("conditions");
+  if (conditionConfig) {
+    const conditions = manager.services.condition.buildConditions(conditionConfig, false);
+    const isMet = await manager.services.condition.meetsConditions(conditions, context, variables);
+    if (!isMet) return null;
+  }
+  
+  const option = new StringSelectMenuOptionBuilder()
+    .setLabel(label)
+    .setValue(value);
+
+  try {
+    option.setDefault(Utils.evaluateBoolean(defaultOption) || false);
+  } catch (error) { }
+
+  if (emoji && Utils.isValidEmoji(emoji)) option.setEmoji(emoji);
+  if (description) option.setDescription(description);
+
+  return option;
 }
