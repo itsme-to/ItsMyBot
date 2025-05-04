@@ -1,6 +1,6 @@
 
 import { Type } from 'class-transformer';
-import { IsString, IsInt, ValidateNested, IsOptional, IsDefined, Max, Min, IsPositive, IsArray, IsBoolean, IsNumber } from 'class-validator';
+import { IsString, IsInt, ValidateNested, IsOptional, ValidateIf, IsDefined, Max, Min, IsPositive, IsArray, IsBoolean, IsNumber } from 'class-validator';
 import { MessageValidator } from '@itsmybot';
 
 class ConditionArgumentValidator {
@@ -37,9 +37,15 @@ class ConditionArgumentValidator {
 }
 
 export class ConditionValidator {
+  @ValidateIf(o => !o.expression)
   @IsDefined()
   @IsString()
   id: string
+
+  @ValidateIf(o => !o.id)
+  @IsDefined()
+  @IsString()
+  expression: string
 
   @IsOptional()
   @ValidateNested()
