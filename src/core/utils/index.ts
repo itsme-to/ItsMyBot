@@ -11,6 +11,7 @@ import { setupModal } from './setup/setupModal.js';
 import { setupThumbnail } from './setup/setupThumbnail.js';
 import { setupTextDisplay } from './setup/setupTextDisplay.js';
 import { userVariables, channelVariables, roleVariables, timeVariables } from './variables.js';
+import { transcript, transcriptMessage } from './transcript.js';
 
 export { Logger } from './logger/index.js';
 export { Cooldown } from './cooldown.js';
@@ -18,6 +19,7 @@ export { Pagination } from './pagination.js';
 
 import manager, { Context, Variable, MessageOutput }from '@itsmybot';
 import { GuildMember } from 'discord.js';
+import { Parser } from 'expr-eval';
 
 const discordEpoch = 1420070400000;
 
@@ -73,6 +75,19 @@ export default class Utils {
   static roleVariables = roleVariables;
   static timeVariables = timeVariables;
 
+  /**
+   * Transcript the given channel to a formatted string
+   * @param channel The channel to transcript
+   * @param limit The amount of messages to transcript, defaults to 100
+   */
+  static transcript = transcript;
+
+  /**
+   * Transcript a message to a formatted string
+   * @param message The message to transcript
+   */
+  static transcriptMessage = transcriptMessage;
+
   static async fileExists(filePath: string) {
     try {
       await fs.access(filePath);
@@ -123,6 +138,36 @@ export default class Utils {
       return false;
     }
   }
+  
+  static isValidEmoji(emoji: string) {
+    const customEmoji = /^<a?:\w+:\d+>$/;
+    const discordEmoji = /:\w+:/
+    const unicodeEmoji = /^((\p{Extended_Pictographic}|\p{Emoji_Component})+(\uFE0F)?(\u200D(\p{Extended_Pictographic}|\p{Emoji_Component})+)*)$/u;
+
+    return customEmoji.test(emoji) || discordEmoji.test(emoji) || unicodeEmoji.test(emoji);
+  }
+
+  static evaluateBoolean(expression: string) {
+    const parsedExpression = Parser.parse(expression);
+    const result = parsedExpression.evaluate();
+
+    if (typeof result !== 'boolean' && result !== 0 && result !== 1) {
+      return null
+    }
+
+    return result;
+  }
+
+  static evaluateNumber(expression: string) {
+    const parsedExpression = Parser.parse(expression);
+    const result = parsedExpression.evaluate();
+
+    if (typeof result !== 'number') {
+      return null
+    }
+
+    return result;
+  }
 
   /**
    * Get a random element from an array
@@ -130,15 +175,6 @@ export default class Utils {
    */
   static getRandom<T>(array: T[]): T {
     return array[Math.floor(Math.random() * array.length)]
-  }
-
-  static removeHiddenLines(text: string) {
-    let texts = text.split('\n');
-
-    texts = texts.filter((line) => !line.startsWith('show=false '));
-    texts = texts.map((line) => line.replace('show=true ', ''));
-
-    return texts.join('\n');
   }
 
   /**
