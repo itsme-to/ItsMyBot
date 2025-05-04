@@ -32,9 +32,6 @@ token: "BOT_TOKEN"
 # The primary guild ID for the bot
 primary-guild: "GUILD_ID"
 
-# Default color for embeds
-default-color: "#7443C2"
-
 # Debug mode (currently does nothing)
 debug: true
 

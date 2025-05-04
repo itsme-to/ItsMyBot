@@ -1,6 +1,6 @@
 import { IsActivityType } from '@itsmybot';
 import { Type } from 'class-transformer';
-import { IsString, IsInt, ValidateNested, IsBoolean, Validate, IsDefined, NotEquals, IsHexColor, IsIn, IsPositive } from 'class-validator';
+import { IsString, IsInt, ValidateNested, IsBoolean, Validate, IsDefined, NotEquals, IsIn, IsPositive } from 'class-validator';
 
 class Activity {
   @IsDefined()
@@ -74,11 +74,6 @@ export default class DefaultConfig {
     message: 'Please set your guild id in the configs/config.yml file.',
   })
   'primary-guild': string
-
-  @IsDefined()
-  @IsString()
-  @IsHexColor()
-  'default-color': string
 
   @IsDefined()
   @IsBoolean()
