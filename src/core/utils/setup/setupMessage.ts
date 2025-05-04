@@ -1,5 +1,5 @@
-import { ActionRowBuilder, MessageFlags, MessageActionRowComponentBuilder, MessageComponentBuilder } from 'discord.js';
-import { Config, Context, Variable, MessageOutput } from '@itsmybot';
+import { ActionRowBuilder, MessageFlags, MessageActionRowComponentBuilder } from 'discord.js';
+import { Config, Context, Variable, MessageOutput, TopLevelComponentBuilder } from '@itsmybot';
 import Utils from '@utils';
 
 interface MessageSettings {
@@ -51,13 +51,16 @@ export async function setupMessage(settings: MessageSettings): Promise<MessageOu
   const components = []
   if (componentsConfig?.length) {
     for (const componentConfig of componentsConfig) {
-      const component = await Utils.setupComponent<MessageComponentBuilder>({
+      const component = await Utils.setupComponent<TopLevelComponentBuilder>({
         config: componentConfig,
         variables: variables,
         context: context,
       });
-      if (component) components.push(component.toJSON());
+      if (component?.length) components.push(...component);
     }
+
+
+    if (settings.components && settings.components[0]) components.push(...settings.components);
 
     if (components.length) {
       message.components.push(...components);
@@ -73,7 +76,7 @@ export async function setupMessage(settings: MessageSettings): Promise<MessageOu
 
     if (content.length > 2000) content = content.substring(0, 1997) + "...";
 
-    message.content = Utils.removeHiddenLines(content);
+    message.content = content;
   }
 
   const embeds = config.getSubsectionsOrNull("embeds") || [];
@@ -103,7 +106,7 @@ export async function setupMessage(settings: MessageSettings): Promise<MessageOu
         variables: variables,
         context: context,
       });
-      if (buildComponent) row.addComponents(buildComponent);
+      if (buildComponent?.length) row.addComponents(buildComponent);
     }
   }
 

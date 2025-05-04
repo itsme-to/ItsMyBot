@@ -10,7 +10,7 @@ interface ComponentSettings {
 
 export type SetupComponentType = MessageComponentBuilder | ContainerComponentBuilder | ActionRowComponent | undefined;
 
-export async function setupComponent<T extends SetupComponentType = SetupComponentType>(settings: ComponentSettings): Promise<T | undefined> {
+export async function setupComponent<T extends SetupComponentType = SetupComponentType>(settings: ComponentSettings): Promise<T[] | undefined> {
   const config = settings.config;
   const variables = settings.variables || [];
   const context = settings.context;
@@ -26,15 +26,37 @@ export async function setupComponent<T extends SetupComponentType = SetupCompone
 
   switch (type) {
     case 'button': {
-      return Utils.setupButton({ config, variables, context }) as Promise<T>;
+      return [await Utils.setupButton({ config, variables, context }) as T];
     }
   
     case 'select-menu': {
-      return Utils.setupSelectMenu({ config, variables, context }) as Promise<T>;
+      return [await Utils.setupSelectMenu({ config, variables, context }) as T];
     }
 
     case 'text-display': {
-      return Utils.setupTextDisplay({ config, variables, context }) as Promise<T>;
+      return [await Utils.setupTextDisplay({ config, variables, context }) as T];
+    }
+
+    case 'list': {
+      const dataSource = config.getString('data-source', true);
+      const template = config.getSubsections('template');
+      const data = context.list?.get(dataSource);
+      if (!data) {
+        config.logger.warn(`List data source "${dataSource}" not found.`);
+        return
+      }
+      const components: T[] = [];
+      for (const item of data) {
+        for (const componentConfig of template) {
+          const varbles = [...variables, ...item.variables]
+          const ctxt = { ...context, ...item.context }
+          const component = await Utils.setupComponent<T>({ config: componentConfig, variables: varbles, context: ctxt });
+          if (component) components.push(...component);
+        }
+      }
+
+      if (!components.length) return 
+      return components
     }
 
     case 'separator': {
@@ -42,7 +64,7 @@ export async function setupComponent<T extends SetupComponentType = SetupCompone
         .setSpacing(config.getNumber('spacing'))
         .setDivider(config.getBoolOrNull('divider') || true)
 
-      return separator as T
+      return [separator as T]
     }
 
     case 'section': {
@@ -57,32 +79,23 @@ export async function setupComponent<T extends SetupComponentType = SetupCompone
         }
 
         const textDisplay = await Utils.setupTextDisplay({ config: componentConfig, variables, context });
-        section.components.push(textDisplay);
+        section.addTextDisplayComponents(textDisplay);
       }
 
       if (!section.components.length) return
 
-      const accessory = config.getSubsectionOrNull('accessory')
-      if (accessory) {
-        const conditionConfig = accessory.getSubsectionsOrNull('conditions');
-        if (conditionConfig) {
-          const conditions = manager.services.condition.buildConditions(conditionConfig, false);
-          const isMet = await manager.services.condition.meetsConditions(conditions, context, variables);
-          if (!isMet) return section as T
-        } 
-
-        if (accessory.getString('type') === 'button') {
-          section.setButtonAccessory(await Utils.setupButton({ config: accessory, variables, context }))
-        } else {
-          section.setThumbnailAccessory(await Utils.setupThumbnail({ config: accessory, variables, context }))
-        }
+      const accessory = config.getSubsection('accessory')
+      if (accessory.getString('type') === 'button') {
+        section.setButtonAccessory(await Utils.setupButton({ config: accessory, variables, context }))
+      } else {
+        section.setThumbnailAccessory(await Utils.setupThumbnail({ config: accessory, variables, context }))
       }
 
-      return section as T
+      return [section as T]
     }
 
     case 'thumbnail': {
-      return Utils.setupThumbnail({ config, variables, context }) as Promise<T>
+      return [await Utils.setupThumbnail({ config, variables, context }) as T]
     }
 
     case 'media-gallery': {
@@ -101,7 +114,7 @@ export async function setupComponent<T extends SetupComponentType = SetupCompone
 
       if (!mediaGallery.items.length) return
 
-      return mediaGallery as T
+      return [mediaGallery as T]
     }
 
     case 'file': {
@@ -109,7 +122,7 @@ export async function setupComponent<T extends SetupComponentType = SetupCompone
         .setSpoiler(config.getBoolOrNull('spoiler') || false)
         .setURL(await Utils.applyVariables(config.getString('url', true), variables, context))
 
-      return file as T
+      return [file as T]
     }
 
     case 'action-row': {
@@ -121,11 +134,13 @@ export async function setupComponent<T extends SetupComponentType = SetupCompone
         if (component) actionRow.addComponents(component);
       }
 
-      return actionRow as T;
+      if (!actionRow.components.length) return
+
+      return [actionRow as T]
     }
 
     case 'container': {
-      return Utils.setupContainer({ config, variables, context }) as Promise<T>;
+      return [await Utils.setupContainer({ config, variables, context }) as T];
     }
   }
 }

@@ -4,12 +4,33 @@ import { ConditionValidator } from '@itsmybot';
 import { IsBooleanOrString } from '../decorators/validator.js';
 
 function ActionRowComponentType() {
-  return Type(() => Component, {
+  return Type(() => ComponentValidator, {
     discriminator: {
       property: 'type',
       subTypes: [
         { value: ButtonValidator, name: 'button' },
-        { value: SelectMenuValidator, name: 'select-menu' }
+        { value: SelectMenuValidator, name: 'select-menu' },
+        { value: ListActionRowValidator, name: 'list' },
+      ],
+    },
+    keepDiscriminatorProperty: true
+  });
+}
+
+export type TopMessageComponentValidator = ButtonValidator | SelectMenuValidator | ListActionRowValidator | SeparatorValidator | SectionValidator | MediaGalleryValidator | FileValidator | ContainerValidator | TextDisplayValidator | ActionRowValidator
+export function TypeTopMessageComponentValidator(){
+  return Type(() => ComponentValidator, {
+    discriminator: {
+      property: 'type',
+      subTypes: [
+        { value: TextDisplayValidator, name: 'text-display' },
+        { value: ActionRowValidator, name: 'action-row' },
+        { value: SeparatorValidator, name: 'separator' },
+        { value: SectionValidator, name: 'section' },
+        { value: MediaGalleryValidator, name: 'media-gallery' },
+        { value: FileValidator, name: 'file' },
+        { value: ContainerValidator, name: 'container' },
+        { value: ListComponentValidator, name: 'list' }
       ],
     },
     keepDiscriminatorProperty: true
@@ -24,14 +45,15 @@ class WithCondition {
   conditions: ConditionValidator[]
 }
 
-export abstract class Component extends WithCondition {
+
+export abstract class ComponentValidator extends WithCondition {
   @IsDefined()
   @IsString()
-  @IsIn(['button', 'select-menu', 'text-display', 'action-row', 'separator', 'section', 'media-gallery', 'file', 'container'])
-  type: 'button' | 'select-menu' | 'text-display' | 'action-row' | 'separator' | 'section' | 'media-gallery' | 'file' | 'container'
+  @IsIn(['button', 'select-menu', 'text-display', 'action-row', 'separator', 'section', 'media-gallery', 'file', 'container', 'list'])
+  type: 'button' | 'select-menu' | 'text-display' | 'action-row' | 'separator' | 'section' | 'media-gallery' | 'file' | 'container' | 'list'
 }
 
-export class ButtonValidator extends Component {
+export class ButtonValidator extends ComponentValidator {
   @IsOptional()
   @IsString({ each: true })
   style: string | string[]
@@ -58,11 +80,11 @@ export class ButtonValidator extends Component {
 }
 
 class OptionsValidator extends WithCondition {
-  @IsOptional()
+  @IsDefined()
   @IsString()
   label: string
 
-  @IsOptional()
+  @IsDefined()
   @IsString()
   value: string
 
@@ -71,15 +93,15 @@ class OptionsValidator extends WithCondition {
   emoji: string
 
   @IsOptional()
-  @IsBoolean()
-  default: boolean
+  @Validate(IsBooleanOrString)
+  default: boolean | string
 
   @IsOptional()
   @IsString()
   description: string
 }
 
-export class SelectMenuValidator extends Component {
+export class SelectMenuValidator extends ComponentValidator {
   @IsOptional()
   @IsString({ each: true })
   'custom-id': string | string[]
@@ -101,9 +123,18 @@ export class SelectMenuValidator extends Component {
   @ValidateNested({ each: true })
   @Type(() => OptionsValidator)
   options: OptionsValidator[]
+
+  @IsOptional()
+  @IsString()
+  'data-source': string
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => OptionsValidator)
+  template: OptionsValidator
 }
 
-export class SeparatorValidator extends Component {
+export class SeparatorValidator extends ComponentValidator {
   @IsOptional()
   @IsBoolean()
   divider: boolean
@@ -113,13 +144,13 @@ export class SeparatorValidator extends Component {
   spacing: 1 | 2
 }
 
-class TextDisplayValidator extends Component {
+class TextDisplayValidator extends ComponentValidator {
   @IsOptional()
   @IsString({ each: true })
   content: string | string[]
 }
 
-class ThumbnailValidator extends Component {
+class ThumbnailValidator extends ComponentValidator {
   @IsDefined()
   @IsString({ each: true })
   url: string | string[]
@@ -133,12 +164,33 @@ class ThumbnailValidator extends Component {
   spoiler: boolean
 }
 
-class ActionRowValidator extends Component {
+class ListActionRowValidator extends ComponentValidator {
+  @IsDefined()
+  @IsString()
+  'data-source': string
+
+  @IsDefined()
+  @ValidateNested({ each: true })
+  @IsArray()
+  @Type(() => ComponentValidator, {
+    discriminator: {
+      property: 'type',
+      subTypes: [
+        { value: ButtonValidator, name: 'button' },
+        { value: SelectMenuValidator, name: 'select-menu' }
+      ],
+    },
+    keepDiscriminatorProperty: true
+  })
+  template: ButtonValidator[] | SelectMenuValidator[]
+}
+
+class ActionRowValidator extends ComponentValidator {
   @IsDefined()
   @ValidateNested({ each: true })
   @IsArray()
   @ActionRowComponentType()
-  components: ButtonValidator[] | SelectMenuValidator[]
+  components: (ButtonValidator | ListActionRowValidator)[] | SelectMenuValidator[]
 }
 
 class MediaGalleryItemValidator extends WithCondition {
@@ -155,7 +207,7 @@ class MediaGalleryItemValidator extends WithCondition {
   spoiler: boolean
 }
 
-class MediaGalleryValidator extends Component {
+class MediaGalleryValidator extends ComponentValidator {
   @IsDefined()
   @ValidateNested({ each: true })
   @IsArray()
@@ -163,7 +215,7 @@ class MediaGalleryValidator extends Component {
   items: MediaGalleryItemValidator[]
 }
 
-class FileValidator extends Component {
+class FileValidator extends ComponentValidator {
   @IsDefined()
   @IsString({ each: true })
   url: string | string[]
@@ -173,16 +225,37 @@ class FileValidator extends Component {
   spoiler: boolean
 }
 
-class SectionValidator extends Component {
+class ListSectionValidator extends ComponentValidator {
+  @IsDefined()
+  @IsString()
+  'data-source': string
+
   @IsDefined()
   @ValidateNested({ each: true })
   @IsArray()
   @Type(() => TextDisplayValidator)
-  components: TextDisplayValidator[]
+  template: TextDisplayValidator[]
+}
 
-  @IsOptional()
+class SectionValidator extends ComponentValidator {
+  @IsDefined()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ComponentValidator, {
+    discriminator: {
+      property: 'type',
+      subTypes: [
+        { value: TextDisplayValidator, name: 'text-display' },
+        { value: ListSectionValidator, name: 'list' }
+      ],
+    },
+    keepDiscriminatorProperty: true
+  })
+  components: (TextDisplayValidator | ListSectionValidator)[]
+
+  @IsDefined()
   @ValidateNested()
-  @Type(() => Component, {
+  @Type(() => ComponentValidator, {
     discriminator: {
       property: 'type',
       subTypes: [
@@ -195,19 +268,15 @@ class SectionValidator extends Component {
   accessory: ThumbnailValidator | ButtonValidator
 }
 
-class ContainerValidator extends Component {
-  @IsOptional()
-  @IsString({ each: true })
-  color: string | string[]
-
-  @IsOptional()
-  @IsBoolean()
-  spoiler: boolean
+class ListContainerValidator extends ComponentValidator {
+  @IsDefined()
+  @IsString()
+  'data-source': string
 
   @IsDefined()
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => Component, {
+  @Type(() => ComponentValidator, {
     discriminator: {
       property: 'type',
       subTypes: [
@@ -221,42 +290,98 @@ class ContainerValidator extends Component {
     },
     keepDiscriminatorProperty: true
   })
-  components: (SeparatorValidator | ActionRowValidator | TextDisplayValidator | SectionValidator | MediaGalleryValidator | FileValidator)[]
+  template: (TextDisplayValidator | ActionRowValidator | MediaGalleryValidator | SectionValidator | SeparatorValidator | FileValidator)[]
 }
 
+class ContainerValidator extends ComponentValidator {
+  @IsOptional()
+  @IsString({ each: true })
+  color: string | string[]
+
+  @IsOptional()
+  @IsBoolean()
+  spoiler: boolean
+
+  @IsDefined()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ComponentValidator, {
+    discriminator: {
+      property: 'type',
+      subTypes: [
+        { value: SeparatorValidator, name: 'separator' },
+        { value: ActionRowValidator, name: 'action-row' },
+        { value: TextDisplayValidator, name: 'text-display' },
+        { value: SectionValidator, name: 'section' },
+        { value: MediaGalleryValidator, name: 'media-gallery' },
+        { value: FileValidator, name: 'file' },
+        { value: ListContainerValidator, name: 'list' }
+      ],
+    },
+    keepDiscriminatorProperty: true
+  })
+  components: (ListContainerValidator | SeparatorValidator | ActionRowValidator | TextDisplayValidator | SectionValidator | MediaGalleryValidator | FileValidator)[]
+}
+
+
+class ListComponentValidator extends ComponentValidator {
+  @IsDefined()
+  @IsString()
+  'data-source': string
+
+  @IsDefined()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ComponentValidator, {
+    discriminator: {
+      property: 'type',
+      subTypes: [
+        { value: SeparatorValidator, name: 'separator' },
+        { value: ActionRowValidator, name: 'action-row' },
+        { value: TextDisplayValidator, name: 'text-display' },
+        { value: SectionValidator, name: 'section' },
+        { value: MediaGalleryValidator, name: 'media-gallery' },
+        { value: FileValidator, name: 'file' },
+        { value: ContainerValidator, name: 'container' }
+      ],
+    },
+    keepDiscriminatorProperty: true
+  })
+  template: (ContainerValidator | TextDisplayValidator | ActionRowValidator | MediaGalleryValidator | SectionValidator | SeparatorValidator | FileValidator)[]
+}
 
 class ActionRowsValidator {
   @IsDefined()
   @ValidateNested({ each: true })
   @IsArray()
   @ActionRowComponentType()
-  1: SelectMenuValidator[] | ButtonValidator[]
+  1: SelectMenuValidator[] | (ButtonValidator | ListActionRowValidator)[]
 
   @IsOptional()
   @ValidateNested({ each: true })
   @IsArray()
   @ActionRowComponentType()
-  2: SelectMenuValidator[] | ButtonValidator[]
+  2: SelectMenuValidator[] | (ButtonValidator | ListActionRowValidator)[]
 
   @IsOptional()
   @ValidateNested({ each: true })
   @IsArray()
   @ActionRowComponentType()
-  3: SelectMenuValidator[] | ButtonValidator[]
-
-
-  @IsOptional()
-  @ValidateNested({ each: true })
-  @IsArray()
-  @ActionRowComponentType()
-  4: SelectMenuValidator[] | ButtonValidator[]
+  3: SelectMenuValidator[] | (ButtonValidator | ListActionRowValidator)[]
 
 
   @IsOptional()
   @ValidateNested({ each: true })
   @IsArray()
   @ActionRowComponentType()
-  5: SelectMenuValidator[] | ButtonValidator[]
+  4: SelectMenuValidator[] | (ButtonValidator | ListActionRowValidator)[]
+
+
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @IsArray()
+  @ActionRowComponentType()
+  5: SelectMenuValidator[] | (ButtonValidator | ListActionRowValidator)[]
 }
 
 class MessageEmbedFieldValidator extends WithCondition {
@@ -350,22 +475,9 @@ export class MessageValidator {
     message: 'Components are now using Discord’s new style for building message layouts. To keep using the old system, please rename ‘components’ to ‘action-rows’'
   })
   @ValidateNested({ each: true })
-  @Type(() => Component, {
-    discriminator: {
-      property: 'type',
-      subTypes: [
-        { value: SeparatorValidator, name: 'separator' },
-        { value: ActionRowValidator, name: 'action-row' },
-        { value: TextDisplayValidator, name: 'text-display' },
-        { value: SectionValidator, name: 'section' },
-        { value: MediaGalleryValidator, name: 'media-gallery' },
-        { value: FileValidator, name: 'file' },
-        { value: ContainerValidator, name: 'container' }
-      ],
-    },
-    keepDiscriminatorProperty: true
-  })
-  components: (ContainerValidator | TextDisplayValidator | ActionRowValidator | MediaGalleryValidator | SectionValidator | SeparatorValidator | FileValidator)[]
+  @IsArray()
+  @TypeTopMessageComponentValidator()
+  components: TopMessageComponentValidator[]
 
   @IsOptional()
   @IsBoolean()
