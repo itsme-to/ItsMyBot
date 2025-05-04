@@ -13,19 +13,71 @@ only-in-primary-guild:
 
 pagination:
   select-placeholder: "Page %current_page%/%total_pages%"
-  filters-placeholder: "Select a filter"
   placeholder: "Select an option"
   no-data:
-    content: "Nothing to display."
-    ephemeral: true
-  button-next:
-    type: button
-    label: "Next"
-    style: "Secondary"
-  button-previous:
-    type: button
-    label: "Previous"
-    style: "Secondary"
+    components:
+      - type: text-display
+        content: "No values to display."
+      - type: action-row
+        conditions:
+          - expression: "%pagination_has_filter%"
+        components:
+          - type: select-menu
+            placeholder: "Select a filter"
+            custom-id: "pagination_filters"
+            max-values: 25
+            data-source: "pagination-filters"
+            template:
+              label: "%filter_label%"
+              value: "%filter_id%"
+              description: "%filter_description%"
+              emoji: "%filter_emoji%"
+              default: "%filter_selected%"
+  components:
+    - type: action-row
+      components:
+        - type: button
+          label: "Previous"
+          emoji: "◀️"
+          style: "Secondary"
+          custom-id: "pagination_previous"
+          conditions:
+            - expression: "%pagination_has_previous%"
+        - type: button
+          label: "Next"
+          emoji: "▶️"
+          style: "Secondary"
+          custom-id: "pagination_next"
+          conditions:
+            - expression: "%pagination_has_next%"
+    - type: action-row
+      conditions:
+        - expression: "%pagination_is_select%"
+      components:
+        - type: select-menu
+          placeholder: "%pagination_placeholder%"
+          custom-id: "pagination_items"
+          data-source: "pagination-items"
+          template:
+            label: "%item_label%"
+            value: "%item_value%"
+            description: "%item_description%"
+            emoji: "%item_emoji%"
+    - type: action-row
+      conditions:
+        - expression: "%pagination_has_filter%"
+      components:
+        - type: select-menu
+          placeholder: "Select a filter"
+          custom-id: "pagination_filters"
+          max-values: 25
+          data-source: "pagination-filters"
+          template:
+            label: "%filter_label%"
+            value: "%filter_id%"
+            description: "%filter_description%"
+            emoji: "%filter_emoji%"
+            default: "%filter_selected%"
   
 interaction:
   in-cooldown:
@@ -40,23 +92,42 @@ interaction:
 
 leaderboard:
   messages-format: '`%position%.` %user_mention% • **%user_messages%** messages sent'
-  embeds:
-    - title: "🏆︎ Leaderboard - %leaderboard_name%"
-      description: "%current_item%"
-      footer: '%current_page%/%total_pages%'
+  disable-mentions: true
+  components:
+    - type: text-display
+      content: "### 🏆︎ Leaderboard - %leaderboard_name%"
+    - type: container
+      components:
+        - type: list
+          data-source: "pagination-items"
+          template:
+            - type: text-display
+              content: "%leaderboard_message%"
+        - type: text-display
+          content: "-# Page: %pagination_current_page%/%pagination_total_pages%"
 
 addon:
-  information: |
-      ### %status% %name% v%version%
-      show=%has_description% - %description%
-      - Authors: %authors%
-      show=%has_website% - %website%
-
   list:
-    content: |
-      Find below the list of addons available:
-      %current_item%
     ephemeral: true
+    components:
+      - type: text-display
+        content: "Find below the list of addons available"
+      - type: container
+        components:
+          - type: text-display
+            content: "### %addon_status% %addon_name% v%addon_version% \nAuthors: %addon_authors%"
+          - type: text-display
+            content: "%addon_description%"
+            conditions:
+              - expression: "%addon_has_description%"
+          - type: action-row
+            components:
+              - type: button
+                label: "Website"
+                emoji: "🌐"
+                url: "%addon_website%"
+                conditions:
+                  - expression: "%addon_has_website%"
   enabled:
     content: "The addon `%addon_name%` has been enabled. Restart the bot to apply the changes."
     ephemeral: true

@@ -1,16 +1,17 @@
 import Utils from '@utils';
-import { ActionRowBuilder, MessageComponentInteraction, StringSelectMenuBuilder, StringSelectMenuInteraction, ButtonBuilder, RepliableInteraction, InteractionResponse, InteractionCollector, CollectedMessageInteraction } from 'discord.js';
-import manager, { Config, Context, Variable } from '@itsmybot'
+import { MessageComponentInteraction, StringSelectMenuInteraction, RepliableInteraction, InteractionResponse, InteractionCollector, CollectedMessageInteraction } from 'discord.js';
+import manager, { Config, Context, TopLevelComponentBuilder, Variable } from '@itsmybot'
 
 interface Item {
   label?: string;
   emoji?: string;
   description?: string;
-  message: string;
-  category?: string;
+  tags?: string[]
+  variables: Variable[]
+  context?: Context
 }
 
-interface Category {
+interface Filter {
   id: string;
   name: string;
   emoji?: string;
@@ -21,9 +22,8 @@ export class Pagination {
   interaction: RepliableInteraction
 
   type: 'select_menu' | 'button' = 'select_menu'
-  ephemeral: boolean = false
   context: Context = {}
-  categories: Category[] = []
+  filters: Filter[] = []
   variables: Variable[] = []
   config: Config
   lang: Config
@@ -62,15 +62,6 @@ export class Pagination {
   }
 
   /**
-    * Make the message ephemeral or not
-    */
-  setEphemeral(ephemeral: boolean) {
-    this.ephemeral = ephemeral;
-
-    return this;
-  }
-
-  /**
     * Set the items per page. Default is 25
     */
   setItemsPerPage(itemsPerPage: number) {
@@ -91,8 +82,8 @@ export class Pagination {
   /**
     * Set the categories to be used in the select menu
     */
-  setCategories(categories: Category[]) {
-    this.categories = categories;
+  setFilters(filters: Filter[]) {
+    this.filters = filters;
 
     return this;
   }
@@ -136,22 +127,11 @@ export class Pagination {
       }));
     }
 
-    const totalPages = this.getTotalPages();
-
-    this.variables.push(
-      { searchFor: "%total_pages%", replaceWith: totalPages }
-    );
-
     this.message = await this.interaction.reply(await Utils.setupMessage({
-      config: this.config,
-      variables: [
-        ...this.variables,
-        { searchFor: "%current_page%", replaceWith: this.currentPage + 1 },
-        { searchFor: "%current_item%", replaceWith: this.getMessage() }
-      ],
-      context: this.context,
+      config: this.getConfig(),
+      variables: this.getVariables(),
+      context: this.getContext(),
       components: await this.getComponents(),
-      ephemeral: this.ephemeral
     }))
 
     this.createCollector();
@@ -159,12 +139,8 @@ export class Pagination {
     return this.message;
   }
 
-  private getCurrentItem() {
-    return this.filteredItems[this.currentItem];
-  }
-
   private createCollector() {
-    const filter = (interaction: MessageComponentInteraction) => ['pagination_items', 'pagination_previous', 'pagination_next', 'pagination_filter'].includes(interaction.customId);
+    const filter = (interaction: MessageComponentInteraction) => ['pagination_items', 'pagination_previous', 'pagination_next', 'pagination_filters'].includes(interaction.customId);
 
     this.collector = this.message.createMessageComponentCollector({ filter,  time: this.time });
 
@@ -174,17 +150,17 @@ export class Pagination {
 
       if (interaction instanceof StringSelectMenuInteraction) {
         if (interaction.values[0]?.startsWith("item_")) {
-          this.currentItem = parseInt(interaction.values[0].split("_")[1]);
+          this.currentItem = parseInt(interaction.values[0].split("_", 2)[1]);
         } else {
           this.currentFilters = [];
 
           for (const filter of interaction.values) {
-            const filterId = filter.split("_")[1];
+            const filterId = filter.substring(7);
             this.currentFilters.push(filterId);
           }
 
           this.filteredItems = this.currentFilters.length
-            ? this.defaultItems.filter(item => item.category ? this.currentFilters.includes(item.category) : false)
+            ? this.defaultItems.filter(item => item.tags?.some(tag => this.currentFilters.includes(tag)))
             : this.defaultItems;
 
           this.currentPage = 0;
@@ -193,100 +169,123 @@ export class Pagination {
       };
 
       interaction.update(await Utils.setupMessage({
-        config: this.config,
-        variables: [
-          ...this.variables,
-          { searchFor: "%current_page%", replaceWith: this.currentPage + 1 },
-          { searchFor: "%current_item%", replaceWith: this.getMessage() }
-        ],
-        context: this.context,
+        config: this.getConfig(),
+        variables: this.getVariables(),
+        context: this.getContext(),
         components: await this.getComponents(),
-        ephemeral: this.ephemeral
       }));
     });
 
-    this.collector.on('end', () => {
-      this.message.edit({ components: [] });
+    this.collector.on('end', async () => {
+      this.message.edit(await Utils.setupMessage({
+        config: this.getConfig(),
+        variables: this.getVariables(),
+        context: this.getContext()
+      }));
     });
   }
 
-  private getMessage() {
-    if (!this.filteredItems) return "No matched value"
+  private getConfig() {
+    return this.filteredItems.length ? this.config : this.lang.getSubsection("no-data");
+  }
 
-    if (this.type === "button") {
-      const startIndex = this.currentPage * this.itemsPerPage;
-      const endIndex = Math.min(startIndex + this.itemsPerPage, this.filteredItems.length);
+  private getContext() {
+    let context = this.context;
+    const items = this.getCurrentItems();
+    const list = []
 
-      return this.filteredItems.slice(startIndex, endIndex).map(item => item.message).join('\n');
+    if (this.type === 'select_menu') {
+      const item = this.filteredItems[this.currentItem];
+      if (item) {
+        context = { ...context, ...item.context };
+      }
+    }
+    
+    for (const item of items) {
+      const variables = [ ...item.variables,
+        { searchFor: "%item_label%", replaceWith: item.label || "" },
+        { searchFor: "%item_value%", replaceWith: `item_${this.filteredItems.indexOf(item)}` },
+        { searchFor: "%item_emoji%", replaceWith: item.emoji || "" },
+        { searchFor: "%item_description%", replaceWith: item.description || "" },
+        { searchFor: "%item_tags%", replaceWith: item.tags?.join(", ") || "" }
+      ];
+
+      list.push({
+        context: item.context || this.context,
+        variables: variables
+      });
     }
 
-    return this.getCurrentItem().message;
+    if (!context.list) context.list = new Map();
+    context.list.set('pagination-items', list);
+
+    const listFilters = [];
+
+    if (this.filters.length) {
+      for (const filter of this.filters) {
+        const isSelected = this.currentFilters.includes(filter.id);
+
+        const variables = [...this.variables, 
+          { searchFor: "%filter_id%", replaceWith: `filter_${filter.id}` },
+          { searchFor: "%filter_label%", replaceWith: filter.name },
+          { searchFor: "%filter_emoji%", replaceWith: filter.emoji || "" },
+          { searchFor: "%filter_description%", replaceWith: filter.description || "" },
+          { searchFor: "%filter_selected%", replaceWith: isSelected ? "true" : "false" }
+        ];
+
+        listFilters.push({
+          context: this.context,
+          variables: variables
+        });
+      }
+      context.list.set('pagination-filters', listFilters);
+    }
+
+    return context;
   }
 
   private async getComponents() {
-    const rows = [];
-    const totalPages = this.getTotalPages();
-    const currentPage = this.getCurrentPage();
+    if (!this.filteredItems.length) return []
+    const components = [];
 
-    if (this.type === 'select_menu' && this.filteredItems.length) {
-      const selectMenu = currentPage.map(item => {
-        return {
-          label: item.label!,
-          value: `item_${this.filteredItems.indexOf(item)}`,
-          emoji: item.emoji,
-          description: item.description!
-        }
+    for (const component of manager.configs.lang.getSubsections('pagination.components')) {
+      const comp = await Utils.setupComponent<TopLevelComponentBuilder>({
+        config: component,
+        variables: this.getVariables(),
+        context: this.getContext()
       });
 
-      rows.push(new ActionRowBuilder<StringSelectMenuBuilder>()
-        .addComponents(
-          new StringSelectMenuBuilder()
-            .setCustomId('pagination_items')
-            .setPlaceholder(await Utils.applyVariables(this.lang.getStringOrNull("select-placeholder"), [
-              ...this.variables,
-              { searchFor: "%current_page%", replaceWith: this.currentPage + 1 },
-            ], this.context) || this.placeholderText)
-            .addOptions(selectMenu),
-        ));
+      if (comp?.length) components.push(...comp);
     }
 
-    if (this.categories.length) {
-      const selectMenu = this.categories.map(category => {
-        const isSelected = this.currentFilters.includes(category.id);
-        return {
-          label: category.name,
-          value: `filter_${category.id}`,
-          emoji: category.emoji,
-          description: category.description,
-          default: isSelected
-        }
-      });
-
-      rows.push(new ActionRowBuilder<StringSelectMenuBuilder>()
-        .addComponents(
-          new StringSelectMenuBuilder()
-            .setCustomId('pagination_filter')
-            .setPlaceholder(this.lang.getString("filters-placeholder"))
-            .setMinValues(0)
-            .setMaxValues(this.categories.length)
-            .addOptions(selectMenu),
-        ));
-    }
-
-    if (totalPages > 1) {
-      rows.push(new ActionRowBuilder<ButtonBuilder>()
-        .addComponents(await Promise.all([
-          Utils.setupButton({ customId: 'pagination_previous', config: this.lang.getSubsection("button-previous"), disabled: this.currentPage === 0, context: this.context }),
-          Utils.setupButton({ customId: 'pagination_next', config: this.lang.getSubsection("button-next"), disabled: this.currentPage === totalPages - 1, context: this.context }),
-        ])));
-    }
-
-    return rows;
+    return components;
   }
 
-  private getCurrentPage() {
+  private getVariables() {
+    const variables = [...this.variables,
+      { searchFor: "%pagination_current_page%", replaceWith: this.currentPage + 1 },
+      { searchFor: "%pagination_total_pages%", replaceWith: this.getTotalPages() },
+      { searchFor: "%pagination_has_previous%", replaceWith: this.currentPage > 0 },
+      { searchFor: "%pagination_has_next%", replaceWith: this.currentPage < this.getTotalPages() - 1 },
+      { searchFor: "%pagination_is_select%", replaceWith: this.type === 'select_menu' },
+      { searchFor: "%pagination_is_button%", replaceWith: this.type === 'button' },
+      { searchFor: "%pagination_placeholder%", replaceWith: this.placeholderText },
+      { searchFor: "%pagination_has_filter%", replaceWith: this.filters.length > 0 },
+    ];
+
+    if (this.type === 'select_menu') {
+      const item = this.filteredItems[this.currentItem];
+      if (item) {
+        variables.push(...item.variables);
+      }
+    }
+
+    return variables;
+  }
+
+  private getCurrentItems() {
     const startIndex = this.currentPage * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
+    const endIndex = Math.min(startIndex + this.itemsPerPage, this.filteredItems.length);
     return this.filteredItems.slice(startIndex, endIndex);
   }
 

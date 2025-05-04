@@ -75,9 +75,21 @@ export default class LeaderboardService extends Service{
     if (!leaderboard) return interaction.reply("Leaderboard not found.");
 
     const leaderboardData = await leaderboard.getData();
+    const leaders = []
+    let rank = 0;
 
+    for (const row of leaderboardData) {
+      const variables = [
+        { searchFor: "%leaderboard_position%", replaceWith: rank++ },
+        { searchFor: "%leaderboard_message%", replaceWith: row }
+      ];
 
-    new Pagination(interaction, leaderboardData.map(item => { return { message: item } }), this.manager.configs.lang.getSubsection('leaderboard'))
+      leaders.push({
+        variables: variables,
+      });
+    }
+
+    new Pagination(interaction, leaders, this.manager.configs.lang.getSubsection('leaderboard'))
       .setType('button')
       .setVariables([{ searchFor: "%leaderboard_name%", replaceWith: Utils.capitalizeFirst(leaderboard.name) }])
       .setItemsPerPage(10)
