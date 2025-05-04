@@ -65,6 +65,9 @@ export class Config {
       return Utils.getRandom(value)
     }
 
+    if (TypeCheckers.isBoolean(value)) return value.toString()
+    if (TypeCheckers.isNumber(value)) return value.toString()  
+
     throw this.logger.error(`Expected string at path "${path}"`);
   }
 
@@ -77,6 +80,9 @@ export class Config {
     if (TypeCheckers.isStringArray(value) && randomize) {
       return Utils.getRandom(value)
     }
+
+    if (TypeCheckers.isBoolean(value)) return value.toString()
+    if (TypeCheckers.isNumber(value)) return value.toString()  
 
     return undefined;
   }
