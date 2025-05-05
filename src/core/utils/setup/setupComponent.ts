@@ -1,6 +1,6 @@
 import Utils from '@utils';
 import manager, { Config, Context, Variable } from '@itsmybot';
-import { ActionRowComponent, MessageComponentBuilder, ContainerComponentBuilder, ActionRowBuilder, MessageActionRowComponentBuilder, SeparatorBuilder, SectionBuilder, MediaGalleryBuilder, FileBuilder } from 'discord.js';
+import { ActionRowComponent, MessageComponentBuilder, ContainerComponentBuilder, ActionRowBuilder, MessageActionRowComponentBuilder, SeparatorBuilder, SectionBuilder, MediaGalleryBuilder, FileBuilder, MediaGalleryItemBuilder } from 'discord.js';
 
 interface ComponentSettings {
   config: Config,
@@ -109,7 +109,7 @@ export async function setupComponent<T extends SetupComponentType = SetupCompone
           if (!isMet) continue
         }
         
-        mediaGallery.addItems((await Utils.setupThumbnail({ config: mediaconfig, variables, context })).toJSON())
+        mediaGallery.addItems((await setupMediaGalleryItemBuilder({ config: mediaconfig, variables, context })))
       }
 
       if (!mediaGallery.items.length) return
@@ -143,4 +143,21 @@ export async function setupComponent<T extends SetupComponentType = SetupCompone
       return [await Utils.setupContainer({ config, variables, context }) as T];
     }
   }
+}
+
+
+async function setupMediaGalleryItemBuilder(settings: ComponentSettings)  {
+  const config = settings.config;
+  const variables = settings.variables || [];
+  const context = settings.context;
+
+  const description = await Utils.applyVariables(config.getStringOrNull('description', true), variables, context)
+
+  const item = new MediaGalleryItemBuilder()
+    .setSpoiler(config.getBoolOrNull('spoiler') || false)
+    .setURL(await Utils.applyVariables(config.getString('url', true), variables, context))
+
+  if (description) item.setDescription(description)
+
+  return item
 }

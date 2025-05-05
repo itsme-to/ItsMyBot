@@ -45,12 +45,11 @@ class WithCondition {
   conditions: ConditionValidator[]
 }
 
-
 export abstract class ComponentValidator extends WithCondition {
   @IsDefined()
   @IsString()
-  @IsIn(['button', 'select-menu', 'text-display', 'action-row', 'separator', 'section', 'media-gallery', 'file', 'container', 'list'])
-  type: 'button' | 'select-menu' | 'text-display' | 'action-row' | 'separator' | 'section' | 'media-gallery' | 'file' | 'container' | 'list'
+  @IsIn(['button', 'select-menu', 'text-display', 'action-row', 'separator', 'section', 'media-gallery', 'file', 'container', 'list', 'thumbnail'])
+  type: 'button' | 'select-menu' | 'text-display' | 'action-row' | 'separator' | 'section' | 'media-gallery' | 'file' | 'container' | 'list' | 'thumbnail'
 }
 
 export class ButtonValidator extends ComponentValidator {
