@@ -85,7 +85,7 @@ export default class InteractionCreateEvent extends Event {
       }
       await component.execute(interaction, user);
     } catch (error: any) {
-      this.logger.error(`Error executing ${component.data.name}`, error);
+      this.logger.error(`Error executing the commannd/component '${component.data.name}'`, error);
     }
 
     component.data.cooldown.setCooldown(interaction.user.id);
