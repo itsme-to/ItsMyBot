@@ -15,7 +15,7 @@ export async function setupSelectMenu(settings: SelectMenuSettings) {
   const variables = settings.variables || [];
   const context = settings.context;
 
-  const customId = config.getStringOrNull("custom-id");
+  const customId = config.getString("custom-id");
   const disabled = config.getBoolOrNull("disabled") || false;
 
   const placeholder = config.getStringOrNull("placeholder");
@@ -27,7 +27,7 @@ export async function setupSelectMenu(settings: SelectMenuSettings) {
   const template = config.getSubsectionOrNull("template");
 
   const selectMenu = new StringSelectMenuBuilder()
-    .setCustomId(customId || 'undefined')
+    .setCustomId(customId)
     .setDisabled(disabled)
     .setMinValues(minSelect)
 
@@ -96,7 +96,7 @@ async function setupOption(
   } catch (error) { }
 
   if (emoji && Utils.isValidEmoji(emoji)) option.setEmoji(emoji);
-  if (description) option.setDescription(description);
+  if (description && description !== 'undefined') option.setDescription(description);
 
   return option;
 }

@@ -101,7 +101,7 @@ class OptionsValidator extends WithCondition {
 }
 
 export class SelectMenuValidator extends ComponentValidator {
-  @IsOptional()
+  @IsDefined()
   @IsString({ each: true })
   'custom-id': string | string[]
   
