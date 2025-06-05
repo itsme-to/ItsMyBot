@@ -1,23 +1,9 @@
 import { userMention } from 'discord.js';
-import { Optional, DataTypes } from 'sequelize';
+import { DataTypes, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
 import { Table, Model, Column } from 'sequelize-typescript';
 
-interface UserAttributes {
-  id: string;
-  username: string;
-  displayName: string;
-  avatar: string | null
-  createdAt: number;
-  joinedAt: number | undefined;
-  roles: string[];
-  coins: number | undefined;
-  messages: number | undefined;
-}
-
-interface UserCreationAttributes extends Optional<UserAttributes, 'id'> { }
-
 @Table
-export class User extends Model<UserAttributes, UserCreationAttributes> {
+export class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   @Column({
     type: DataTypes.STRING,
     primaryKey: true
@@ -37,17 +23,17 @@ export class User extends Model<UserAttributes, UserCreationAttributes> {
   @Column({
     type: DataTypes.STRING
   })
-  declare avatar: string;
+  declare avatar: string | null;
 
   @Column({
     type: DataTypes.INTEGER
   })
-  declare createdAt: number;
+  declare createdAt: number
 
   @Column({
     type: DataTypes.INTEGER
   })
-  declare joinedAt: number;
+  declare joinedAt: number
 
   @Column({
     type: DataTypes.JSON
@@ -58,13 +44,13 @@ export class User extends Model<UserAttributes, UserCreationAttributes> {
     type: DataTypes.INTEGER,
     defaultValue: 0
   })
-  declare coins: number;
+  declare coins: CreationOptional<number>;
 
   @Column({
     type: DataTypes.INTEGER,
     defaultValue: 0
   })
-  declare messages: number
+  declare messages: CreationOptional<number>
 
   get mention(): string {
     return userMention(this.id);
