@@ -1,5 +1,5 @@
 import { userMention } from 'discord.js';
-import { DataTypes, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
+import { DataTypes, InferAttributes, InferCreationAttributes, CreationOptional, NonAttribute } from 'sequelize';
 import { Table, Model, Column } from 'sequelize-typescript';
 
 @Table
@@ -52,7 +52,7 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
   })
   declare messages: CreationOptional<number>
 
-  get mention(): string {
+  get mention(): NonAttribute<string> {
     return userMention(this.id);
   }
 
