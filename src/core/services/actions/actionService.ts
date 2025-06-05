@@ -45,6 +45,6 @@ export default class ActionService extends Service{
     const actionInstance = this.actions.get(script.id);
     if (!actionInstance) return script.logger.warn(`No action found for ID: ${script.id}`);
 
-    actionInstance.trigger(script, context, variables);
+    await actionInstance.trigger(script, context, variables);
   }
 }

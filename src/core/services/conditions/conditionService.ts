@@ -69,7 +69,9 @@ export default class ConditionService extends Service {
     }
 
     if (!isMet) {
-      conditionData.notMetActions.forEach(subAction => subAction.run(context, variables));
+      for (const subAction of conditionData.notMetActions) {
+        await subAction.run(context, variables);
+      }
     }
 
     return isMet;
