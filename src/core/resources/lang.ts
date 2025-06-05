@@ -19,6 +19,38 @@ class Interaction {
   'channel-restricted': MessageValidator
 }
 
+class Meta {
+  @IsDefined()
+  @ValidateNested()
+  @Type(() => MessageValidator)
+  'scope-required': MessageValidator
+
+  @IsDefined()
+  @ValidateNested()
+  @Type(() => MessageValidator)
+  'set': MessageValidator
+
+  @IsDefined()
+  @ValidateNested()
+  @Type(() => MessageValidator)
+  'add': MessageValidator
+
+  @IsDefined()
+  @ValidateNested()
+  @Type(() => MessageValidator)
+  'subtract': MessageValidator
+
+  @IsDefined()
+  @ValidateNested()
+  @Type(() => MessageValidator)
+  'switch': MessageValidator
+
+  @IsDefined()
+  @ValidateNested()
+  @Type(() => MessageValidator)
+  'remove': MessageValidator
+}
+
 class Addon {
   @IsDefined()
   @ValidateNested()
@@ -144,4 +176,9 @@ export default class DefaultConfig {
   @ValidateNested()
   @Type(() => Engine)
   engine: Engine
+
+  @IsDefined()
+  @ValidateNested()
+  @Type(() => Meta)
+  meta: Meta
 }

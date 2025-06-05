@@ -22,4 +22,9 @@ export default class DefaultConfig {
   @ValidateNested()
   @Type(() => CommandValidator)
   leaderboard: CommandValidator
+
+  @IsDefined()
+  @ValidateNested()
+  @Type(() => CommandValidator)
+  meta: CommandValidator
 }

@@ -178,3 +178,24 @@ engine:
   missing-context:
     content: "The script %script% is missing the `%missing%` context."
     ephemeral: true
+
+meta:
+  scope-required:
+    content: "The scope is required for this action."
+    ephemeral: true
+  set:
+    content: "The meta data `%meta_key%` has been set to `%meta_value%`."
+    ephemeral: true
+  remove:
+    content: "The meta data `%meta_key%` has been removed."
+    ephemeral: true
+  add:
+    content: "The meta data `%meta_key%` has been added with the value `%meta_value%`."
+    ephemeral: true
+  subtract:
+    content: "The meta data `%meta_key%` has been subtracted with the value `%meta_value%`."
+    ephemeral: true
+  switch:
+    content: "The meta data `%meta_key%` has been set to `%meta_value%`."
+    ephemeral: true
+  
