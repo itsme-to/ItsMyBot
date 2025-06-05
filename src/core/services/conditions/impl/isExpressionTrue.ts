@@ -15,7 +15,7 @@ export default class IsExpressionTrueCondition extends Condition {
       if (result === null) return condition.logError("Expression did not evaluate to a boolean");
       return result;
     } catch (error) {
-      return condition.logError("Error evaluating expression: " + error);
+      return false
     }
   }
 }
