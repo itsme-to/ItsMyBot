@@ -147,7 +147,7 @@ export default class Utils {
     return customEmoji.test(emoji) || discordEmoji.test(emoji) || unicodeEmoji.test(emoji);
   }
 
-  static evaluateBoolean(expression: string) {
+  static evaluateBoolean(expression: string): boolean | null {
     const parsedExpression = Parser.parse(expression);
     const result = parsedExpression.evaluate();
 
