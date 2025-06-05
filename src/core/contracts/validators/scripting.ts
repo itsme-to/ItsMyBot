@@ -1,18 +1,12 @@
 
 import { Type } from 'class-transformer';
-import { IsString, IsInt, ValidateNested, IsOptional, ValidateIf, IsDefined, Max, Min, IsPositive, IsArray, IsBoolean, IsNumber } from 'class-validator';
+import { IsString, IsInt, IsIn, ValidateNested, IsOptional, ValidateIf, IsDefined, Max, Min, IsPositive, IsArray, IsBoolean, IsNumber } from 'class-validator';
 import { MessageValidator } from '@itsmybot';
 
 class ConditionArgumentValidator {
   @IsOptional()
   @IsBoolean()
   inverse: boolean
-
-  @IsOptional()
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => ActionValidator)
-  'not-met-actions': ActionValidator[]
 
   @IsOptional()
   @IsString({ each: true })
@@ -51,6 +45,12 @@ export class ConditionValidator {
   @ValidateNested()
   @Type(() => ConditionArgumentValidator)
   args: ConditionArgumentValidator
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ActionValidator)
+  'not-met-actions': ActionValidator[]
 }
 
 export class MutatorValidator {
@@ -94,6 +94,20 @@ class ActionArgumentValidator extends MessageValidator {
   @IsInt()
   @IsPositive()
   every: number
+
+  @IsOptional()
+  @IsString()
+  key: string
+
+  @IsOptional()
+  @IsString()
+  @IsIn(['user', 'global', 'channel'])
+  mode: 'user' | 'global' | 'channel'
+
+  @IsOptional()
+  @IsString()
+  @IsIn(['string', 'number', 'boolean'])
+  type: 'string' | 'number' | 'boolean'
 
   @IsOptional()
   @IsInt()

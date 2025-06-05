@@ -29,7 +29,7 @@ export class ConditionData {
     this.manager = manager;
     this.logger = new Logger(`Condition/${this.id}`);
     this.args = this.config.getSubsection("args");
-    this.notMetActions = notMetAction && condition.has("args.not-met-actions") ? condition.getSubsections("args.not-met-actions").map((actionData: Config) => new ActionData(this.manager, actionData, condition.logger)) : [];
+    this.notMetActions = notMetAction && condition.has("not-met-actions") ? condition.getSubsections("not-met-actions").map((actionData: Config) => new ActionData(this.manager, actionData, condition.logger)) : [];
   }
 
   public logError(message: string) {
