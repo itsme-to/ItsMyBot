@@ -216,8 +216,8 @@ export class Pagination {
       });
     }
 
-    if (!context.list) context.list = new Map();
-    context.list.set('pagination-items', list);
+    if (!context.data) context.data = new Map();
+    context.data.set('pagination-items', list);
 
     const listFilters = [];
 
@@ -238,7 +238,7 @@ export class Pagination {
           variables: variables
         });
       }
-      context.list.set('pagination-filters', listFilters);
+      context.data.set('pagination-filters', listFilters);
     }
 
     return context;

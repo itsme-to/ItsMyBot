@@ -37,12 +37,12 @@ export async function setupComponent<T extends SetupComponentType = SetupCompone
       return [await Utils.setupTextDisplay({ config, variables, context }) as T];
     }
 
-    case 'list': {
+    case 'repeat': {
       const dataSource = config.getString('data-source', true);
       const template = config.getSubsections('template');
-      const data = context.list?.get(dataSource);
+      const data = context.data?.get(dataSource);
       if (!data) {
-        config.logger.warn(`List data source "${dataSource}" not found.`);
+        config.logger.warn(`Repeat data source "${dataSource}" not found.`);
         return
       }
       const components: T[] = [];

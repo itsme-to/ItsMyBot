@@ -10,14 +10,14 @@ function ActionRowComponentType() {
       subTypes: [
         { value: ButtonValidator, name: 'button' },
         { value: SelectMenuValidator, name: 'select-menu' },
-        { value: ListActionRowValidator, name: 'list' },
+        { value: RepeatActionRowValidator, name: 'repeat' },
       ],
     },
     keepDiscriminatorProperty: true
   });
 }
 
-export type TopMessageComponentValidator = ButtonValidator | SelectMenuValidator | ListActionRowValidator | SeparatorValidator | SectionValidator | MediaGalleryValidator | FileValidator | ContainerValidator | TextDisplayValidator | ActionRowValidator
+export type TopMessageComponentValidator = ButtonValidator | SelectMenuValidator | RepeatActionRowValidator | SeparatorValidator | SectionValidator | MediaGalleryValidator | FileValidator | ContainerValidator | TextDisplayValidator | ActionRowValidator
 export function TypeTopMessageComponentValidator(){
   return Type(() => ComponentValidator, {
     discriminator: {
@@ -30,7 +30,7 @@ export function TypeTopMessageComponentValidator(){
         { value: MediaGalleryValidator, name: 'media-gallery' },
         { value: FileValidator, name: 'file' },
         { value: ContainerValidator, name: 'container' },
-        { value: ListComponentValidator, name: 'list' }
+        { value: RepeatComponentValidator, name: 'repeat' }
       ],
     },
     keepDiscriminatorProperty: true
@@ -48,8 +48,8 @@ class WithCondition {
 export abstract class ComponentValidator extends WithCondition {
   @IsDefined()
   @IsString()
-  @IsIn(['button', 'select-menu', 'text-display', 'action-row', 'separator', 'section', 'media-gallery', 'file', 'container', 'list', 'thumbnail'])
-  type: 'button' | 'select-menu' | 'text-display' | 'action-row' | 'separator' | 'section' | 'media-gallery' | 'file' | 'container' | 'list' | 'thumbnail'
+  @IsIn(['button', 'select-menu', 'text-display', 'action-row', 'separator', 'section', 'media-gallery', 'file', 'container', 'repeat', 'thumbnail'])
+  type: 'button' | 'select-menu' | 'text-display' | 'action-row' | 'separator' | 'section' | 'media-gallery' | 'file' | 'container' | 'repeat' | 'thumbnail'
 }
 
 export class ButtonValidator extends ComponentValidator {
@@ -163,7 +163,7 @@ class ThumbnailValidator extends ComponentValidator {
   spoiler: boolean
 }
 
-class ListActionRowValidator extends ComponentValidator {
+class RepeatActionRowValidator extends ComponentValidator {
   @IsDefined()
   @IsString()
   'data-source': string
@@ -189,7 +189,7 @@ class ActionRowValidator extends ComponentValidator {
   @ValidateNested({ each: true })
   @IsArray()
   @ActionRowComponentType()
-  components: (ButtonValidator | ListActionRowValidator)[] | SelectMenuValidator[]
+  components: (ButtonValidator | RepeatActionRowValidator)[] | SelectMenuValidator[]
 }
 
 class MediaGalleryItemValidator extends WithCondition {
@@ -224,7 +224,7 @@ class FileValidator extends ComponentValidator {
   spoiler: boolean
 }
 
-class ListSectionValidator extends ComponentValidator {
+class RepeatSectionValidator extends ComponentValidator {
   @IsDefined()
   @IsString()
   'data-source': string
@@ -245,12 +245,12 @@ class SectionValidator extends ComponentValidator {
       property: 'type',
       subTypes: [
         { value: TextDisplayValidator, name: 'text-display' },
-        { value: ListSectionValidator, name: 'list' }
+        { value: RepeatSectionValidator, name: 'repeat' }
       ],
     },
     keepDiscriminatorProperty: true
   })
-  components: (TextDisplayValidator | ListSectionValidator)[]
+  components: (TextDisplayValidator | RepeatSectionValidator)[]
 
   @IsDefined()
   @ValidateNested()
@@ -267,7 +267,7 @@ class SectionValidator extends ComponentValidator {
   accessory: ThumbnailValidator | ButtonValidator
 }
 
-class ListContainerValidator extends ComponentValidator {
+class RepeatContainerValidator extends ComponentValidator {
   @IsDefined()
   @IsString()
   'data-source': string
@@ -314,16 +314,16 @@ class ContainerValidator extends ComponentValidator {
         { value: SectionValidator, name: 'section' },
         { value: MediaGalleryValidator, name: 'media-gallery' },
         { value: FileValidator, name: 'file' },
-        { value: ListContainerValidator, name: 'list' }
+        { value: RepeatContainerValidator, name: 'repeat' }
       ],
     },
     keepDiscriminatorProperty: true
   })
-  components: (ListContainerValidator | SeparatorValidator | ActionRowValidator | TextDisplayValidator | SectionValidator | MediaGalleryValidator | FileValidator)[]
+  components: (RepeatContainerValidator | SeparatorValidator | ActionRowValidator | TextDisplayValidator | SectionValidator | MediaGalleryValidator | FileValidator)[]
 }
 
 
-class ListComponentValidator extends ComponentValidator {
+class RepeatComponentValidator extends ComponentValidator {
   @IsDefined()
   @IsString()
   'data-source': string
@@ -354,33 +354,33 @@ class ActionRowsValidator {
   @ValidateNested({ each: true })
   @IsArray()
   @ActionRowComponentType()
-  1: SelectMenuValidator[] | (ButtonValidator | ListActionRowValidator)[]
+  1: SelectMenuValidator[] | (ButtonValidator | RepeatActionRowValidator)[]
 
   @IsOptional()
   @ValidateNested({ each: true })
   @IsArray()
   @ActionRowComponentType()
-  2: SelectMenuValidator[] | (ButtonValidator | ListActionRowValidator)[]
+  2: SelectMenuValidator[] | (ButtonValidator | RepeatActionRowValidator)[]
 
   @IsOptional()
   @ValidateNested({ each: true })
   @IsArray()
   @ActionRowComponentType()
-  3: SelectMenuValidator[] | (ButtonValidator | ListActionRowValidator)[]
-
-
-  @IsOptional()
-  @ValidateNested({ each: true })
-  @IsArray()
-  @ActionRowComponentType()
-  4: SelectMenuValidator[] | (ButtonValidator | ListActionRowValidator)[]
+  3: SelectMenuValidator[] | (ButtonValidator | RepeatActionRowValidator)[]
 
 
   @IsOptional()
   @ValidateNested({ each: true })
   @IsArray()
   @ActionRowComponentType()
-  5: SelectMenuValidator[] | (ButtonValidator | ListActionRowValidator)[]
+  4: SelectMenuValidator[] | (ButtonValidator | RepeatActionRowValidator)[]
+
+
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @IsArray()
+  @ActionRowComponentType()
+  5: SelectMenuValidator[] | (ButtonValidator | RepeatActionRowValidator)[]
 }
 
 class MessageEmbedFieldValidator extends WithCondition {

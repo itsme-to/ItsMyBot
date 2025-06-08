@@ -18,7 +18,7 @@ export async function setupSelectMenu(settings: SelectMenuSettings) {
   const customId = config.getString("custom-id");
   const disabled = config.getBoolOrNull("disabled") || false;
 
-  const placeholder = config.getStringOrNull("placeholder");
+  const placeholder = config.getStringOrNull("placeholder", true);
   const minSelect = config.getNumberOrNull("min-values") || 0;
   const maxSelect = config.getNumberOrNull("max-values") || 1;
   const options = config.getSubsectionsOrNull("options");
@@ -35,9 +35,9 @@ export async function setupSelectMenu(settings: SelectMenuSettings) {
   if (placeholderValue) selectMenu.setPlaceholder(placeholderValue);
 
   if (dataSource && template) {
-    const data = context.list?.get(dataSource);
+    const data = context.data?.get(dataSource);
     if (!data) {
-      config.logger.warn(`List data source "${dataSource}" not found.`);
+      config.logger.warn(`Repeat data source "${dataSource}" not found.`);
       return
     }
     for (const item of data) {

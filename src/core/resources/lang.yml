@@ -98,7 +98,7 @@ leaderboard:
       content: "### 🏆︎ Leaderboard - %leaderboard_name%"
     - type: container
       components:
-        - type: list
+        - type: repeat
           data-source: "pagination-items"
           template:
             - type: text-display
