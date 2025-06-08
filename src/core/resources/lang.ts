@@ -2,23 +2,6 @@ import { Type } from 'class-transformer';
 import { IsString, ValidateNested, IsDefined } from 'class-validator';
 import { MessageValidator, TopMessageComponentValidator, TypeTopMessageComponentValidator } from '@itsmybot';
 
-class Interaction {
-  @IsDefined()
-  @ValidateNested()
-  @Type(() => MessageValidator)
-  'in-cooldown': MessageValidator
-
-  @IsDefined()
-  @ValidateNested()
-  @Type(() => MessageValidator)
-  'no-permission': MessageValidator
-
-  @IsDefined()
-  @ValidateNested()
-  @Type(() => MessageValidator)
-  'channel-restricted': MessageValidator
-}
-
 class Meta {
   @IsDefined()
   @ValidateNested()
@@ -141,11 +124,6 @@ export default class DefaultConfig {
   @ValidateNested()
   @Type(() => Pagination)
   pagination: Pagination
-
-  @IsDefined()
-  @ValidateNested()
-  @Type(() => Interaction)
-  interaction: Interaction
 
   @IsDefined()
   @ValidateNested()

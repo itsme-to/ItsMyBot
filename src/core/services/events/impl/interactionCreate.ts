@@ -101,7 +101,7 @@ export default class InteractionCreateEvent extends Event {
 
     if (component.data.cooldown.isOnCooldown(interaction.user.id)) {
       await interaction.reply(await Utils.setupMessage({
-        config: this.manager.configs.lang.getSubsection("interaction.in-cooldown"),
+        config: this.manager.configs.lang.getSubsection("in-cooldown"),
         variables: [
           { searchFor: "%cooldown%", replaceWith: component.data.cooldown.endsAtFormatted(interaction.user.id) },
         ],
@@ -114,7 +114,7 @@ export default class InteractionCreateEvent extends Event {
 
     if (!isMet) {
       await interaction.reply(await Utils.setupMessage({
-        config: this.manager.configs.lang.getSubsection("interaction.no-permission"),
+        config: this.manager.configs.lang.getSubsection("no-permission"),
         context
       }));
       return false;
