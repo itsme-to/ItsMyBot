@@ -34,10 +34,9 @@ export async function setupEmbed(settings: EmbedSettings) {
   const thumbnail = config.getStringOrNull("thumbnail", true);
   const image = config.getStringOrNull("image", true);
   const timestamp = config.getBoolOrNull("timestamp");
-  const color = config.getStringOrNull("color", true) || manager.configs.config.getString("default-color");
+  const color = config.getStringOrNull("color", true);
 
   description = await Utils.applyVariables(description, variables, context);
-  if (description) description = Utils.removeHiddenLines(description);
 
   const embed = new EmbedBuilder()
     .setTitle(await Utils.applyVariables(title, variables, context) || null)
@@ -68,7 +67,7 @@ export async function setupEmbed(settings: EmbedSettings) {
 
       embed.addFields({
         name: await Utils.applyVariables(field.getString("name", true), variables, context),
-        value: Utils.removeHiddenLines(await Utils.applyVariables(field.getString("value", true), variables, context)),
+        value: await Utils.applyVariables(field.getString("value", true), variables, context),
         inline: field.getBoolOrNull("inline") || false,
       });
     }

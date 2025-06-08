@@ -1,6 +1,6 @@
 {
   "name": "itsmybot",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "description": "",
   "main": "build/core/index.js",
   "scripts": {
@@ -37,8 +37,7 @@
     "chalk": "^5.4.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
-    "discord-html-transcripts": "^3.2.0",
-    "discord.js": "^14.18.0",
+    "discord.js": "^14.19.3",
     "expr-eval": "^2.0.2",
     "glob": "^11.0.1",
     "mariadb": "^3.4.0",

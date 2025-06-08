@@ -1,5 +1,5 @@
-import { ActionRowBuilder, MessageFlags } from 'discord.js';
-import { Config, Context, Variable, MessageOutput } from '@itsmybot';
+import { ActionRowBuilder, MessageFlags, MessageActionRowComponentBuilder } from 'discord.js';
+import { Config, Context, Variable, MessageOutput, TopLevelComponentBuilder } from '@itsmybot';
 import Utils from '@utils';
 
 interface MessageSettings {
@@ -21,22 +21,65 @@ export async function setupMessage(settings: MessageSettings): Promise<MessageOu
     files: [],
     allowedMentions: settings.allowedMentions || undefined,
     poll: undefined,
-    flags: []
   };
 
+  const flags = []
+  const config = settings.config;
   const variables = settings.variables || [];
   const context = settings.context;
 
-  let content = settings.config.getStringOrNull("content", true)
+  const ephemeral = config.getBoolOrNull("ephemeral") || settings.ephemeral || false;
+  if (ephemeral) {
+    flags.push(MessageFlags.Ephemeral);
+  }
+  
+  const disableMentions = config.getBoolOrNull("disable-mentions") || settings.disableMentions || false;
+  if (disableMentions) message.allowedMentions = { parse: [] }
+
+  if (flags) {
+    message.flags = flags.reduce((acc: number, flag: number) => acc | flag, 0);
+  }
+
+  const files = config.getStringsOrNull("files") || [];
+  for (const file of files) {
+    message.files.push(await Utils.applyVariables(file, variables, context));
+  }
+
+  if (settings.files && settings.files[0]) message.files.push(...settings.files);
+
+  const componentsConfig = config.getSubsectionsOrNull("components");
+  const components = []
+  if (componentsConfig?.length) {
+    for (const componentConfig of componentsConfig) {
+      const component = await Utils.setupComponent<TopLevelComponentBuilder>({
+        config: componentConfig,
+        variables: variables,
+        context: context,
+      });
+      if (component?.length) components.push(...component);
+    }
+
+
+    if (settings.components && settings.components[0]) components.push(...settings.components);
+
+    if (components.length) {
+      message.components.push(...components);
+      message.flags |= MessageFlags.IsComponentsV2;
+
+      return message;
+    }
+  }
+
+  let content = config.getStringOrNull("content", true)
   if (content) {
     content = await Utils.applyVariables(content, variables, context);
 
     if (content.length > 2000) content = content.substring(0, 1997) + "...";
 
-    message.content = Utils.removeHiddenLines(content);
+    message.content = content;
   }
 
-  const embeds = settings.config.getSubsectionsOrNull("embeds") || [];
+  const embeds = config.getSubsectionsOrNull("embeds") || [];
   if (embeds && embeds[0]) {
     for (const embedConfig of embeds) {
       const embed = await Utils.setupEmbed({
@@ -48,14 +91,9 @@ export async function setupMessage(settings: MessageSettings): Promise<MessageOu
     }
   }
 
-  const ephemeral = settings.config.getBoolOrNull("ephemeral") || settings.ephemeral || false;
-  if (ephemeral) {
-    message.flags.push(MessageFlags.Ephemeral);
-  }
-
-  const components = [];
+  const actionRows = [];
   const rows = Array.from({ length: 5 }, () => new ActionRowBuilder());
-  const configComponents = settings.config.getSubsectionOrNull("components")?.values || [];
+  const configComponents = config.getSubsectionOrNull("action-rows")?.values || [];
 
   for (const [i, values] of configComponents) {
     const row = rows[(parseInt(i) - 1)];
@@ -63,29 +101,19 @@ export async function setupMessage(settings: MessageSettings): Promise<MessageOu
     if (!row || !Array.isArray(values) || !values.length) continue;
 
     for (const component of values) {
-      const buildComponent = await Utils.setupComponent({
+      const buildComponent = await Utils.setupComponent<MessageActionRowComponentBuilder>({
         config: component,
         variables: variables,
         context: context,
       });
-      if (buildComponent) row.addComponents(buildComponent);
+      if (buildComponent?.length) row.addComponents(buildComponent);
     }
   }
 
   const validRows = rows.filter(row => row.components.length && row.components.length <= 5);
-  if (validRows.length) components.push(...validRows);
-  if (settings.components && settings.components[0]) components.push(...settings.components);
-
-  if (components.length) message.components = components;
-
-  const files = settings.config.getStringsOrNull("files") || [];
-  for (const file of files) {
-    message.files.push(await Utils.applyVariables(file, variables, context));
-  }
-  if (settings.files && settings.files[0]) message.files.push(...settings.files);
-
-  const disableMentions = settings.config.getBoolOrNull("disable-mentions") || settings.disableMentions || false;
-  if (disableMentions) message.allowedMentions = { parse: [] }
+  if (validRows.length) actionRows.push(...validRows);
+  if (settings.components && settings.components[0]) actionRows.push(...settings.components);
+  if (actionRows.length) message.components = actionRows;
 
   return message;
 };

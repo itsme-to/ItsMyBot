@@ -1,29 +1,40 @@
 import { Type } from 'class-transformer';
 import { IsString, ValidateNested, IsDefined } from 'class-validator';
-import { MessageValidator, ButtonValidator } from '@itsmybot';
+import { MessageValidator, TopMessageComponentValidator, TypeTopMessageComponentValidator } from '@itsmybot';
 
-class Interaction {
+class Meta {
   @IsDefined()
   @ValidateNested()
   @Type(() => MessageValidator)
-  'in-cooldown': MessageValidator
-
-  @IsDefined()
-  @ValidateNested()
-  @Type(() => MessageValidator)
-  'no-permission': MessageValidator
+  'scope-required': MessageValidator
 
   @IsDefined()
   @ValidateNested()
   @Type(() => MessageValidator)
-  'channel-restricted': MessageValidator
+  'set': MessageValidator
+
+  @IsDefined()
+  @ValidateNested()
+  @Type(() => MessageValidator)
+  'add': MessageValidator
+
+  @IsDefined()
+  @ValidateNested()
+  @Type(() => MessageValidator)
+  'subtract': MessageValidator
+
+  @IsDefined()
+  @ValidateNested()
+  @Type(() => MessageValidator)
+  'switch': MessageValidator
+
+  @IsDefined()
+  @ValidateNested()
+  @Type(() => MessageValidator)
+  'remove': MessageValidator
 }
 
 class Addon {
-  @IsDefined()
-  @IsString()
-  information: string
-
   @IsDefined()
   @ValidateNested()
   @Type(() => MessageValidator)
@@ -62,10 +73,6 @@ class Pagination {
 
   @IsDefined()
   @IsString()
-  'filters-placeholder': string
-
-  @IsDefined()
-  @IsString()
   placeholder: string
 
   @IsDefined()
@@ -74,14 +81,9 @@ class Pagination {
   'no-data': MessageValidator
 
   @IsDefined()
-  @ValidateNested()
-  @Type(() => ButtonValidator)
-  'button-next': ButtonValidator
-
-  @IsDefined()
-  @ValidateNested()
-  @Type(() => ButtonValidator)
-  'button-previous': ButtonValidator
+  @ValidateNested({ each: true })
+  @TypeTopMessageComponentValidator()
+  components: TopMessageComponentValidator[]
 }
 
 class Leaderboard extends MessageValidator {
@@ -125,11 +127,6 @@ export default class DefaultConfig {
 
   @IsDefined()
   @ValidateNested()
-  @Type(() => Interaction)
-  interaction: Interaction
-
-  @IsDefined()
-  @ValidateNested()
   @Type(() => Addon)
   addon: Addon
 
@@ -157,4 +154,9 @@ export default class DefaultConfig {
   @ValidateNested()
   @Type(() => Engine)
   engine: Engine
+
+  @IsDefined()
+  @ValidateNested()
+  @Type(() => Meta)
+  meta: Meta
 }

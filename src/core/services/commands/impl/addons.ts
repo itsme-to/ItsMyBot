@@ -1,7 +1,7 @@
-import { hyperlink, hideLinkEmbed, AutocompleteInteraction } from 'discord.js';
+import { AutocompleteInteraction } from 'discord.js';
 import Utils, { Pagination } from '@utils';
 import { CommandBuilder } from '@builders';
-import { Command, Addon, User, CommandInteraction } from '@itsmybot';
+import { Command, User, CommandInteraction } from '@itsmybot';
 import AddonModel from '../../addons/addon.model.js';
 
 export default class AddonCommand extends Command {
@@ -61,33 +61,29 @@ export default class AddonCommand extends Command {
   }
 
   async list(interaction: CommandInteraction, user: User) {
-    const lang = this.manager.configs.lang;
-    const addonInfo = lang.getString("addon.information");
-
-    async function getAddonDetails(addon: Addon) {
+    const addons = []
+    for (const [_, addon] of this.manager.services.addon.addons) {
       const status = addon.enabled ? '✅' : '❌';
+      const variables = [
+        { searchFor: "%addon_status%", replaceWith: status },
+        { searchFor: "%addon_name%", replaceWith: addon.name },
+        { searchFor: "%addon_version%", replaceWith: addon.version },
+        { searchFor: "%addon_description%", replaceWith: addon.description },
+        { searchFor: "%addon_authors%", replaceWith: addon.authors.join(', ') },
+        { searchFor: "%addon_website%", replaceWith: addon.website || '' },
+        { searchFor: "%addon_has_description%", replaceWith: addon.description ? true : false },
+        { searchFor: "%addon_has_website%", replaceWith: addon.website ? true : false }
+      ];
 
-      const info = await Utils.applyVariables(addonInfo, [
-        { searchFor: "%status%", replaceWith: status },
-        { searchFor: "%name%", replaceWith: addon.name },
-        { searchFor: "%version%", replaceWith: addon.version },
-        { searchFor: "%description%", replaceWith: addon.description },
-        { searchFor: "%authors%", replaceWith: addon.authors.join(', ') },
-        { searchFor: "%website%", replaceWith: hyperlink("Website", hideLinkEmbed(addon.website || '')) },
-        { searchFor: "%has_description%", replaceWith: addon.description ? true : false },
-        { searchFor: "%has_website%", replaceWith: addon.website ? true : false }
-      ]);
-
-      return {
+      addons.push({
         label: addon.name,
         emoji: status,
-        message: Utils.removeHiddenLines(info)
-      };
-    };
+        variables: variables,
+        description: addon.description,
+      });
+    }
 
-    const addons = await Promise.all(this.manager.services.addon.addons.map(getAddonDetails));
-
-    new Pagination(interaction, addons, lang.getSubsection("addon.list"))
+    new Pagination(interaction, addons, this.manager.configs.lang.getSubsection("addon.list"))
       .setContext({
         user: user,
         guild: interaction.guild || undefined,

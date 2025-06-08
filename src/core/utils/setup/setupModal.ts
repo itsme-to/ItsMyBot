@@ -48,12 +48,19 @@ export async function setupModal(settings: ModalSettings) {
         new TextInputBuilder()
           .setCustomId(cCustomId)
           .setLabel(cLabel)
-          .setPlaceholder(cPlaceholder || "")
           .setRequired(cRequired)
           .setMaxLength(parseInt(cMaxLength) || 1000)
-          .setValue(cValue || "")
           .setStyle((cStyle ? Utils.getTextInputStyle(cStyle) || TextInputStyle.Short : TextInputStyle.Short))
       );
+
+    if (cPlaceholder && cPlaceholder !== 'undefined') {
+      row.components[0].setPlaceholder(cPlaceholder);
+    }
+
+    if (cValue && cValue !== 'undefined') {
+      row.components[0].setValue(cValue);
+    }
+
     modal.addComponents(row);
   }
 

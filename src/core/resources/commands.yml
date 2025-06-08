@@ -26,3 +26,24 @@ parse:
 
 leaderboard:
   description: "Show the leaderboard."
+
+meta:
+  permission: "ADMINISTRATOR"
+  description: "Manage meta data."
+  subcommands:
+    set:
+      description: "Set a meta data."
+    remove:
+      description: "Delete a meta data."
+    add:
+      description: "Add a meta data."
+    subtract:
+      description: "Subtract a value from a meta data."
+    switch:
+      description: "Set a boolean meta data."
+  options:
+    key: "The key of the meta data."
+    value: "The value of the meta data."
+    mode: "The mode of the meta data."
+    type: "The type of the meta data."
+    scope: "The id of the channel or user to set the meta data for"

@@ -1,8 +1,9 @@
 import { Collection, ApplicationCommandOptionType, ChannelType } from 'discord.js';
 import Utils from '@utils';
 
-import { Manager, Script, CustomCommand, Command, User, BaseConfigSection, BaseConfig, Config, Variable, CommandInteraction, Service } from '@itsmybot';
+import { Script, CustomCommand, Command, User, BaseConfigSection, BaseConfig, Config, Variable, CommandInteraction, Service } from '@itsmybot';
 import { Logger } from '@utils';
+import MetaHandler from './meta/metaHandler.js';
 
 import ScriptConfig from '../../resources/engine/script.js';
 import CustomCommandConfig from '../../resources/engine/customCommand.js';
@@ -13,22 +14,15 @@ import EngineEventEmitter from './eventEmitter.js';
  * Service that manages all the scripts and custom commands.
  */
 export default class EngineService extends Service {
-  scriptDir: string
   scripts: Collection<string, Script> = new Collection();
-
-  customCommandDir: string
   customCommands: Collection<string, CustomCommand> = new Collection();
-  
-  event = new EngineEventEmitter()
 
-  constructor(manager: Manager) {
-    super(manager);
-    this.scriptDir = manager.managerOptions.dir.scripts;
-    this.customCommandDir = manager.managerOptions.dir.customCommands;
-  }
+  event = new EngineEventEmitter()
+  metaHandler: MetaHandler = new MetaHandler(this.manager);
 
   async initialize() {
     await this.loadScripts();
+    await this.metaHandler.initialize();
     this.manager.logger.info('Script engine initialized.');
   }
 

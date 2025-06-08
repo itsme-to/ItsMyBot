@@ -8,7 +8,7 @@ export default class MessageCreateEvent extends Event {
     if (!message.guild || message.guild.id !== this.manager.primaryGuildId) return;
     const user = message.member ? await this.manager.services.user.findOrCreate(message.member) : await this.manager.services.user.findOrNull(message.author.id);
 
-    if (!user) return
+    if (!user) return;
 
     const context: Context = {
       message: message,

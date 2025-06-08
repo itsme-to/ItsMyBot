@@ -1,16 +1,8 @@
-import { DataTypes, Optional } from 'sequelize';
+import { DataTypes, InferAttributes, InferCreationAttributes } from 'sequelize';
 import { Table, Model, Column } from 'sequelize-typescript';
 
-
-interface AddonAttributes {
-  name: string;
-  enabled: boolean;
-}
-
-interface AddonCreationAttributes extends Optional<AddonAttributes, 'name'> { }
-
 @Table
-export default class Addon extends Model<AddonAttributes, AddonCreationAttributes> {
+export default class Addon extends Model<InferAttributes<Addon>, InferCreationAttributes<Addon>> {
   @Column({
     type: DataTypes.STRING,
     primaryKey: true

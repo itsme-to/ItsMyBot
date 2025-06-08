@@ -30,17 +30,19 @@ export class ActionData extends BaseScript {
     const updatedContext = await this.applyMutators(context, variables)
 
     if (this.args.has("delay")) {
-      setTimeout(() => this.executeActions(updatedContext, variablesCopy), this.args.getNumber("delay") * 1000)
+      setTimeout(async () => await this.executeActions(updatedContext, variablesCopy), this.args.getNumber("delay") * 1000)
     } else {
-      this.executeActions(updatedContext, variablesCopy);
+      await this.executeActions(updatedContext, variablesCopy);
     }
   }
 
-  executeActions(context: Context, variables: Variable[]) {
-    if (!this.actions.length) {
-      this.manager.services.action.triggerAction(this, context, variables);
+  async executeActions(context: Context, variables: Variable[]) {
+    if (this.actions.length > 0) {
+      for (const subAction of this.actions) {
+        await subAction.run(context, variables);
+      }
     } else {
-      this.actions.forEach(subAction => subAction.run(context, variables));
+      await this.manager.services.action.triggerAction(this, context, variables);
     }
 
     this.lastExecutionTime = Date.now();

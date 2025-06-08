@@ -42,6 +42,7 @@ export async function setupButton(settings: ButtonSettings) {
     if (!Utils.isValidURL(url)) {
       button.setStyle(ButtonStyle.Danger);
       button.setLabel("Invalid URL");
+      button.setCustomId(`invalid-url--${Math.floor(Math.random() * 10000000)}`);
       button.setDisabled(true);
 
       return button;

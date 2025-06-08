@@ -1,6 +1,6 @@
 import Utils from '@utils';
-import { StringSelectMenuBuilder } from 'discord.js';
 import manager, { Config, Context, Variable } from '@itsmybot';
+import { ActionRowComponent, MessageComponentBuilder, ContainerComponentBuilder, ActionRowBuilder, MessageActionRowComponentBuilder, SeparatorBuilder, SectionBuilder, MediaGalleryBuilder, FileBuilder, MediaGalleryItemBuilder } from 'discord.js';
 
 interface ComponentSettings {
   config: Config,
@@ -8,16 +8,16 @@ interface ComponentSettings {
   context: Context,
 }
 
-export async function setupComponent(settings: ComponentSettings) {
+export type SetupComponentType = MessageComponentBuilder | ContainerComponentBuilder | ActionRowComponent | undefined;
+
+export async function setupComponent<T extends SetupComponentType = SetupComponentType>(settings: ComponentSettings): Promise<T[] | undefined> {
   const config = settings.config;
   const variables = settings.variables || [];
   const context = settings.context;
 
-  const type = config.getStringOrNull("type") || "button";
-  const customId = config.getStringOrNull("custom-id");
-  const disabled = config.getBoolOrNull("disabled") || false;
+  const type = config.getString('type');
 
-  const conditionConfig = config.getSubsectionsOrNull("conditions");
+  const conditionConfig = config.getSubsectionsOrNull('conditions');
   if (conditionConfig) {
     const conditions = manager.services.condition.buildConditions(conditionConfig, false);
     const isMet = await manager.services.condition.meetsConditions(conditions, context, variables);
@@ -25,55 +25,139 @@ export async function setupComponent(settings: ComponentSettings) {
   }
 
   switch (type) {
-    case "button": {
-      return Utils.setupButton({ config, variables, context });
+    case 'button': {
+      return [await Utils.setupButton({ config, variables, context }) as T];
+    }
+  
+    case 'select-menu': {
+      return [await Utils.setupSelectMenu({ config, variables, context }) as T];
     }
 
-    case "select-menu": {
-      const placeholder = config.getStringOrNull("placeholder");
-      const minSelect = config.getNumberOrNull("min-values") || 0;
-      const maxSelect = config.getNumberOrNull("max-values") || 1;
-      const options = config.getSubsectionsOrNull("options");
+    case 'text-display': {
+      return [await Utils.setupTextDisplay({ config, variables, context }) as T];
+    }
 
-      if (customId) {
-        const selectMenu = new StringSelectMenuBuilder()
-          .setCustomId(customId)
-          .setDisabled(disabled)
-          .setMaxValues(maxSelect)
-          .setMinValues(minSelect)
+    case 'repeat': {
+      const dataSource = config.getString('data-source', true);
+      const template = config.getSubsections('template');
+      const data = context.data?.get(dataSource);
+      if (!data) {
+        config.logger.warn(`Repeat data source "${dataSource}" not found.`);
+        return
+      }
+      const components: T[] = [];
+      for (const item of data) {
+        for (const componentConfig of template) {
+          const varbles = [...variables, ...item.variables]
+          const ctxt = { ...context, ...item.context }
+          const component = await Utils.setupComponent<T>({ config: componentConfig, variables: varbles, context: ctxt });
+          if (component) components.push(...component);
+        }
+      }
 
-        const placeholderValue = await Utils.applyVariables(placeholder, variables, context);
-        if (placeholderValue) selectMenu.setPlaceholder(placeholderValue);
+      if (!components.length) return 
+      return components
+    }
 
-        if (options && options[0]) {
-          for (const option of options) {
-            const label = option.getStringOrNull("label");
-            const value = option.getStringOrNull("value");
-            const emoji = option.getStringOrNull("emoji");
-            const defaultOption = option.getBoolOrNull("default") || false;
-            const description = option.getStringOrNull("description");
+    case 'separator': {
+      const separator = new SeparatorBuilder()
+        .setSpacing(config.getNumber('spacing'))
+        .setDivider(config.getBoolOrNull('divider') || true)
 
-            const conditionConfig = option.getSubsectionsOrNull("conditions");
-            if (conditionConfig) {
-              const conditions = manager.services.condition.buildConditions(conditionConfig, false);
-              const isMet = await manager.services.condition.meetsConditions(conditions, context, variables);
-              if (!isMet) continue;
-            }
+      return [separator as T]
+    }
 
-            const data = {
-              label: label ?? await Utils.applyVariables(label, variables, context),
-              value: value ?? await Utils.applyVariables(value, variables, context),
-              emoji: emoji ? await Utils.applyVariables(emoji, variables, context) : undefined,
-              description: description ? await Utils.applyVariables(description, variables, context) : undefined,
-              default: defaultOption
-            };
-
-            selectMenu.addOptions(data);
-          }
+    case 'section': {
+      const section = new SectionBuilder()
+      
+      for (const componentConfig of config.getSubsections('components')) {
+        const conditionConfig = componentConfig.getSubsectionsOrNull('conditions');
+        if (conditionConfig) {
+          const conditions = manager.services.condition.buildConditions(conditionConfig, false);
+          const isMet = await manager.services.condition.meetsConditions(conditions, context, variables);
+          if (!isMet) continue
         }
 
-        return selectMenu;
+        const textDisplay = await Utils.setupTextDisplay({ config: componentConfig, variables, context });
+        section.addTextDisplayComponents(textDisplay);
       }
+
+      if (!section.components.length) return
+
+      const accessory = config.getSubsection('accessory')
+      if (accessory.getString('type') === 'button') {
+        section.setButtonAccessory(await Utils.setupButton({ config: accessory, variables, context }))
+      } else {
+        section.setThumbnailAccessory(await Utils.setupThumbnail({ config: accessory, variables, context }))
+      }
+
+      return [section as T]
+    }
+
+    case 'thumbnail': {
+      return [await Utils.setupThumbnail({ config, variables, context }) as T]
+    }
+
+    case 'media-gallery': {
+      const mediaGallery = new MediaGalleryBuilder()
+      
+      for (const mediaconfig of config.getSubsections('items')) {
+        const mediaCondition = mediaconfig.getSubsectionsOrNull('conditions');
+        if (mediaCondition) {
+          const conditions = manager.services.condition.buildConditions(mediaCondition, false);
+          const isMet = await manager.services.condition.meetsConditions(conditions, context, variables);
+          if (!isMet) continue
+        }
+        
+        mediaGallery.addItems((await setupMediaGalleryItemBuilder({ config: mediaconfig, variables, context })))
+      }
+
+      if (!mediaGallery.items.length) return
+
+      return [mediaGallery as T]
+    }
+
+    case 'file': {
+      const file = new FileBuilder()
+        .setSpoiler(config.getBoolOrNull('spoiler') || false)
+        .setURL(await Utils.applyVariables(config.getString('url', true), variables, context))
+
+      return [file as T]
+    }
+
+    case 'action-row': {
+      const components = config.getSubsections('components');
+      const actionRow = new ActionRowBuilder();
+
+      for (const componentConfig of components) {
+        const component = await Utils.setupComponent<MessageActionRowComponentBuilder>({ config: componentConfig, variables, context });
+        if (component) actionRow.addComponents(component);
+      }
+
+      if (!actionRow.components.length) return
+
+      return [actionRow as T]
+    }
+
+    case 'container': {
+      return [await Utils.setupContainer({ config, variables, context }) as T];
     }
   }
+}
+
+
+async function setupMediaGalleryItemBuilder(settings: ComponentSettings)  {
+  const config = settings.config;
+  const variables = settings.variables || [];
+  const context = settings.context;
+
+  const description = await Utils.applyVariables(config.getStringOrNull('description', true), variables, context)
+
+  const item = new MediaGalleryItemBuilder()
+    .setSpoiler(config.getBoolOrNull('spoiler') || false)
+    .setURL(await Utils.applyVariables(config.getString('url', true), variables, context))
+
+  if (description) item.setDescription(description)
+
+  return item
 }

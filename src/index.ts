@@ -15,6 +15,7 @@ export { ActionData } from './core/services/actions/actionData.js';
 export { Addon } from './core/services/addons/addon.js';
 export { Expansion } from './core/services/expansions/expansion.js';
 export { User } from './core/services/users/user.model.js';
+export { Meta } from './core/services/engine/meta/meta.model.js';
 export { Event } from './core/services/events/event.js';
 export { Config } from './core/contracts/config/config.js'
 export { Command } from './core/services/commands/command.js';

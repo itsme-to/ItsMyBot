@@ -3,14 +3,16 @@ import { Addon, ActionData, Base, Context, Variable } from '@itsmybot';
 export abstract class Action<T extends Addon | undefined = undefined> extends Base<T>{
   abstract id: string;
 
-  public trigger(script: ActionData, context: Context, variables: Variable[]) {
+  public async trigger(script: ActionData, context: Context, variables: Variable[]) {
     const variablesCopy = [...variables];
-    this.onTrigger(script, context, variablesCopy);
+    await this.onTrigger(script, context, variablesCopy);
   }
 
-  public abstract onTrigger(script: ActionData, context: Context, variables: Variable[]): any | void;
+  public abstract onTrigger(script: ActionData, context: Context, variables: Variable[]): Promise<any>;
 
-  public triggerActions(script: ActionData, context: Context, variables: Variable[]) {
-    script.triggerActions.forEach(subAction => subAction.run(context, variables));
+  public async triggerActions(script: ActionData, context: Context, variables: Variable[]) {
+    for (const subAction of script.triggerActions) {
+      await subAction.run(context, variables);
+    }
   }
 }

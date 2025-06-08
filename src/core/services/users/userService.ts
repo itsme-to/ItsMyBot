@@ -33,10 +33,10 @@ export default class UserService extends Service {
     const userData = {
       id: member.id,
       username: member.user.username,
-      displayName: member.user.displayName,
+      displayName: member.user.displayName || member.user.globalName || member.user.username,
       avatar: member.displayAvatarURL(),
       createdAt: Math.round(member.user.createdTimestamp / 1000),
-      joinedAt: member.joinedTimestamp ? Math.round(member.joinedTimestamp / 1000) : undefined,
+      joinedAt: member.joinedTimestamp ? Math.round(member.joinedTimestamp / 1000) : new Date().getTime(),
       roles: member.roles.cache
         .filter(r => r.id != member.guild.roles.everyone.id)
         .map(r => r.id),
