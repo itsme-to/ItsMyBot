@@ -2,7 +2,7 @@
   "name": "itsmybot",
   "version": "3.3.0",
   "description": "",
-  "main": "build/core/index.js",
+  "main": "build/index.js",
   "scripts": {
     "make:plugin": "node ./build/core/tools/makePlugin.js",
     "build:clean": "rm -rf ./build",
