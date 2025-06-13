@@ -27,9 +27,6 @@ export default class UserService extends Service {
   }
 
   async findOrCreate(member: GuildMember): Promise<User> {
-    const user = await this.findOrNull(member.id);
-    if (user) return this.updateInfo(user, member);
-
     const userData = {
       id: member.id,
       username: member.user.username,
@@ -42,22 +39,6 @@ export default class UserService extends Service {
         .map(r => r.id),
     };
 
-    return User.create(userData);
-  }
-
-  async updateInfo(user: User, member: GuildMember) {
-    const userData = {
-      username: member.user.username,
-      displayName: member.user.displayName,
-      avatar: member.displayAvatarURL(),
-      joinedAt: member.joinedTimestamp ? Math.round(member.joinedTimestamp / 1000) : user.joinedAt,
-      roles: member.roles.cache
-        .filter(r => r.id != member.guild.roles.everyone.id)
-        .map(r => r.id),
-    };
-
-    await user.update(userData);
-    await user.save();
-    return user;
+    return User.upsert(userData, { returning: true }).then(([user]) => user);
   }
 }
