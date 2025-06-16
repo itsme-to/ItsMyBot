@@ -54,6 +54,9 @@ export const userVariables = (user: User, prefix = "user") => {
   }, {
     searchFor: `%${prefix}_messages%`,
     replaceWith: user.messages,
+  }, {
+    searchFor: `%${prefix}_coins%`,
+    replaceWith: user.coins,
   }]
 }
 
