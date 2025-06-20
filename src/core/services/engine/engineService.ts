@@ -1,12 +1,12 @@
 import { Collection, ApplicationCommandOptionType, ChannelType } from 'discord.js';
-import Utils from '@utils';
+import Utils, { Cooldown } from '@utils';
 
 import { Script, CustomCommand, Command, User, BaseConfigSection, BaseConfig, Config, Variable, CommandInteraction, Service } from '@itsmybot';
 import { Logger } from '@utils';
 import MetaHandler from './meta/metaHandler.js';
 
-import ScriptConfig from '../../resources/engine/script.js';
-import CustomCommandConfig from '../../resources/engine/customCommand.js';
+import ScriptConfig from '../../resources/scripting/script.js';
+import CustomCommandConfig from '../../resources/scripting/customCommand.js';
 import { CommandBuilder } from '@builders';
 import EngineEventEmitter from './eventEmitter.js';
 
@@ -16,8 +16,8 @@ import EngineEventEmitter from './eventEmitter.js';
 export default class EngineService extends Service {
   scripts: Collection<string, Script> = new Collection();
   customCommands: Collection<string, CustomCommand> = new Collection();
-
-  event = new EngineEventEmitter()
+  cooldowns: Collection<string, Cooldown> = new Collection();
+  event = new EngineEventEmitter();
   metaHandler: MetaHandler = new MetaHandler(this.manager);
 
   async initialize() {
@@ -27,14 +27,14 @@ export default class EngineService extends Service {
   }
 
   async loadScripts() {
-    const scripts = await new BaseConfigSection(ScriptConfig, this.manager.logger, 'scripts', 'build/core/resources/engine/scripts').initialize();
+    const scripts = await new BaseConfigSection(ScriptConfig, this.manager.logger, 'scripting/scripts', 'build/core/resources/scripting/scripts').initialize();
     for (const filePath of scripts) {
       this.registerScript(filePath[0], filePath[1], this.manager.logger);
     }
   }
 
   async loadCustomCommands() {
-    const customCommands = await new BaseConfigSection(CustomCommandConfig, this.manager.logger, 'custom-commands', 'build/core/resources/engine/custom-commands').initialize();
+    const customCommands = await new BaseConfigSection(CustomCommandConfig, this.manager.logger, 'scripting/custom-commands', 'build/core/resources/scripting/custom-commands').initialize();
 
     for (const filePath of customCommands) {
       this.registerCustomCommand(filePath[0], filePath[1]);
