@@ -1,6 +1,6 @@
 
 import { Type } from 'class-transformer';
-import { IsString, IsInt, IsIn, ValidateNested, IsOptional, ValidateIf, IsDefined, Max, Min, IsPositive, IsArray, IsBoolean, IsNumber } from 'class-validator';
+import { IsString, IsInt, ValidateNested, IsOptional, ValidateIf, IsDefined, Max, Min, IsPositive, IsArray, IsBoolean, IsNumber } from 'class-validator';
 import { MessageValidator } from '@itsmybot';
 
 class ConditionArgumentValidator {
@@ -24,6 +24,10 @@ class ConditionArgumentValidator {
   @IsOptional()
   @IsNumber()
   amount: number
+
+  @IsOptional()
+  @IsString()
+  key: string
 
   @IsOptional()
   @IsBoolean()
@@ -98,16 +102,6 @@ class ActionArgumentValidator extends MessageValidator {
   @IsOptional()
   @IsString()
   key: string
-
-  @IsOptional()
-  @IsString()
-  @IsIn(['user', 'global', 'channel'])
-  mode: 'user' | 'global' | 'channel'
-
-  @IsOptional()
-  @IsString()
-  @IsIn(['string', 'number', 'boolean'])
-  type: 'string' | 'number' | 'boolean'
 
   @IsOptional()
   @IsInt()

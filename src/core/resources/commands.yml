@@ -39,11 +39,13 @@ meta:
       description: "Add a meta data."
     subtract:
       description: "Subtract a value from a meta data."
-    switch:
-      description: "Set a boolean meta data."
+    toggle:
+      description: "Toggle a boolean meta data."
+    list-add:
+      description: "Add a value to a list meta data."
+    list-remove:
+      description: "Remove a value from a list meta data."
   options:
     key: "The key of the meta data."
     value: "The value of the meta data."
-    mode: "The mode of the meta data."
-    type: "The type of the meta data."
     scope: "The id of the channel or user to set the meta data for"

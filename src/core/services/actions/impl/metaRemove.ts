@@ -1,4 +1,4 @@
-import { Action, ActionData, Context, Variable, Meta } from '@itsmybot';
+import { Action, ActionData, Context, Variable, MetaData } from '@itsmybot';
 
 export default class MetaRemoveAction extends Action {
   id = "metaRemove";
@@ -14,16 +14,21 @@ export default class MetaRemoveAction extends Action {
     switch (mode) {
       case 'user':
         if (!context.user) return script.missingContext("user", context);
-        const userMeta = await Meta.findOne({ where: { key, mode, type, scopeId: context.user.id } });
+        const userMeta = await MetaData.findOne({ where: { key, mode, type, scopeId: context.user.id } });
         await userMeta?.destroy();
         break;
       case 'channel':
         if (!context.channel) return script.missingContext("channel", context);
-        const channelMeta = await Meta.findOne({ where: { key, mode, type, scopeId: context.channel.id } });
+        const channelMeta = await MetaData.findOne({ where: { key, mode, type, scopeId: context.channel.id } });
         await channelMeta?.destroy();
         break;
+      case 'message':
+        if (!context.message) return script.missingContext("message", context);
+        const messageMeta = await MetaData.findOne({ where: { key, mode, type, scopeId: context.message.id } });
+        await messageMeta?.destroy();
+        break;
       case 'global': 
-        const globalMeta = await Meta.findOne({ where: { key, mode, type, scopeId: 'global' } });
+        const globalMeta = await MetaData.findOne({ where: { key, mode, type, scopeId: 'global' } });
         await globalMeta?.destroy();
         break;
     }

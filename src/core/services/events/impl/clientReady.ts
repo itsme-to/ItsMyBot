@@ -16,7 +16,9 @@ export default class ClientReadyEvent extends Event {
     this.logger.info(`Events registered: ${this.manager.events.size}`);
     this.logger.info(`Addons registered: ${this.manager.addons.size}`);
     this.logger.info(`Placeholder Expansions registered: ${this.manager.expansions.size}`);
-
+    this.logger.info(`Metas registered: ${this.manager.services.engine.metaHandler.metas.size}`);
+    this.logger.info(`Custom Commands registered: ${this.manager.services.engine.customCommands.size}`);
+    this.logger.info(`Scripts registered: ${this.manager.services.engine.scripts.size}`);
     this.logger.empty("#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#");
     this.logger.empty(" ");
     this.logger.empty(`                    • ${chalk.hex("#57ff6b").bold(`ItsMyBot v${this.manager.managerOptions.package.version}`)} is now Online! •`);

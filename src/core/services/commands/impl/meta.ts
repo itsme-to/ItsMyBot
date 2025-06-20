@@ -1,6 +1,6 @@
 import Utils from '@utils';
 import { CommandBuilder } from '@builders';
-import { Command, User, Meta, CommandInteraction } from '@itsmybot';
+import { Command, User, MetaData, CommandInteraction } from '@itsmybot';
 export default class MetaCommand extends Command {
 
   build() {
@@ -21,24 +21,6 @@ export default class MetaCommand extends Command {
               .setDescription(command.getString("options.value"))
               .setRequired(true))
           .addStringOption(option =>
-            option.setName("mode")
-              .setDescription(command.getString("options.mode"))
-              .setRequired(true)
-              .addChoices(
-                { name: "Global", value: "global" },
-                { name: "User", value: "user" },
-                { name: "Channel", value: "channel" }
-              ))
-          .addStringOption(option =>
-            option.setName("type")
-              .setDescription(command.getString("options.type"))
-              .setRequired(true)
-              .addChoices(
-                { name: "String", value: "string" },
-                { name: "Number", value: "number" },
-                { name: "Boolean", value: "boolean" }
-              ))
-          .addStringOption(option =>
             option.setName("scope")
               .setDescription(command.getString("options.scope"))
               .setRequired(false)))
@@ -53,15 +35,6 @@ export default class MetaCommand extends Command {
             option.setName("value")
               .setDescription(command.getString("options.value"))
               .setRequired(true))
-          .addStringOption(option =>
-            option.setName("mode")
-              .setDescription(command.getString("options.mode"))
-              .setRequired(true)
-              .addChoices(
-                { name: "Global", value: "global" },
-                { name: "User", value: "user" },
-                { name: "Channel", value: "channel" }
-              ))
           .addStringOption(option =>
             option.setName("scope")
               .setDescription(command.getString("options.scope"))
@@ -78,21 +51,12 @@ export default class MetaCommand extends Command {
               .setDescription(command.getString("options.value"))
               .setRequired(true))
           .addStringOption(option =>
-            option.setName("mode")
-              .setDescription(command.getString("options.mode"))
-              .setRequired(true)
-              .addChoices(
-                { name: "Global", value: "global" },
-                { name: "User", value: "user" },
-                { name: "Channel", value: "channel" }
-              ))
-          .addStringOption(option =>
             option.setName("scope")
               .setDescription(command.getString("options.scope"))
               .setRequired(false)))
       .addSubcommand(subcommand =>
-        subcommand.setName("switch")
-          .setDescription(command.getString("subcommands.switch.description"))
+        subcommand.setName("toggle")
+          .setDescription(command.getString("subcommands.toggle.description"))
           .addStringOption(option =>
             option.setName("key")
               .setDescription(command.getString("options.key"))
@@ -102,18 +66,39 @@ export default class MetaCommand extends Command {
               .setDescription(command.getString("options.value"))
               .setRequired(true))
           .addStringOption(option =>
-            option.setName("mode")
-              .setDescription(command.getString("options.mode"))
-              .setRequired(true)
-              .addChoices(
-                { name: "Global", value: "global" },
-                { name: "User", value: "user" },
-                { name: "Channel", value: "channel" }
-              ))
-          .addStringOption(option =>
             option.setName("scope")
               .setDescription(command.getString("options.scope"))
               .setRequired(false)))
+      .addSubcommand(subcommand =>
+        subcommand.setName("list-add")
+          .setDescription(command.getString("subcommands.list-add.description"))
+          .addStringOption(option =>
+            option.setName("key")
+              .setDescription(command.getString("options.key"))
+              .setRequired(true))
+          .addStringOption(option =>
+            option.setName("value")
+              .setDescription(command.getString("options.value"))
+              .setRequired(true))
+          .addStringOption(option =>
+            option.setName("scope")
+              .setDescription(command.getString("options.scope"))
+              .setRequired(false))) 
+      .addSubcommand(subcommand =>
+        subcommand.setName("list-remove")
+          .setDescription(command.getString("subcommands.list-remove.description"))
+          .addStringOption(option =>
+            option.setName("key")
+              .setDescription(command.getString("options.key"))
+              .setRequired(true))
+          .addStringOption(option =>
+            option.setName("value")
+              .setDescription(command.getString("options.value"))
+              .setRequired(true))
+          .addStringOption(option =>
+            option.setName("scope")
+              .setDescription(command.getString("options.scope"))
+              .setRequired(false))) 
       .addSubcommand(subcommand =>
         subcommand.setName("remove")
           .setDescription(command.getString("description"))
@@ -122,24 +107,6 @@ export default class MetaCommand extends Command {
               .setDescription(command.getString("options.key"))
               .setRequired(true))
           .addStringOption(option =>
-            option.setName("mode")
-              .setDescription(command.getString("options.mode"))
-              .setRequired(true)
-              .addChoices(
-                { name: "Global", value: "global" },
-                { name: "User", value: "user" },
-                { name: "Channel", value: "channel" }
-              ))
-          .addStringOption(option =>
-            option.setName("type")
-              .setDescription(command.getString("options.type"))
-              .setRequired(true)
-              .addChoices(
-                { name: "String", value: "string" },
-                { name: "Number", value: "number" },
-                { name: "Boolean", value: "boolean" }
-              ))
-          .addStringOption(option =>
             option.setName("scope")
               .setDescription(command.getString("options.scope"))
               .setRequired(false)));
@@ -147,23 +114,32 @@ export default class MetaCommand extends Command {
 
   async execute(interaction: CommandInteraction, user: User) {
     const subcommand = interaction.options.getSubcommand();
-    const key = interaction.options.getString("key", true);
-    const mode = interaction.options.getString("mode", true) as "global" | "user" | "channel";
-    const scope = interaction.options.getString("scope") ?? undefined;
+    const key = Utils.blockPlaceholders(interaction.options.getString("key", true));
+    const scope = Utils.blockPlaceholders(interaction.options.getString("scope")) ?? undefined;
     const context = {
       guild: interaction.guild,
       channel: interaction.channel || undefined,
       user,
       member: interaction.member,
     }
+    const meta = this.manager.services.engine.metaHandler.metas.get(key);
+    if (!meta) {
+      return interaction.reply(await Utils.setupMessage({
+        config: this.manager.configs.lang.getSubsection("meta.not-found"),
+        variables: [
+          { searchFor: "%meta_key%", replaceWith: key }
+        ],
+        context
+      }));
+    }
 
-    const scopeId = mode === "global" ? "global" : scope;
+    const scopeId = meta.mode === "global" ? "global" : scope;
 
-    if ((mode === 'user' || mode === 'channel') && !scopeId) {
+    if ((meta.mode === 'user' || meta.mode === 'channel') && !scopeId) {
       return interaction.reply(await Utils.setupMessage({
         config: this.manager.configs.lang.getSubsection("meta.scope-required"),
         variables: [
-          { searchFor: "%meta_mode%", replaceWith: mode }
+          { searchFor: "%meta_mode%", replaceWith: meta.mode }
         ],
         context
       }));
@@ -171,16 +147,16 @@ export default class MetaCommand extends Command {
 
     switch (subcommand) {
       case "set": {
-        const value = interaction.options.getString("value", true);
-        const type = interaction.options.getString("type", true);
-        await this.manager.services.engine.metaHandler.createOrUpdate(key, mode, type, value, scopeId);
+        const value = Utils.blockPlaceholders(interaction.options.getString("value", true));
+        const meta = await this.manager.services.engine.metaHandler.findOrCreate(key, value, scopeId);
+        await meta.setValue(value);
         return interaction.reply(await Utils.setupMessage({
           config: this.manager.configs.lang.getSubsection("meta.set"),
           variables: [
             { searchFor: "%meta_key%", replaceWith: key },
             { searchFor: "%meta_value%", replaceWith: value },
-            { searchFor: "%meta_mode%", replaceWith: mode },
-            { searchFor: "%meta_type%", replaceWith: type }
+            { searchFor: "%meta_mode%", replaceWith: meta.mode },
+            { searchFor: "%meta_type%", replaceWith: meta.type }
           ],
           context
         }));
@@ -189,44 +165,72 @@ export default class MetaCommand extends Command {
       case "add":
       case "subtract": {
         const value = interaction.options.getInteger("value", true);
-        const meta = await this.manager.services.engine.metaHandler.findOrCreate(key, mode, "number", "0", scopeId);
+        const meta = await this.manager.services.engine.metaHandler.findOrCreate(key, '0', scopeId);
         await meta[subcommand](value); // dynamic call to .add() or .subtract()
         return interaction.reply(await Utils.setupMessage({
           config: this.manager.configs.lang.getSubsection(`meta.${subcommand}`),
           variables: [
             { searchFor: "%meta_key%", replaceWith: key },
             { searchFor: "%meta_value%", replaceWith: value.toString() },
-            { searchFor: "%meta_mode%", replaceWith: mode }
+            { searchFor: "%meta_mode%", replaceWith: meta.mode }
           ],
           context
         }));
       }
 
-      case "switch": {
+      case "toggle": {
         const value = interaction.options.getBoolean("value", true);
-        await this.manager.services.engine.metaHandler.createOrUpdate(key, mode, "boolean", value.toString(), scopeId);
+        const meta = await this.manager.services.engine.metaHandler.findOrCreate(key, value.toString(), scopeId);
+        await meta.toggle(value);
         return interaction.reply(await Utils.setupMessage({
-          config: this.manager.configs.lang.getSubsection("meta.switch"),
+          config: this.manager.configs.lang.getSubsection("meta.toggle"),
           variables: [
             { searchFor: "%meta_key%", replaceWith: key },
             { searchFor: "%meta_value%", replaceWith: value ? "true" : "false" },
-            { searchFor: "%meta_mode%", replaceWith: mode }
+            { searchFor: "%meta_mode%", replaceWith: meta.mode }
+          ],
+          context
+        }));
+      }
+
+      case "list-add": {
+        const value = Utils.blockPlaceholders(interaction.options.getString("value", true));
+        const meta = await this.manager.services.engine.metaHandler.findOrCreate(key, "[]", scopeId);
+        await meta.listAdd(value);
+        return interaction.reply(await Utils.setupMessage({
+          config: this.manager.configs.lang.getSubsection("meta.list-add"),
+          variables: [
+            { searchFor: "%meta_key%", replaceWith: key },
+            { searchFor: "%meta_value%", replaceWith: value },
+            { searchFor: "%meta_mode%", replaceWith: meta.mode }
+          ],
+          context
+        }));
+      }
+
+      case "list-remove": {
+        const value = Utils.blockPlaceholders(interaction.options.getString("value", true));
+        const meta = await this.manager.services.engine.metaHandler.findOrCreate(key, "[]", scopeId);
+        await meta.listRemove(value);
+        return interaction.reply(await Utils.setupMessage({
+          config: this.manager.configs.lang.getSubsection("meta.list-remove"),
+          variables: [
+            { searchFor: "%meta_key%", replaceWith: key },
+            { searchFor: "%meta_value%", replaceWith: value },
+            { searchFor: "%meta_mode%", replaceWith: meta.mode }
           ],
           context
         }));
       }
 
       case "remove": {
-        const type = interaction.options.getString("type", true);
-        const meta = await Meta.findOne({ where: { key, mode, type, scopeId } });
+        const meta = await MetaData.findOne({ where: { key, scopeId } });
         await meta?.destroy();
 
         return interaction.reply(await Utils.setupMessage({
           config: this.manager.configs.lang.getSubsection("meta.remove"),
           variables: [
             { searchFor: "%meta_key%", replaceWith: key },
-            { searchFor: "%meta_mode%", replaceWith: mode },
-            { searchFor: "%meta_type%", replaceWith: type }
           ],
           context
         }));

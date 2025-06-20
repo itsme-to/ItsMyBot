@@ -220,7 +220,7 @@ meta:
       - type: text-display
         content: "The meta data `%meta_key%` has been subtracted with the value `%meta_value%`."
     ephemeral: true
-  switch:
+  toggle:
     components:
       - type: text-display
         content: "The meta data `%meta_key%` has been set to `%meta_value%`."
