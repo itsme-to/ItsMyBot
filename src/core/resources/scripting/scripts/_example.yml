@@ -4,37 +4,37 @@
 # You can find more information about scripting here:
 # https://docs.itsme.to/itsmybot/scripting
 actions:
-  - triggers:
-      - guildMemberAdd
+  - triggers: guildMemberAdd
     conditions:
-      - id: isBot
-        args:
-          inverse: true
+      - id: '!isBot'
     actions:
       - id: sendMessage
         args:
-          content: "Hello %user_mention%, you have been invited by %invitetracker_inviter%"
+          components:
+            - type: text-display
+              content: "Hello %user_mention%, you have been invited by %invitetracker_inviter%"
         mutators:
           channel: "1184880155026534500"
       - id: addRole
         args:
           value: "1184880155026534500"
 
-  - triggers:
-      - everyDay
+  - triggers: everyDay
     args:
       every: 7
     actions:
       - id: sendMessage
         args:
-          content: 
-            - "Question 1"
-            - "Question 2"
-            - "Question 3"
-            - "Question 4"
-            - "Question 5"
-            - "Question 6"
-            - "Question 7"
+          components:
+            - type: text-display
+              content: 
+                - "Question 1"
+                - "Question 2"
+                - "Question 3"
+                - "Question 4"
+                - "Question 5"
+                - "Question 6"
+                - "Question 7"
         mutators:
           channel: "1184880155026534500"
 
