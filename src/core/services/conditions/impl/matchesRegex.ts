@@ -1,7 +1,7 @@
 import { Condition, ConditionData, Context, Variable } from '@itsmybot';
 
-export default class RegexCondition extends Condition {
-  id = "regex";
+export default class MatchesRegexCondition extends Condition {
+  id = "matchesRegex";
 
   isMet(condition: ConditionData, context: Context, variables: Variable[]) {
     const arg = condition.args.getStringsOrNull("value")
