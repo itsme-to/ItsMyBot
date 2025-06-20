@@ -1,0 +1,46 @@
+# Add an underscore at the beginning of the file name to disable it
+
+name: "server-info" # Command name
+description: "Show information about the server" 
+
+actions: 
+  - id: reply
+    args:
+      components:
+        - type: container
+          components:
+            - type: section
+              components:
+                - type: text-display
+                  content: |
+                    ## 🏰︎ Server Info - %guild_name%
+                    • **Guild ID**: %guild_id%
+                    • **Created At**: %guild_create_date%
+                    ### 👑︎ Server Owner
+                    • **Owner**: %owner_mention% | %owner_username%
+                    • **Owner ID**: %owner_id%
+                    • **Owner Created At**: %owner_create_date%
+                    ### ⬆️ Server Boost status
+                    • **Boosts**: %guild_boosts% Boosts
+                    • **Guild-Level**: Level %guild_level%
+              accessory:
+                type: thumbnail
+                url: "%guild_icon%"
+        - type: container
+          components:
+            - type: text-display
+              content: |
+                ## 📉 Server Stats - %guild_name%
+                ### 📊︎ Global
+                • **Total Channels**: %guild_channels%
+                • **Total Roles**: %guild_roles%
+                • **Total Emojis**: %guild_emojis%
+                ### 👪︎ Member
+                • **Total Humans**: %guild_members%
+                • **Total Bots**: %guild_bots%
+                • **Total Members**: %guild_users%
+                ### 🤵 Member Status
+                • **Online Humans**: %guild_online_members%
+                • **Idle Humans**: %guild_idle_members%
+                • **DND Humans**: %guild_dnd_members%
+                • **Offline Humans**: %guild_offline_members%

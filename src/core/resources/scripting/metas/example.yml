@@ -1,0 +1,5 @@
+metas:
+  - key: example
+    default: "This is an example meta data."
+    mode: global
+    type: string

@@ -1,40 +1,55 @@
-import { Expansion, Context, Meta } from '@itsmybot';
-
+import { Expansion, Context, MetaData } from '@itsmybot';
 
 export default class MetaExpansion extends Expansion {
   name = 'meta';
 
   async onRequest(context: Context, placeholder: string) {
     const isHasCheck = placeholder.startsWith('has_');
-    const clean = isHasCheck ? placeholder.slice(4) : placeholder;
+    const isIncludeCheck = placeholder.startsWith('include_');
 
-    const [key, mode, type, fallback] = clean.split('_');
+    const raw = placeholder.replace(/^(has_|include_)/, '');
+    const parts = raw.split('_');
 
-    const validModes = new Set(['user', 'global', 'channel']);
-    const validTypes = new Set(['string', 'number', 'boolean']);
+    const key = parts[0];
+    const suffix = parts.slice(1).join('_'); 
 
-    if (!key || !validModes.has(mode) || !validTypes.has(type)) return;
+    const metaDef = this.manager.services.engine.metaHandler.metas.get(key);
+    if (!metaDef) return;
 
-    const scopeId = this.resolveScopeId(context, mode);
+    const { type, mode } = metaDef;
+    const scopeId = this.manager.services.engine.metaHandler.resolveScopeId(context, mode);
     if (!scopeId) return;
 
-    const meta = await Meta.findOne({ where: { key, mode, type, scopeId } });
+    const meta = await MetaData.findOne({ where: { key, mode, type, scopeId } });
 
     if (isHasCheck) return meta ? 'true' : 'false';
 
-    return meta?.value ?? fallback;
-  }
+    if (type === 'list') {
+      let list: string[] = [];
 
-  private resolveScopeId(context: Context, mode: string): string | undefined {
-    switch (mode) {
-      case 'global':
-        return 'global';
-      case 'user':
-        return context.user?.id;
-      case 'channel':
-        return context.channel?.id;
-      default:
-        return undefined;
+      try {
+        list = JSON.parse(meta?.value || '[]');
+      } catch {
+        return '';
+      }
+
+      if (!Array.isArray(list)) return '';
+
+      if (isIncludeCheck && suffix) {
+        return list.includes(suffix) ? 'true' : 'false';
+      }
+
+      if (suffix === 'length') {
+        return list.length.toString();
+      }
+
+      if (suffix === 'formatted') {
+        return list.map(item => item.toString()).join(', ');
+      }
+
+      return JSON.stringify(list);
     }
+
+    return meta?.value ?? '';
   }
 }

@@ -1,7 +1,7 @@
 import { Condition, ConditionData, Context, Variable } from '@itsmybot';
 
-export default class ContentCondition extends Condition {
-  id = "content";
+export default class ContentEqualsCondition extends Condition {
+  id = "contentEquals";
 
   isMet(condition: ConditionData, context: Context, variables: Variable[]) {
     const arg = condition.args.getStringsOrNull("value")

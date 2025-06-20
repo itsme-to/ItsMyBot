@@ -1,4 +1,5 @@
 import { Embed, Message, MessageComponent, ActionRow, ButtonComponent, TextDisplayComponent, SeparatorComponent, SectionComponent, ContainerComponent, TextBasedChannel } from 'discord.js';
+import Utils from '@utils';
 
 export async function transcript(channel: TextBasedChannel, limit = 100) {
   const messages = await channel.messages.fetch({ limit });
@@ -22,6 +23,7 @@ export function transcriptMessage(message: Message) {
   lines.push(' ')
   lines.push(`${message.author.username} ${message.author.bot ? '[BOT] ' : ''}- ${message.createdAt.toLocaleString()}`);
   lines.push(`-------------------------------------------------------------------`);
+  message.content = Utils.blockPlaceholders(message.content);
   if (message.content) lines.push(...message.cleanContent.split('\n'));
   if (message.embeds) {
     for (const embed of message.embeds) {

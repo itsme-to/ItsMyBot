@@ -28,7 +28,7 @@ export default class InteractionCreateEvent extends Event {
       }
     } else if (interaction.isButton()) {
       const button = this.manager.services.component.getButton(interaction.customId);
-      if (!button) return this.manager.client.emit(Events.Button, interaction, user);
+      if (!button) return this.manager.client.emit(Events.ButtonClick, interaction, user);
 
       this.handleInteraction(interaction, button, user)
     } else if (interaction.isAnySelectMenu()) {

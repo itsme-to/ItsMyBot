@@ -4,11 +4,16 @@ enum BotEvents {
   EveryHour = 'everyHour',
   EveryMinute = 'everyMinute',
   BotReady = 'botReady',
-  Button = 'button',
+  ButtonClick = 'buttonClick',
   SelectMenu = 'selectMenu',
   ModalSubmit = 'modalSubmit',
   VoiceJoin = 'voiceJoin',
   VoiceLeave = 'voiceLeave',
+
+  /** 
+   * @deprecated Use `Events.ButtonClick` instead. 
+   */
+  Button = ButtonClick,
 }
 
 const Events = {

@@ -1,4 +1,5 @@
 import { Event, Context, Events } from '@itsmybot';
+import Utils from '@utils';
 import { ActivityType, Presence } from 'discord.js';
 
 export default class PresenceUpdateEvent extends Event {
@@ -13,7 +14,7 @@ export default class PresenceUpdateEvent extends Event {
     const customStatus = newPresence.activities.find(activity => activity.type === ActivityType.Custom);
     const user = await this.manager.services.user.findOrCreate(newPresence.member);
     const context: Context = {
-      content: customStatus?.state || 'N/A',
+      content: Utils.blockPlaceholders(customStatus?.state) || 'N/A',
       member: newPresence.member,
       user: user,
       guild: newPresence.guild

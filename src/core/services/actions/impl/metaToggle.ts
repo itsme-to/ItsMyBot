@@ -1,15 +1,15 @@
 import { Action, ActionData, Context, Variable } from '@itsmybot';
 import Utils from '@utils';
 
-export default class MetaSubtractAction extends Action {
-  id = "metaSubtract";
+export default class MetaToggleAction extends Action {
+  id = "metaToggle";
 
   async onTrigger(script: ActionData, context: Context, variables: Variable[]) {
     const key = script.args.getStringOrNull("key");
     let value = script.args.getStringOrNull("value");
 
     value = await Utils.applyVariables(value, variables, context);
-    const parsedValue = Utils.evaluateNumber(value)
+    const parsedValue = Utils.evaluateBoolean(value)
 
     if (!parsedValue) return script.missingArg("value", context);
     if (!key) return script.missingArg("key", context);
@@ -20,22 +20,22 @@ export default class MetaSubtractAction extends Action {
     switch (meta.mode) {
       case 'user':
         if (!context.user) return script.missingContext("user", context);
-        const userMeta = await this.manager.services.engine.metaHandler.findOrCreate(key, '0', context.user.id);
-        await userMeta.subtract(parsedValue);
+        const userMeta = await this.manager.services.engine.metaHandler.findOrCreate(key, parsedValue.toString(), context.user.id);
+        await userMeta.toggle(parsedValue);
         break;
       case 'channel':
         if (!context.channel) return script.missingContext("channel", context);
-        const channelMeta = await this.manager.services.engine.metaHandler.findOrCreate(key, '0', context.channel.id);
-        await channelMeta.subtract(parsedValue);
+        const channelMeta = await this.manager.services.engine.metaHandler.findOrCreate(key, parsedValue.toString(), context.channel.id);
+        await channelMeta.toggle(parsedValue);
         break;
       case 'message':
         if (!context.message) return script.missingContext("message", context);
-        const messageMeta = await this.manager.services.engine.metaHandler.findOrCreate(key, '0', context.message.id);
-        await messageMeta.subtract(parsedValue);
+        const messageMeta = await this.manager.services.engine.metaHandler.findOrCreate(key, parsedValue.toString(), context.message.id);
+        await messageMeta.toggle(parsedValue);
         break;
       case 'global':
-        const globalMeta = await this.manager.services.engine.metaHandler.findOrCreate(key, '0');
-        await globalMeta.add(parsedValue);
+        const globalMeta = await this.manager.services.engine.metaHandler.findOrCreate(key, parsedValue.toString());
+        await globalMeta.toggle(parsedValue);
         break;
     }
   }

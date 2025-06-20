@@ -96,7 +96,7 @@ export default class AddonCommand extends Command {
     const subcommand = interaction.options.getSubcommand();
     const lang = this.manager.configs.lang;
 
-    const addonName = interaction.options.getString("addon", true);
+    const addonName = Utils.blockPlaceholders(interaction.options.getString("addon", true));
     const addon = await AddonModel.findOne({ where: { name: addonName } });
 
     if (!addon) {

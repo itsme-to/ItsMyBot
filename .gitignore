@@ -2,6 +2,7 @@
 /logs/
 /scripts/
 /custom-commands/
+/scripting/
 /build/
 
 /src/addons/**
