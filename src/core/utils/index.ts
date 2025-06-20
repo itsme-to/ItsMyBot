@@ -111,7 +111,7 @@ export default class Utils {
     if (context?.role) variables.push(...this.roleVariables(context.role));
     if (context?.content) variables.push({ searchFor: "%content%", replaceWith: context.content })
     if (context?.message) variables.push(
-      { searchFor: "%message_content%", replaceWith: context.message.content },
+      { searchFor: "%message_content%", replaceWith: Utils.blockPlaceholders(context.message.content) },
       { searchFor: "%message_url%", replaceWith: context.message.url })
 
     variables.forEach(variable => {
@@ -120,6 +120,16 @@ export default class Utils {
     });
 
     return manager.services.expansion.resolvePlaceholders(value, context);
+  }
+
+  /**
+   * Blocks placeholders in a string by replacing them with underscores
+   * @param value The string to block placeholders in
+   * @returns The string with placeholders replaced by underscores
+   */
+  static blockPlaceholders<T extends string | null | undefined>(value: T): T extends string ? string : T {
+    if (value === null || value === undefined) return value as any;
+    return value.replace(/%(.*?)%/g, '($1)') as T extends string ? string : T;
   }
 
   /**

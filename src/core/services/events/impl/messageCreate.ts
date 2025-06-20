@@ -1,5 +1,6 @@
 import { Message } from 'discord.js';
 import { Event, Context, Events } from '@itsmybot';
+import Utils from '@utils';
 
 export default class MessageCreateEvent extends Event {
   name = Events.MessageCreate;
@@ -9,6 +10,8 @@ export default class MessageCreateEvent extends Event {
     const user = message.member ? await this.manager.services.user.findOrCreate(message.member) : await this.manager.services.user.findOrNull(message.author.id);
 
     if (!user) return;
+
+    message.content = Utils.blockPlaceholders(message.content);
 
     const context: Context = {
       message: message,
