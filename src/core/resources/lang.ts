@@ -26,7 +26,7 @@ class Meta {
   @IsDefined()
   @ValidateNested()
   @Type(() => MessageValidator)
-  'switch': MessageValidator
+  'toggle': MessageValidator
 
   @IsDefined()
   @ValidateNested()

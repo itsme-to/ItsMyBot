@@ -73,7 +73,7 @@ export default class InteractionCreateEvent extends Event {
 
     try {
       if (component instanceof Command) {
-        if (component.data.subcommands.length) {
+        if (component.data.subcommands?.length) {
           const subcommand = component.data.subcommands.find((subcommand: CommandSubcommandBuilder) => subcommand.name === interaction.options.getSubcommand());
           if (!subcommand) return;
 
