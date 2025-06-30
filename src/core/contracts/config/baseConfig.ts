@@ -38,6 +38,7 @@ export class BaseConfig extends Config {
 
     if (!await Utils.fileExists(join(this.configFilePath))) {
       if (this.defaultFilePath) {
+        await fs.mkdir(join(this.configFilePath, '..'), { recursive: true });
         await fs.copyFile(this.defaultFilePath, this.configFilePath);
       }
     } else {
