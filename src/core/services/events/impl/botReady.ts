@@ -1,8 +1,8 @@
 import Utils from '@utils';
 import { Manager, Event, Events } from '@itsmybot';
 
-export default class BotReadyEvent extends Event {
-  name = Events.BotReady;
+export default class ClientReadyEvent extends Event {
+  name = Events.ClientReady;
   once = true;
 
   async execute() {

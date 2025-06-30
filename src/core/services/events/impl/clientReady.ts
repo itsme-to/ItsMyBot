@@ -55,7 +55,5 @@ export default class ClientReadyEvent extends Event {
       this.logger.error(chalk.blue(chalk.underline(`https://discord.com/api/oauth2/authorize?client_id=${this.manager.client.user!.id}&permissions=8&scope=applications.commands%20bot`)));
       process.exit(1);
     }
-
-    this.manager.client.emit(Events.BotReady);
   }
 };
