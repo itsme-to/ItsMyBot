@@ -6,6 +6,7 @@ import { Client } from 'discord.js';
 export default class ClientReadyEvent extends Event {
   name = Events.ClientReady;
   once = true;
+  priority = 1
 
   async execute(client: Client) {
     this.manager.services.command.deployCommands();
