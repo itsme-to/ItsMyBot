@@ -48,9 +48,14 @@ export class Manager {
   }
 
   public async initialize(): Promise<void> {
-    this.configs.config = await this.initializeConfig(DefaultConfig, 'config.yml');
-    this.configs.commands = await this.initializeConfig(CommandConfig, 'commands.yml');
-    this.configs.lang = await this.initializeConfig(LangConfig, 'lang.yml');
+    try {
+      this.configs.config = await this.initializeConfig(DefaultConfig, 'config.yml');
+      this.configs.commands = await this.initializeConfig(CommandConfig, 'commands.yml');
+      this.configs.lang = await this.initializeConfig(LangConfig, 'lang.yml');
+    } catch (e) {
+      this.logger.error(e)
+      process.exit(1)
+    }
 
     this.primaryGuildId = this.configs.config.getString("primary-guild");
 

@@ -100,10 +100,7 @@ export class BaseConfig extends Config {
 
   handleValidationErrors(errors: string[]) {
     if (errors.length === 0) return;
-
-    this.logger.error(`Validation errors in the configuration file '${this.configFilePath}':`);
-    errors.forEach(error => this.logger.error(`- ${error}`));
-    process.exit(1);
+    throw [`Validation errors in the configuration file '${this.configFilePath}':`, ...errors.map(error => `- ${error}`)]
   }
 
   private async replaceTabs() {

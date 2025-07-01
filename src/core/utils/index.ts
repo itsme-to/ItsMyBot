@@ -13,7 +13,7 @@ import { setupTextDisplay } from './setup/setupTextDisplay.js';
 import { userVariables, channelVariables, roleVariables, timeVariables } from './variables.js';
 import { transcript, transcriptMessage } from './transcript.js';
 
-export { Logger } from './logger/index.js';
+export { Logger } from './logger.js';
 export { Cooldown } from './cooldown.js';
 export { Pagination } from './pagination.js';
 

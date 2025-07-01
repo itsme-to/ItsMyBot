@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { Logger } from '../utils/logger/index.js';
+import { Logger } from '../utils/logger.js';
 import { input } from '@inquirer/prompts';
 
 
