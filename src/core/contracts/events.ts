@@ -8,16 +8,12 @@ enum BotEvents {
   ModalSubmit = 'modalSubmit',
   VoiceJoin = 'voiceJoin',
   VoiceLeave = 'voiceLeave',
+  BotReady = 'botReady',
 
   /** 
    * @deprecated Use `Events.ButtonClick` instead. 
    */
   Button = ButtonClick,
-
-  /** 
-   * @deprecated Use `Events.BotReady` instead. 
-   */
-  BotReady = 'clientReady',
 }
 
 const Events = {
