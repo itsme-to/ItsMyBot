@@ -1,13 +1,13 @@
 import { Event, Context, Events } from '@itsmybot';
+import { Guild } from 'discord.js';
 
 export default class EveryMinuteEvent extends Event {
   name = Events.EveryMinute;
 
-  async execute() {
-    const guild = this.manager.client.guilds.cache.get(this.manager.primaryGuildId);
-
+  async execute(primaryGuild: Guild) {
     const context: Context = {
-      guild: guild,
+      guild: primaryGuild,
+      content: new Date().getMinutes().toString()
     };
 
     this.manager.services.engine.event.emit('everyMinute', context);
