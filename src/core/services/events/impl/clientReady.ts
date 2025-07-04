@@ -48,15 +48,15 @@ export default class ClientReadyEvent extends Event {
       return process.exit(1);
     }
 
-    this.manager.client.emit('botReady', primaryGuild);
+    this.manager.client.emit(Events.BotReady, primaryGuild);
 
     schedule('* * * * *', async () => {
       await primaryGuild.fetch()
-      this.manager.client.emit('everyMinute', primaryGuild);
+      this.manager.client.emit(Events.EveryMinute, primaryGuild);
     });
 
     schedule('0 * * * *', async () => {
-      this.manager.client.emit('everyHour', primaryGuild);
+      this.manager.client.emit(Events.EveryHour, primaryGuild);
     });
   }
 };
