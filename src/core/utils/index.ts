@@ -273,7 +273,8 @@ export default class Utils {
     const timeUnits: { [key: string]: number } = {
       d: 24 * 60 * 60,
       h: 60 * 60,
-      m: 60
+      m: 60,
+      s: 1
     };
 
     const matches = time.match(/(\d+)([a-z]+)/g);
