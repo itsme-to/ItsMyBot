@@ -1,6 +1,7 @@
 import Utils from '@utils';
 import { CommandBuilder } from '@builders';
 import { Command, User, MetaData, CommandInteraction } from '@itsmybot';
+import { AutocompleteInteraction } from 'discord.js';
 export default class MetaCommand extends Command {
 
   build() {
@@ -15,6 +16,7 @@ export default class MetaCommand extends Command {
           .addStringOption(option =>
             option.setName("key")
               .setDescription(command.getString("options.key"))
+              .setAutocomplete(true)
               .setRequired(true))
           .addStringOption(option =>
             option.setName("value")
@@ -30,6 +32,7 @@ export default class MetaCommand extends Command {
           .addStringOption(option =>
             option.setName("key")
               .setDescription(command.getString("options.key"))
+              .setAutocomplete(true)
               .setRequired(true))
           .addIntegerOption(option =>
             option.setName("value")
@@ -45,6 +48,7 @@ export default class MetaCommand extends Command {
           .addStringOption(option =>
             option.setName("key")
               .setDescription(command.getString("options.key"))
+              .setAutocomplete(true)
               .setRequired(true))
           .addIntegerOption(option =>
             option.setName("value")
@@ -60,6 +64,7 @@ export default class MetaCommand extends Command {
           .addStringOption(option =>
             option.setName("key")
               .setDescription(command.getString("options.key"))
+              .setAutocomplete(true)
               .setRequired(true))
           .addBooleanOption(option =>
             option.setName("value")
@@ -75,6 +80,7 @@ export default class MetaCommand extends Command {
           .addStringOption(option =>
             option.setName("key")
               .setDescription(command.getString("options.key"))
+              .setAutocomplete(true)
               .setRequired(true))
           .addStringOption(option =>
             option.setName("value")
@@ -90,6 +96,7 @@ export default class MetaCommand extends Command {
           .addStringOption(option =>
             option.setName("key")
               .setDescription(command.getString("options.key"))
+              .setAutocomplete(true)
               .setRequired(true))
           .addStringOption(option =>
             option.setName("value")
@@ -105,11 +112,35 @@ export default class MetaCommand extends Command {
           .addStringOption(option =>
             option.setName("key")
               .setDescription(command.getString("options.key"))
+              .setAutocomplete(true)
               .setRequired(true))
           .addStringOption(option =>
             option.setName("scope")
               .setDescription(command.getString("options.scope"))
               .setRequired(false)));
+  }
+
+  async autocomplete(interaction: AutocompleteInteraction<'cached'>) {
+    const focusedValue = interaction.options.getFocused(true);
+    if (focusedValue.name !== 'key') return;
+
+    const type = {
+      string: ['set', 'remove'],
+      number: ['add', 'subtract', 'set', 'remove'],
+      boolean: ['toggle', 'set', 'remove'],
+      list: ['list-add', 'list-remove', 'set', 'remove']
+    }
+
+    const metas = this.manager.services.engine.metaHandler.metas;
+    if (!metas) return;
+    
+    const filteredMetas = Array.from(metas.keys()).filter(key => {
+      const meta = metas.get(key);
+      if (!meta) return false;
+      return type[meta.type].includes(interaction.options.getSubcommand());
+    });
+
+    await interaction.respond(filteredMetas.map(key => ({ name: key, value: key })));
   }
 
   async execute(interaction: CommandInteraction, user: User) {
