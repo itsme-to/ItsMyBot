@@ -129,19 +129,19 @@ export function getCommandOptionType(value: string): ApplicationCommandOptionTyp
 }
 
 const channelTypeValue = {
-  'GuildText': ['GuildText', '0'],
-  'DM': ['DM', '1'],
-  'GuildVoice': ['GuildVoice', '2'],
-  'GroupDM': ['GroupDM', '3'],
-  'GuildCategory': ['GuildCategory', '4'],
-  'GuildAnnouncement': ['GuildAnnouncement', 'GuildNews', '5'],
-  'AnnouncementThread': ['AnnouncementThread', 'GuildNewsThread', '10'],
-  'PublicThread': ['PublicThread', 'GuildPublicThread', '11'],
-  'PrivateThread': ['PrivateThread', 'GuildPrivateThread', '12'],
-  'GuildStageVoice': ['GuildStageVoice', '13'],
-  'GuildDirectory': ['GuildDirectory', '14'],
-  'GuildForum': ['GuildForum', '15'],
-  'GuildMedia': ['GuildMedia', '16'],
+  'GuildText': ['guildtext', '0'],
+  'DM': ['dm', '1'],
+  'GuildVoice': ['guildvoice', '2'],
+  'GroupDM': ['groupdm', '3'],
+  'GuildCategory': ['guildcategory', '4'],
+  'GuildAnnouncement': ['guildannouncement', 'guildnews', '5'],
+  'AnnouncementThread': ['announcementthread', 'guildnewsthread', '10'],
+  'PublicThread': ['publicthread', 'guildpublicthread', '11'],
+  'PrivateThread': ['privatethread', 'guildprivatethread', '12'],
+  'GuildStageVoice': ['guildstagevoice', '13'],
+  'GuildDirectory': ['guilddirectory', '14'],
+  'GuildForum': ['guildforum', '15'],
+  'GuildMedia': ['guildmedia', '16'],
 }
 export function getChannelType(value: string): ChannelType | undefined {
   const result = checkEnum(value, channelTypeValue)
