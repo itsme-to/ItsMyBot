@@ -44,7 +44,7 @@ presence:
   activities:
     - text: "Guild Members: %guild_members%"
       type: "Custom" # Activity type. Options: 'Playing', 'Listening', 'Watching', 'Streaming', 'Custom'.
-    - text: "anwsering your questions"
+    - text: "answering your questions"
       type: "Playing"
     - text: "Created by @itsme.to"
       type: "Custom"
