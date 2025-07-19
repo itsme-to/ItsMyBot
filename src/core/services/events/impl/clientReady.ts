@@ -58,5 +58,9 @@ export default class ClientReadyEvent extends Event {
     schedule('0 * * * *', async () => {
       this.manager.client.emit(Events.EveryHour, primaryGuild);
     });
+
+    schedule('0 0 * * *', async () => {
+      this.manager.client.emit(Events.EveryDay, primaryGuild);
+    });
   }
 };
