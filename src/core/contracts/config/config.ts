@@ -52,7 +52,7 @@ export class Config {
     const value = this.getOrNull(path);
     if (TypeCheckers.isNullOrUndefined(value)) {
       const totalPath = this.getPath(path);
-      throw this.logger.error(`No config value found for "${totalPath}"` + (this.filePath ? ` in file ${this.filePath}` : ""));
+      throw `No config value found for "${totalPath}"` + (this.filePath ? ` in file ${this.filePath}` : "");
     }
     return value;
   }
