@@ -20,11 +20,13 @@ export default class ReloadCommand extends Command {
     await this.manager.services.leaderboard.registerLeaderboards()
     this.manager.services.engine.event.removeAllListeners()
     this.manager.services.engine.scripts.clear()
+    this.manager.services.engine.metaHandler.metas.clear()
 
     let error: unknown
 
     try {
       await this.manager.services.engine.loadScripts();
+      await this.manager.services.engine.metaHandler.loadMetas();
       await this.manager.services.engine.loadCustomCommands();
 
       await Promise.all(this.manager.addons.map(async addon => {
