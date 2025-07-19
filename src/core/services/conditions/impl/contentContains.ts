@@ -9,10 +9,11 @@ export default class ContentContainsCondition extends Condition {
     if (!context.content) return false
 
     const ignoreCase = condition.args.getBoolOrNull("ignore-case") ?? false;
+
     if (ignoreCase) {
-      return arg && arg.some(text => context.content?.toLowerCase() === text.toLowerCase());
+      return arg && arg.some(text => context.content?.toLowerCase().includes(text.toLowerCase()));
     }
 
-    return arg && arg.some(text => context.content === text);
+    return arg && arg.some(text => context.content?.includes(text));
   }
 }
