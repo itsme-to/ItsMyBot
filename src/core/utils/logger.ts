@@ -8,7 +8,6 @@ export class Logger {
 
   constructor(prefix: string = "ItsMyBot") {
     this.prefix = prefix;
-    this.logFile = fs.createWriteStream('./logs/latest.log', { flags: 'a' });
   }
 
   private getCurrentTimestamp() {
