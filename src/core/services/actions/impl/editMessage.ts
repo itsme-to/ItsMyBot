@@ -5,7 +5,7 @@ export default class EditMessageAction extends Action {
   id = "editMessage";
 
   async onTrigger(script: ActionData, context: Context, variables: Variable[]) {
-    if (!context.message) return script.missingArg("message", context);
+    if (!context.message) return script.missingContext("message", context);
 
     const message = await context.message.edit(await Utils.setupMessage({ config: script.args, context, variables }));
 
