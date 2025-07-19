@@ -1,17 +1,19 @@
 import chalk from 'chalk';
-import * as fs from 'fs';
 import { stdout } from 'process';
 
 export class Logger {
   prefix: string;
-  logFile: fs.WriteStream;
 
   constructor(prefix: string = "ItsMyBot") {
     this.prefix = prefix;
   }
 
   private getCurrentTimestamp() {
-    return new Date().toLocaleTimeString();
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    const ss = String(now.getSeconds()).padStart(2, '0');
+    return `${hh}:${mm}:${ss}`;
   }
 
   public warn(...text: any[]) {

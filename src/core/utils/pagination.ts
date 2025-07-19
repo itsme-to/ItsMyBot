@@ -1,5 +1,5 @@
 import Utils from '@utils';
-import { MessageComponentInteraction, StringSelectMenuInteraction, RepliableInteraction, InteractionResponse, InteractionCollector, CollectedMessageInteraction } from 'discord.js';
+import { MessageComponentInteraction, StringSelectMenuInteraction, RepliableInteraction, InteractionResponse } from 'discord.js';
 import manager, { Config, Context, TopLevelComponentBuilder, Variable } from '@itsmybot'
 
 interface Item {
@@ -35,10 +35,9 @@ export class Pagination {
   currentItem: number = 0
   currentPage: number = 0
   itemsPerPage: number = 25
-
-  message: InteractionResponse
   time: number = 100000;
-  collector: InteractionCollector<CollectedMessageInteraction>
+
+  message?: InteractionResponse
 
   constructor(interaction: RepliableInteraction, items: Item[], config: Config) {
     this.interaction = interaction;
@@ -132,19 +131,18 @@ export class Pagination {
       variables: this.getVariables(),
       context: this.getContext(),
       components: await this.getComponents(),
-    }))
+    }));
 
     this.createCollector();
-
     return this.message;
   }
 
   private createCollector() {
     const filter = (interaction: MessageComponentInteraction) => ['pagination_items', 'pagination_previous', 'pagination_next', 'pagination_filters'].includes(interaction.customId);
 
-    this.collector = this.message.createMessageComponentCollector({ filter,  time: this.time });
+    const collector = this.message!.createMessageComponentCollector({ filter,  time: this.time });
 
-    this.collector.on('collect', async (interaction: MessageComponentInteraction) => {
+    collector.on('collect', async (interaction: MessageComponentInteraction) => {
       if (interaction.customId === 'pagination_previous') this.prevPage();
       if (interaction.customId === 'pagination_next') this.nextPage();
 
@@ -176,8 +174,8 @@ export class Pagination {
       }));
     });
 
-    this.collector.on('end', async () => {
-      this.message.edit(await Utils.setupMessage({
+    collector.on('end', async () => {
+      this.message!.edit(await Utils.setupMessage({
         config: this.getConfig(),
         variables: this.getVariables(),
         context: this.getContext()

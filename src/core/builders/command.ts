@@ -100,7 +100,7 @@ export class CommandBuilder extends Mixin(SlashCommandBuilder, ComponentBuilder)
 }
 
 export class ContextMenuBuilder extends Mixin(ContextMenuCommandBuilder, ComponentBuilder) {
-  enabled: boolean;
+  enabled: boolean = true;
 
   public using(config: Config) {
     super.using(config);

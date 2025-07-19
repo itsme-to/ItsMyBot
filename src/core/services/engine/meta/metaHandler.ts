@@ -37,7 +37,7 @@ export default class MetaHandler extends Service {
   }
 
   async loadMetas() {
-    const metas = await new BaseConfigSection(MetaConfig, this.manager.logger, 'scripting/metas', 'build/core/resources/scripting/metas').initialize();
+    const metas = await new BaseConfigSection(this.manager.logger, 'scripting/metas', 'build/core/resources/scripting/metas').initialize(MetaConfig);
     for (const filePath of metas) {
       for (const config of filePath[1].getSubsections('metas')) {
         this.registerMeta(

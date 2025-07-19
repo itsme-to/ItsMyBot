@@ -52,7 +52,7 @@ export class ActionData extends BaseScript {
     if (!this.mutators) return context
 
     for (const [mutator, value] of this.mutators.values) {
-      const parsedValue = await Utils.applyVariables(value, variables, context)
+      const parsedValue = await Utils.applyVariables(value.toString(), variables, context)
 
       switch (mutator) {
         case "content":

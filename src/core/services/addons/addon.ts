@@ -98,13 +98,12 @@ export abstract class Addon {
     if (!existsSync(addonFolder)) mkdirSync(addonFolder);
 
     return new BaseConfig({
-      ConfigClass: config,
       logger: this.logger,
       configFilePath: join('configs', this.name, configFilePath),
       defaultFilePath: join("build", "addons", this.name, "resources", configFilePath),
       update: update,
       id: configFilePath.slice(0, -4)
-    }).initialize();
+    }).initialize(config);
   }
 
   async createConfigSection(configFolderPath: string, config: unknown): Promise<Collection<string, BaseConfig>> {
@@ -112,10 +111,9 @@ export abstract class Addon {
     if (!existsSync(addonFolder)) mkdirSync(addonFolder);
 
     return new BaseConfigSection(
-      config,
       this.logger,
       join('configs', this.name, configFolderPath),
       join("build", "addons", this.name, "resources", configFolderPath)
-    ).initialize();
+    ).initialize(config);
   }
 }

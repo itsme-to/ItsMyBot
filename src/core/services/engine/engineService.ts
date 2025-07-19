@@ -27,14 +27,14 @@ export default class EngineService extends Service {
   }
 
   async loadScripts() {
-    const scripts = await new BaseConfigSection(ScriptConfig, this.manager.logger, 'scripting/scripts', 'build/core/resources/scripting/scripts').initialize();
+    const scripts = await new BaseConfigSection(this.manager.logger, 'scripting/scripts', 'build/core/resources/scripting/scripts').initialize(ScriptConfig);
     for (const filePath of scripts) {
       this.registerScript(filePath[0], filePath[1], this.manager.logger);
     }
   }
 
   async loadCustomCommands() {
-    const customCommands = await new BaseConfigSection(CustomCommandConfig, this.manager.logger, 'scripting/custom-commands', 'build/core/resources/scripting/custom-commands').initialize();
+    const customCommands = await new BaseConfigSection(this.manager.logger, 'scripting/custom-commands', 'build/core/resources/scripting/custom-commands').initialize(CustomCommandConfig);
 
     for (const filePath of customCommands) {
       this.registerCustomCommand(filePath[0], filePath[1]);

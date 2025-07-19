@@ -8,7 +8,6 @@ import { plainToInstance } from 'class-transformer';
 import { validate, ValidationError } from 'class-validator';
 
 export class BaseConfig extends Config {
-  public configClass?: any
   public update: boolean
 
   /** Id of the file, it's the relative path without the extension */
@@ -22,15 +21,13 @@ export class BaseConfig extends Config {
 
   constructor(settings: { logger: Logger, configFilePath: string, defaultFilePath?: string, ConfigClass?: unknown, update?: boolean; id: string }) {
     super(settings.logger, settings.configFilePath);
-    this.configClass = settings.ConfigClass
-
     this.update = settings.update || false
     this.id = settings.id
     this.configFilePath = join(resolve(), settings.configFilePath);
     this.defaultFilePath = settings.defaultFilePath ? join(resolve(), settings.defaultFilePath) : undefined;
   }
 
-  async initialize() {
+  async initialize(configClass?: any) {
     if (this.defaultFilePath && !await Utils.fileExists(this.defaultFilePath)) {
       this.logger.warn(`Default file not found at ${this.defaultFilePath}`);
       return this;
@@ -44,23 +41,23 @@ export class BaseConfig extends Config {
     } else {
       await this.replaceTabs();
     }
-    await this.loadConfigs();
+    await this.loadConfigs(configClass);
     return this;
   }
 
-  async loadConfigs() {
+  async loadConfigs(configClass?: any) {
     this.configContent = parseDocument(await fs.readFile(this.configFilePath, 'utf8'));
     if (this.defaultFilePath) {
       this.defaultContent = parseDocument(await fs.readFile(this.defaultFilePath, 'utf8'));
     }
 
-    await this.validate();
+    await this.validate(configClass);
     this.init(this.configContent.toJS());
   }
 
-  async validate() {
-    if (!this.configClass) return;
-    const config = plainToInstance(this.configClass, this.configContent.toJS());  
+  async validate(configClass?: any) {
+    if (!configClass) return;
+    const config = plainToInstance(configClass, this.configContent.toJS());
 
     if (!config) return this.handleValidationErrors(['Empty configuration file, please delete it or fill it with the values. If the error persists, contact the addon developer.']);
 

@@ -97,10 +97,11 @@ export async function setupMessage(settings: MessageSettings): Promise<MessageOu
 
   for (const [i, values] of configComponents) {
     const row = rows[(parseInt(i) - 1)];
-
+    
     if (!row || !Array.isArray(values) || !values.length) continue;
 
     for (const component of values) {
+      if (!component || typeof component !== 'object') continue;
       const buildComponent = await Utils.setupComponent<MessageActionRowComponentBuilder>({
         config: component,
         variables: variables,
