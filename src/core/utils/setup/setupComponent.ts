@@ -62,7 +62,7 @@ export async function setupComponent<T extends SetupComponentType = SetupCompone
     case 'separator': {
       const separator = new SeparatorBuilder()
         .setSpacing(config.getNumber('spacing'))
-        .setDivider(config.getBoolOrNull('divider') || true)
+        .setDivider(config.getBoolOrNull('divider') ?? true)
 
       return [separator as T]
     }
