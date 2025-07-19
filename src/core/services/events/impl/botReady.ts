@@ -32,7 +32,8 @@ export default class BotReadyEvent extends Event {
 
       currentIndex++;
     };
-
+    
+    if (activities.length === 0) return;
     updateActivity(this.manager);
     setInterval(() => updateActivity(this.manager), presence.getNumber("interval") * 1000);
   }
