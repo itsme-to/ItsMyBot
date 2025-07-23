@@ -32,8 +32,12 @@ export default class MetaHandler extends Service {
 
   async initialize() {
     await MetaData.sync({ force: true });
+    await this.loadMetas();
+    this.manager.logger.info("Meta handler initialized.");
+  }
 
-    const metas = await new BaseConfigSection(MetaConfig, this.manager.logger, 'scripting/metas', 'build/core/resources/scripting/metas').initialize();
+  async loadMetas() {
+    const metas = await new BaseConfigSection(this.manager.logger, 'scripting/metas', 'build/core/resources/scripting/metas').initialize(MetaConfig);
     for (const filePath of metas) {
       for (const config of filePath[1].getSubsections('metas')) {
         this.registerMeta(
@@ -44,8 +48,6 @@ export default class MetaHandler extends Service {
         );
       }
     }
-
-    this.manager.logger.info("Meta handler initialized.");
   }
 
   async registerMeta(key: string, mode: MetaMode, type: MetaType, defaultValue?: string) {
@@ -66,7 +68,6 @@ export default class MetaHandler extends Service {
     }
 
     this.metas.set(key, { key, type, mode, default: defaultValue });
-    this.manager.logger.info(`Registered meta: ${key} (${mode}, ${type})`);
   }
 
   async findOrCreate(key: string, value?: string, scopeId: string = 'global'): Promise<MetaData> {

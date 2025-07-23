@@ -3,12 +3,13 @@ import { Events as DiscordEvents } from 'discord.js';
 enum BotEvents {
   EveryHour = 'everyHour',
   EveryMinute = 'everyMinute',
-  BotReady = 'botReady',
+  EveryDay = 'everyDay',
   ButtonClick = 'buttonClick',
   SelectMenu = 'selectMenu',
   ModalSubmit = 'modalSubmit',
   VoiceJoin = 'voiceJoin',
   VoiceLeave = 'voiceLeave',
+  BotReady = 'botReady',
 
   /** 
    * @deprecated Use `Events.ButtonClick` instead. 

@@ -81,6 +81,10 @@ export class MutatorValidator {
   @IsOptional()
   @IsString()
   user: string
+
+  @IsOptional()
+  @IsString()
+  message: string
 }
 
 class ActionArgumentValidator extends MessageValidator {
@@ -93,6 +97,10 @@ class ActionArgumentValidator extends MessageValidator {
   @IsOptional()
   @IsString({ each: true })
   value: string | string[]
+
+  @IsOptional()
+  @IsString()
+  message: string
 
   @IsOptional()
   @IsInt()

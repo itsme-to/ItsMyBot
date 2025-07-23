@@ -1,19 +1,19 @@
 import chalk from 'chalk';
-import * as fs from 'fs';
 import { stdout } from 'process';
-import logManager from './logManager.js';
 
 export class Logger {
   prefix: string;
-  logFile: fs.WriteStream;
 
   constructor(prefix: string = "ItsMyBot") {
     this.prefix = prefix;
-    this.logFile = fs.createWriteStream('./logs/latest.log', { flags: 'a' });
   }
 
   private getCurrentTimestamp() {
-    return new Date().toLocaleTimeString();
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    const ss = String(now.getSeconds()).padStart(2, '0');
+    return `${hh}:${mm}:${ss}`;
   }
 
   public warn(...text: any[]) {
@@ -21,7 +21,6 @@ export class Logger {
     const message = `[${timestamp}] ${chalk.bold(chalk.hex("#FADD05")("[WARN]"))}: [${this.prefix}] ${text.join('\n')}`;
 
     stdout.write(message + '\n');
-    logManager.log(message);
   }
 
   public error(...text: any[]) {
@@ -43,6 +42,8 @@ export class Logger {
         if ('cause' in item) {
           messageParts.push('Cause:\n' + JSON.stringify((item as any).cause, null, 2));
         }
+      } else if (Array.isArray(item)) {
+        messageParts.push(...item);
       } else {
         messageParts.push(item);
       }
@@ -51,14 +52,12 @@ export class Logger {
     const message = `[${timestamp}] ${chalk.bold(chalk.hex("#FF380B")("[ERROR]"))}: [${this.prefix}] ${messageParts.join('\n')}`;
   
     stdout.write(message + '\n');
-    logManager.log(message);
   }
 
   public empty(...text: any[]) {
     const message = text.join(' ');
 
     stdout.write(message + '\n');
-    logManager.log(message);
   }
 
   public info(...text: any[]) {
@@ -66,7 +65,6 @@ export class Logger {
     const message = `[${timestamp}] ${chalk.bold(chalk.hex("#61FF73")("[INFO]"))}: [${this.prefix}] ${text.join('\n')}`;
 
     stdout.write(message + '\n');
-    logManager.log(message);
   }
 
   public debug(...text: any[]) {
@@ -74,6 +72,5 @@ export class Logger {
     const message = `[${timestamp}] ${chalk.bold(chalk.hex("#17D5F7")("[DEBUG]"))}: [${this.prefix}] ${text.join('\n')}`;
 
     stdout.write(message + '\n');
-    logManager.log(message);
   }
 }

@@ -1,11 +1,12 @@
 import chalk from 'chalk';
 import { schedule } from 'node-cron';
 import { Event, Events } from '@itsmybot';
-import { Client } from 'discord.js';
+import { Client, Guild } from 'discord.js';
 
 export default class ClientReadyEvent extends Event {
   name = Events.ClientReady;
   once = true;
+  priority = 1
 
   async execute(client: Client) {
     this.manager.services.command.deployCommands();
@@ -29,32 +30,37 @@ export default class ClientReadyEvent extends Event {
     this.logger.empty("#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#");
     this.logger.info("Bot ready");
 
-    schedule('0 * * * *', () => {
-      this.manager.client.emit('everyHour');
-    });
-
-    schedule('* * * * *', () => {
-      this.manager.client.emit('everyMinute');
-    });
-
-    let isPrimaryGuild = false;
+    let primaryGuild: Guild | undefined;
     for (const guild of client.guilds.cache.values()) {
-      if (guild.id === this.manager.primaryGuildId) {
-        isPrimaryGuild = true;
-        break;
-      }
+        if (guild.id === this.manager.primaryGuildId) {
+          primaryGuild = guild;
+          break;
+        }
     }
 
-    if (isPrimaryGuild) {
+    if (primaryGuild) {
       this.logger.info(`${client.guilds.cache.size} guilds found`);
-      this.logger.info(`Connected to ${chalk.hex("#ffbe0b")(client.guilds.cache.get(this.manager.primaryGuildId)!.name)}`);
+      this.logger.info(`Connected to ${chalk.hex("#ffbe0b")(primaryGuild.name)}`);
     } else {
       this.logger.error("Primary Guild not found");
       this.logger.error("Please invite the bot to the primary guild");
       this.logger.error(chalk.blue(chalk.underline(`https://discord.com/api/oauth2/authorize?client_id=${this.manager.client.user!.id}&permissions=8&scope=applications.commands%20bot`)));
-      process.exit(1);
+      return process.exit(1);
     }
 
-    this.manager.client.emit(Events.BotReady);
+    this.manager.client.emit(Events.BotReady, primaryGuild);
+
+    schedule('* * * * *', async () => {
+      await primaryGuild.fetch()
+      this.manager.client.emit(Events.EveryMinute, primaryGuild);
+    });
+
+    schedule('0 * * * *', async () => {
+      this.manager.client.emit(Events.EveryHour, primaryGuild);
+    });
+
+    schedule('0 0 * * *', async () => {
+      this.manager.client.emit(Events.EveryDay, primaryGuild);
+    });
   }
 };

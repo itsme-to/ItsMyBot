@@ -1,10 +1,10 @@
 {
   "name": "itsmybot",
-  "version": "3.4.1",
+  "version": "3.4.2",
   "description": "",
   "main": "build/index.js",
   "scripts": {
-    "make:plugin": "node ./build/core/tools/makePlugin.js",
+    "make:addon": "node ./build/core/tools/makeAddon.js",
     "build:clean": "rm -rf ./build",
     "build:itsmybot": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
     "build:copy": "cpy \"src/**/*.yml\" \"build/\" --parents",
@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@inquirer/prompts": "^7.2.0",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^22.10.2",
     "@types/node-cron": "^3.0.11",
     "@types/validator": "^13.11.10",
@@ -40,10 +41,12 @@
     "discord.js": "^14.19.3",
     "expr-eval": "^2.0.2",
     "glob": "^11.0.1",
+    "jsonwebtoken": "^9.0.2",
     "mariadb": "^3.4.0",
     "mysql2": "^3.12.0",
     "node-cron": "^3.0.3",
     "openai": "^4.85.1",
+    "selfsigned": "^2.4.1",
     "sequelize": "^6.37.5",
     "sequelize-typescript": "^2.1.6",
     "sqlite3": "^5.1.7",

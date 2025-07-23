@@ -6,8 +6,7 @@ import manager from '@itsmybot';
 export class ActionData extends BaseScript {
   public id?: string;
   public args: Config;
-  private fileName: string;
-  private path: string;
+  private filePath: string;
   public triggers?: string[];
   public mutators?: Config;
   public triggerActions: ActionData[];
@@ -17,6 +16,7 @@ export class ActionData extends BaseScript {
   constructor(manager: Manager, data: Config, logger: Logger, ) {
     super(manager, data, logger);
     this.id = data.getStringOrNull("id");
+    this.filePath = data.filePath || "unknown";
     this.args = data.getSubsectionOrNull("args") || data.empty();
     this.triggers = data.getStringsOrNull("triggers");
     this.mutators = data.getSubsectionOrNull("mutators");
@@ -52,7 +52,7 @@ export class ActionData extends BaseScript {
     if (!this.mutators) return context
 
     for (const [mutator, value] of this.mutators.values) {
-      const parsedValue = await Utils.applyVariables(value, variables, context)
+      const parsedValue = await Utils.applyVariables(value.toString(), variables, context)
 
       switch (mutator) {
         case "content":
@@ -80,6 +80,14 @@ export class ActionData extends BaseScript {
           if (!newChannel) continue
 
           context.channel = newChannel
+          break;
+
+        case 'message':
+          if (!context.channel || !context.channel.isSendable()) continue
+          const newMessage = await context.channel.messages.fetch(parsedValue).catch(() => null)
+          if (!newMessage) continue
+
+          context.message = newMessage
           break;
         
         case 'guild':
@@ -116,7 +124,7 @@ export class ActionData extends BaseScript {
   }
 
   public logError(message: string) {
-    this.logger.error(`${message} in ${this.fileName} at ${this.path}`);
+    this.logger.error(`${message} in ${this.filePath}`);
   }
 
   public async missingArg(missing: string, context: Context) {

@@ -1,5 +1,5 @@
 import { Collection } from 'discord.js';
-import { Action, ActionData, Manager, Addon, Context, Service, Variable } from '@itsmybot';
+import { Action, ActionData, Manager, Addon, Context, Service, Variable, Config } from '@itsmybot';
 import { sync } from 'glob';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
@@ -37,6 +37,11 @@ export default class ActionService extends Service{
     if (this.actions.has(action.id)) return action.logger.warn(`Action ${action.id} is already registered`);
 
     this.actions.set(action.id, action);
+  }
+
+  buildActions(actions: Config[], addon: Addon | undefined = undefined): ActionData[] {
+    if (!actions) return [];
+    return actions.map(action => new ActionData(this.manager, action, addon?.logger || this.manager.logger));
   }
 
   async triggerAction(script: ActionData, context: Context, variables: Variable[] = []) {

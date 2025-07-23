@@ -28,12 +28,12 @@ export default class MetaExpansion extends Expansion {
       let list: string[] = [];
 
       try {
-        list = JSON.parse(meta?.value || '[]');
+        list = JSON.parse(meta?.value || metaDef.default || '[]');
       } catch {
-        return '';
+        return metaDef.default;
       }
 
-      if (!Array.isArray(list)) return '';
+      if (!Array.isArray(list)) return metaDef.default;
 
       if (isIncludeCheck && suffix) {
         return list.includes(suffix) ? 'true' : 'false';
@@ -50,6 +50,6 @@ export default class MetaExpansion extends Expansion {
       return JSON.stringify(list);
     }
 
-    return meta?.value ?? '';
+    return meta?.value ?? metaDef.default;
   }
 }

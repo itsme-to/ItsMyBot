@@ -13,7 +13,7 @@ import { setupTextDisplay } from './setup/setupTextDisplay.js';
 import { userVariables, channelVariables, roleVariables, timeVariables } from './variables.js';
 import { transcript, transcriptMessage } from './transcript.js';
 
-export { Logger } from './logger/index.js';
+export { Logger } from './logger.js';
 export { Cooldown } from './cooldown.js';
 export { Pagination } from './pagination.js';
 
@@ -273,7 +273,8 @@ export default class Utils {
     const timeUnits: { [key: string]: number } = {
       d: 24 * 60 * 60,
       h: 60 * 60,
-      m: 60
+      m: 60,
+      s: 1
     };
 
     const matches = time.match(/(\d+)([a-z]+)/g);

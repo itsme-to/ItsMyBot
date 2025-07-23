@@ -4,11 +4,11 @@ import { Config } from '@itsmybot';
 export class ComponentBuilder {
   cooldown: Cooldown = new Cooldown(0);
   public: boolean = false;
-  conditions: Config[]
+  conditions: Config[] = [];
 
   using(config: Config) {
     if (config.has("cooldown")) this.setCooldown(config.getNumber("cooldown"));
-     this.conditions = config.getSubsectionsOrNull('conditions') || []
+    this.conditions = config.getSubsectionsOrNull('conditions') || [];
 
     return this;
   }

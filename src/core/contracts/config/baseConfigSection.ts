@@ -7,8 +7,6 @@ import { Collection } from 'discord.js';
 import { BaseConfig } from './baseConfig.js';
 
 export class BaseConfigSection {
-  public configClass: any
-
   public logger: Logger
   public configs: Collection<string, BaseConfig> = new Collection();
 
@@ -16,8 +14,7 @@ export class BaseConfigSection {
   private relConfigFolderPath: string;
   private relDefaultFolderPath: string;
 
-  constructor(ConfigClass: unknown, logger: Logger, configFolderPath: string, defaultFolderPath: string) {
-    this.configClass = ConfigClass
+  constructor(logger: Logger, configFolderPath: string, defaultFolderPath: string) {
     this.logger = logger
 
     this.configFolderPath = configFolderPath;
@@ -25,7 +22,7 @@ export class BaseConfigSection {
     this.relDefaultFolderPath = join(resolve(), defaultFolderPath);
   }
 
-  async initialize() {
+  async initialize(configClass: unknown) {
     if (!await Utils.fileExists(this.relDefaultFolderPath)) {
       this.logger.error(`Default file not found at ${this.relDefaultFolderPath}`);
       return this.configs;
@@ -50,21 +47,21 @@ export class BaseConfigSection {
       }
     }
 
-    await this.loadConfigs();
+    await this.loadConfigs(configClass);
 
     return this.configs;
   }
 
-  async loadConfigs() {
+  async loadConfigs(configClass?: unknown) {
     const files = await glob('**/!(_)*.yml', { cwd: this.relConfigFolderPath, dot: true });
 
-    for (const file of files) {
+    await Promise.all(files.map(async (file) => {
       const destPath = join(this.configFolderPath, file);
       const id = file.slice(0, -4); // remove .yml extension
 
-      const config = new BaseConfig({ ConfigClass: this.configClass, logger: this.logger, configFilePath: destPath, id });
-      await config.initialize();
+      const config = new BaseConfig({ logger: this.logger, configFilePath: destPath, id });
+      await config.initialize(configClass);
       this.configs.set(id, config);
-    }
+    }));
   }
 }

@@ -1,11 +1,12 @@
 import Utils from '@utils';
 import { Manager, Event, Events } from '@itsmybot';
+import { Guild } from 'discord.js';
 
 export default class BotReadyEvent extends Event {
   name = Events.BotReady;
   once = true;
 
-  async execute() {
+  async execute(primaryGuild: Guild) {
     const presence = this.manager.configs.config.getSubsection("presence");
     const activities = presence.getSubsections("activities");
     const status = Utils.getPresenceStatus(presence.getString("status"))
@@ -31,7 +32,8 @@ export default class BotReadyEvent extends Event {
 
       currentIndex++;
     };
-
+    
+    if (activities.length === 0) return;
     updateActivity(this.manager);
     setInterval(() => updateActivity(this.manager), presence.getNumber("interval") * 1000);
   }

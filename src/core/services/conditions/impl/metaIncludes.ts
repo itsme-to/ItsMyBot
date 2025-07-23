@@ -1,8 +1,8 @@
 import { Condition, ConditionData, Context, Variable } from '@itsmybot';
 import Utils from '@utils';
 
-export default class MetaValueIncludesCondition extends Condition {
-  id = "metaValueIncludes";
+export default class MetaIncludesCondition extends Condition {
+  id = "metaIncludes";
 
   async isMet(condition: ConditionData, context: Context, variables: Variable[]) {
     const arg = condition.args.getStringOrNull("key")

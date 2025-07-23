@@ -3,7 +3,7 @@ import { Event, Events } from '@itsmybot';
 
 export default class VoiceStateUpdateEvent extends Event {
     name = Events.VoiceStateUpdate;
-    priorty: 0;
+    priority = 0;
 
     async execute(oldState: VoiceState, newState: VoiceState) {
         if (oldState.channel) {

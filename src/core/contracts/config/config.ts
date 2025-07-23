@@ -3,8 +3,10 @@ import Utils from '@utils';
 import * as fs from 'fs/promises';
 import { parseDocument } from 'yaml';
 
+type ConfigPrimitive = string | number | boolean | Config | Array<string | number | boolean | Config>;
+
 export class Config {
-  public values: Map<string, any>;
+  public values: Map<string, ConfigPrimitive>;
   public logger: Logger;
   public currentPath: string | undefined;
   public filePath: string | undefined
@@ -35,24 +37,22 @@ export class Config {
   }
 
   private getOrNull(path: string): unknown {
-    const nearestPath = path.split('.')[0];
+    const parts = path.split('.');
+    let current: any = this;
 
-    if (path.includes('.')) {
-      const remainingPath = path.substring(nearestPath.length + 1);
-      if (!remainingPath) return undefined;
-
-      const first = this.getOrNull(nearestPath);
-      return first instanceof Config ? first.getOrNull(remainingPath) : undefined;
+    for (const part of parts) {
+      if (!(current instanceof Config)) return undefined;
+      current = current.values.get(part);
     }
 
-    return this.values.get(nearestPath);
+    return current;
   }
 
   private get(path: string): unknown {
     const value = this.getOrNull(path);
-    if (value === null || value === undefined) {
+    if (TypeCheckers.isNullOrUndefined(value)) {
       const totalPath = this.getPath(path);
-      throw this.logger.error(`No config value found for "${totalPath}"` + (this.filePath ? ` in file ${this.filePath}` : ""));
+      throw `No config value found for "${totalPath}"` + (this.filePath ? ` in file ${this.filePath}` : "");
     }
     return value;
   }
@@ -73,16 +73,16 @@ export class Config {
 
   public getStringOrNull(path: string, randomize: boolean = false): string | undefined {
     const value = this.getOrNull(path);
-    
-    if (value === null || value === undefined) return undefined;
-    if (TypeCheckers.isString(value)) return value
+
+    if (TypeCheckers.isNullOrUndefined(value)) return undefined;
+    if (TypeCheckers.isString(value)) return value;
 
     if (TypeCheckers.isStringArray(value) && randomize) {
-      return Utils.getRandom(value)
+      return Utils.getRandom(value);
     }
 
-    if (TypeCheckers.isBoolean(value)) return value.toString()
-    if (TypeCheckers.isNumber(value)) return value.toString()  
+    if (TypeCheckers.isBoolean(value)) return value.toString();
+    if (TypeCheckers.isNumber(value)) return value.toString();
 
     return undefined;
   }
@@ -99,9 +99,9 @@ export class Config {
   public getStringsOrNull(path: string): string[] | undefined {
     const value = this.getOrNull(path);
 
-    if (value === null || value === undefined) return undefined;
-    if (TypeCheckers.isStringArray(value)) return value
-    if (TypeCheckers.isString(value)) return [value]
+    if (TypeCheckers.isNullOrUndefined(value)) return undefined;
+    if (TypeCheckers.isStringArray(value)) return value;
+    if (TypeCheckers.isString(value)) return [value];
 
     return undefined;
   }
@@ -117,8 +117,8 @@ export class Config {
   public getBoolOrNull(path: string): boolean | undefined {
     const value = this.getOrNull(path);
 
-    if (value === null || value === undefined) return undefined;
-    if (TypeCheckers.isBoolean(value)) return value
+    if (TypeCheckers.isNullOrUndefined(value)) return undefined;
+    if (TypeCheckers.isBoolean(value)) return value;
 
     return undefined;
   }
@@ -127,7 +127,6 @@ export class Config {
     const value = this.get(path);
 
     if (TypeCheckers.isNumber(value)) return value
-
     if (TypeCheckers.isNumberArray(value) && randomize) {
       return Utils.getRandom(value);
     }
@@ -138,9 +137,8 @@ export class Config {
   public getNumberOrNull(path: string, randomize: boolean = false): number | undefined {
     const value = this.getOrNull(path);
 
-    if (value === null || value === undefined) return undefined;
-    if (TypeCheckers.isNumber(value)) return value
-
+    if (TypeCheckers.isNullOrUndefined(value)) return undefined;
+    if (TypeCheckers.isNumber(value)) return value;
     if (TypeCheckers.isNumberArray(value) && randomize) {
       return Utils.getRandom(value);
     }
@@ -160,9 +158,9 @@ export class Config {
   public getNumbersOrNull(path: string): number[] | undefined {
     const value = this.getOrNull(path);
 
-    if (value === null || value === undefined) return undefined;
-    if (TypeCheckers.isNumberArray(value)) return value
-    if (TypeCheckers.isNumber(value)) return [value]
+    if (TypeCheckers.isNullOrUndefined(value)) return undefined;
+    if (TypeCheckers.isNumberArray(value)) return value;
+    if (TypeCheckers.isNumber(value)) return [value];
 
     return undefined;
   }
@@ -170,8 +168,7 @@ export class Config {
   public getSubsection(path: string, randomize: boolean = false): Config {
     const value = this.get(path);
 
-    if (TypeCheckers.isConfig(value)) return value
-
+    if (TypeCheckers.isConfig(value)) return value;
     if (TypeCheckers.isConfigArray(value) && randomize) {
       return Utils.getRandom(value);
     }
@@ -182,9 +179,8 @@ export class Config {
   public getSubsectionOrNull(path: string, randomize: boolean = false): Config | undefined {
     const value = this.getOrNull(path);
 
-    if (value === null || value === undefined) return undefined;
-    if (TypeCheckers.isConfig(value)) return value
-
+    if (TypeCheckers.isNullOrUndefined(value)) return undefined;
+    if (TypeCheckers.isConfig(value)) return value;
     if (TypeCheckers.isConfigArray(value) && randomize) {
       return Utils.getRandom(value);
     }
@@ -195,8 +191,8 @@ export class Config {
   public getSubsections(path: string): Config[] {
     const value = this.get(path);
 
-    if (TypeCheckers.isConfigArray(value)) return value
-    if (TypeCheckers.isConfig(value)) return [value]
+    if (TypeCheckers.isConfigArray(value)) return value;
+    if (TypeCheckers.isConfig(value)) return [value];
 
     throw this.logger.error(`Expected subsection array at path "${path}"`);
   }
@@ -204,9 +200,9 @@ export class Config {
   public getSubsectionsOrNull(path: string): Config[] | undefined {
     const value = this.getOrNull(path);
 
-    if (value === null || value === undefined) return undefined;
-    if (TypeCheckers.isConfigArray(value)) return value
-    if (TypeCheckers.isConfig(value)) return [value]
+    if (TypeCheckers.isNullOrUndefined(value)) return undefined;
+    if (TypeCheckers.isConfigArray(value)) return value;
+    if (TypeCheckers.isConfig(value)) return [value];
 
     return undefined;
   }
@@ -220,7 +216,8 @@ export class Config {
 
   public getObjectOrNull(path: string): any | undefined {
     const value = this.getOrNull(path);
-    if (value === null || value === undefined) return undefined;
+
+    if (TypeCheckers.isNullOrUndefined(value)) return undefined;
     if (TypeCheckers.isConfig(value)) return value.transformToObject(path)
 
     return undefined;
@@ -239,26 +236,30 @@ export class Config {
     return obj;
   }
 
-  public set(path: string, obj: unknown) {
+  public set(path: string, obj: unknown): void {
     const pathParts = path.split('.');
     const nearestPath = pathParts[0];
 
-    if (path.includes('.')) {
-      const remainingPath = path.substring(nearestPath.length + 1);
+    if (pathParts.length > 1) {
+      const remainingPath = pathParts.slice(1).join('.');
 
-      const section = this.getSubsectionOrNull(nearestPath) || this.empty(path);
+      let section = this.getSubsectionOrNull(nearestPath);
+      if (!section) {
+        section = new Config(this.logger, this.filePath, this.getPath(nearestPath));
+        this.values.set(nearestPath, section); 
+      }
+
       section.set(remainingPath, obj);
-      this.values.set(path, section);
       return;
     }
 
-    if (obj === null) {
-      this.values.delete(path);
+    if (TypeCheckers.isNullOrUndefined(obj)) {
+      this.values.delete(nearestPath);
     } else {
-      this.values.set(path, obj);
+      const constrained = this.constrainConfigTypes(obj);
+      this.values.set(nearestPath, constrained);
     }
   }
-
   public async setFileContent(path: string, obj: unknown) {
     if (!this.filePath) return false;
 
@@ -279,7 +280,7 @@ export class Config {
 }
     
 
-  private normalizeToConfig(obj: unknown): Map<string, any> {
+  private normalizeToConfig(obj: unknown): Map<string, ConfigPrimitive> {
     const normalized = new Map();
 
     for (const [key, value] of Object.entries(obj as { [key: string]: unknown })) {
@@ -292,13 +293,13 @@ export class Config {
     return normalized;
   }
 
-  private constrainConfigTypes(value: unknown, path: string = '') {
+  private constrainConfigTypes(value: unknown, path: string = ''): ConfigPrimitive {
     const updatedPath = this.currentPath ? `${this.currentPath}.${path}` : path;
 
     if (Array.isArray(value)) {
       if (!value.length) return [];
       return value.map((item, index) => {
-        if (typeof item === 'object') {
+        if (typeof item === 'object' && item !== null) {
           const config = new Config(this.logger, this.filePath, `${updatedPath}[${index}]`);
           config.init(item);
           return config;
@@ -308,17 +309,21 @@ export class Config {
       });
     }
 
-    if (typeof value === 'object') {
+    if (typeof value === 'object' && value !== null) {
       const config = new Config(this.logger, this.filePath, updatedPath);
       config.init(value);
       return config;
     }
 
     if (typeof value === 'number' && !Number.isInteger(value)) {
-      return value.toFixed(2);
+      return Math.round(value * 100) / 100;
     }
 
-    return value;
+    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+      return value;
+    }
+
+    throw new Error(`Unsupported config value type: ${typeof value}`);
   }
 
   public toPlaintext(): string {
@@ -369,6 +374,10 @@ class TypeCheckers {
 
   static isConfigArray(value: unknown): value is Config[] {
     return Array.isArray(value) && value.every(item => this.isConfig(item));
+  }
+
+  static isNullOrUndefined(value: unknown): value is null | undefined {
+    return value === null || value === undefined;
   }
 }
 
