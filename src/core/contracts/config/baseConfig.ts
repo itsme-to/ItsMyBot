@@ -12,10 +12,6 @@ export class BaseConfig extends Config {
 
   /** Id of the file, it's the relative path without the extension */
   public id: string
-
-  private configContent: Document
-  private defaultContent: Document
-
   private configFilePath: string;
   private defaultFilePath?: string;
 
@@ -46,18 +42,19 @@ export class BaseConfig extends Config {
   }
 
   async loadConfigs(configClass?: any) {
-    this.configContent = parseDocument(await fs.readFile(this.configFilePath, 'utf8'));
+    const configContent = parseDocument(await fs.readFile(this.configFilePath, 'utf8'));
+    let defaultContent 
     if (this.defaultFilePath) {
-      this.defaultContent = parseDocument(await fs.readFile(this.defaultFilePath, 'utf8'));
+      defaultContent = parseDocument(await fs.readFile(this.defaultFilePath, 'utf8'));
     }
 
-    await this.validate(configClass);
-    this.init(this.configContent.toJS());
+    await this.validate(configClass, configContent, defaultContent);
+    this.init(configContent.toJS());
   }
 
-  async validate(configClass?: any) {
+  async validate(configClass: any, configContent: Document, defaultContent?: Document) {
     if (!configClass) return;
-    const config = plainToInstance(configClass, this.configContent.toJS());
+    const config = plainToInstance(configClass, configContent.toJS());
 
     if (!config) return this.handleValidationErrors(['Empty configuration file, please delete it or fill it with the values. If the error persists, contact the addon developer.']);
 
@@ -65,28 +62,28 @@ export class BaseConfig extends Config {
 
     const formattedErrors = formatValidationErrors(errors);
 
-    if (this.defaultContent) {
-      const corrected = await this.correctWithDefaults(formattedErrors);
+    if (defaultContent) {
+      const corrected = await this.correctWithDefaults(formattedErrors, configContent, defaultContent);
       if (corrected) {
-        await fs.writeFile(this.configFilePath, this.configContent.toString(), 'utf8');
+        await fs.writeFile(this.configFilePath, configContent.toString(), 'utf8');
         return this.loadConfigs();
       }
     }
 
     this.handleValidationErrors(formattedErrors);
   }
-  
-  async correctWithDefaults(errors: string[]): Promise<boolean> {
+
+  async correctWithDefaults(errors: string[], configContent: Document, defaultContent: Document): Promise<boolean> {
     let corrected = false;
 
     for (const error of errors) {
       const [path, errorMessage] = error.split(': ', 2);
       if (errorMessage.includes('should not be null or undefined')) {
         const pathArray = path.split('.');
-        const defaultValue: unknown = this.defaultContent.getIn(pathArray, true);
+        const defaultValue: unknown = defaultContent.getIn(pathArray, true);
         if (defaultValue !== null && defaultValue !== undefined) {
           this.logger.warn(`Using default value for '${path}': ${defaultValue}`);
-          this.configContent.setIn(pathArray, defaultValue);
+          configContent.setIn(pathArray, defaultValue);
           corrected = true;
         }
       }
