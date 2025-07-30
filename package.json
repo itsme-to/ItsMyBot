@@ -29,7 +29,6 @@
     "@types/node-cron": "^3.0.11",
     "@types/validator": "^13.11.10",
     "cpy-cli": "^5.0.0",
-    "reflect-metadata": "^0.2.2",
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.10",
     "typescript": "^5.4.5"
@@ -39,6 +38,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "discord.js": "^14.19.3",
+    "reflect-metadata": "^0.2.2",
     "expr-eval": "^2.0.2",
     "glob": "^11.0.1",
     "jsonwebtoken": "^9.0.2",
