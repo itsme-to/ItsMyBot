@@ -17,6 +17,12 @@ only-in-primary-guild:
       content: "This action can only be used in the primary guild."
   ephemeral: true
 
+invalid-time:
+  components:
+    - type: text-display
+      content: "Invalid time format. Please use a valid time format. Example: 1d, 1h, 1m, 1s."
+  ephemeral: true
+
 pagination:
   select-placeholder: "Page %current_page%/%total_pages%"
   placeholder: "Select an option"
