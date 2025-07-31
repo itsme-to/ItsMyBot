@@ -61,8 +61,7 @@ const manager = new Manager({
         configs: join(processFolder, 'configs'),
         addons: join(processFolder, 'build', 'addons'),
         scripts: join(processFolder, 'scripts'),
-        customCommands: join(processFolder, 'custom-commands'),
-        logs: join(processFolder, 'logs'),
+        customCommands: join(processFolder, 'custom-commands')
     }
 });
 
