@@ -43,6 +43,9 @@ export const userVariables = (user: User, prefix = "user") => {
     searchFor: `%${prefix}_pfp%`,
     replaceWith: user.avatar,
   }, {
+    searchFor: `%${prefix}_bot%`,
+    replaceWith: user.isBot,
+  }, {
     searchFor: `%${prefix}_create_date%`,
     replaceWith: time(user.createdAt, "D"),
   }, {
@@ -73,7 +76,7 @@ export const channelVariables = (channel: Channel, prefix = "channel") => {
   }, {
     searchFor: `%${prefix}_type%`,
     replaceWith: channel.type,
-  }, {
+  },  {
     searchFor: `%${prefix}_create_date%`,
     replaceWith: channel.createdTimestamp ? time(Math.round(channel.createdTimestamp / 1000), "D") : "Unknown",
   }, {

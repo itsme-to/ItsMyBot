@@ -41,6 +41,12 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
   declare roles: string[];
 
   @Column({
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  })
+  declare isBot: boolean;
+
+  @Column({
     type: DataTypes.INTEGER,
     defaultValue: 0
   })

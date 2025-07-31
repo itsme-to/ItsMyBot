@@ -118,6 +118,11 @@ export default class DefaultConfig {
   @IsDefined()
   @ValidateNested()
   @Type(() => MessageValidator)
+  'invalid-time': MessageValidator
+
+  @IsDefined()
+  @ValidateNested()
+  @Type(() => MessageValidator)
   'only-in-primary-guild': MessageValidator
 
   @IsDefined()

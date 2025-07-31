@@ -12,7 +12,8 @@ export default class MessagesLeaderboard extends Leaderboard {
       where: {
         messages: {
           [Op.gt]: 0
-        }
+        },
+        isBot: false
       }
     });
 

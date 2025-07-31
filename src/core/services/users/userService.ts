@@ -32,6 +32,7 @@ export default class UserService extends Service {
       username: member.user.username,
       displayName: member.user.displayName || member.user.globalName || member.user.username,
       avatar: member.displayAvatarURL(),
+      isBot: member.user.bot,
       createdAt: Math.round(member.user.createdTimestamp / 1000),
       joinedAt: member.joinedTimestamp ? Math.round(member.joinedTimestamp / 1000) : new Date().getTime(),
       roles: member.roles.cache
