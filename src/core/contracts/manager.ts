@@ -24,7 +24,6 @@ export interface ManagerOptions {
     addons: string,
     scripts: string,
     customCommands: string,
-    logs: string
   }
 }
 
