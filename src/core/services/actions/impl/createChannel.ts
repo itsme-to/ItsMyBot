@@ -6,17 +6,15 @@ export default class CreateChannelAction extends Action {
   id = "createChannel";
 
   async onTrigger(script: ActionData, context: Context, variables: Variable[]) {
-    const channelName = await Utils.applyVariables(script.args.getStringOrNull("value"), variables, context);
-    const description = await Utils.applyVariables(script.args.getStringOrNull("description"), variables, context) || undefined;
-    const permissionOverwrites = await Promise.all(script.args.getSubsectionsOrNull("permission-overwrites")?.map(async overwrite => {
+    const channelName = await Utils.applyVariables(script.args.getStringOrNull("value", true), variables, context);
+    const description = await Utils.applyVariables(script.args.getStringOrNull("description", true), variables, context) || undefined;
+    const permissionOverwrites = script.args.has("permission-overwrites") ? await Promise.all(script.args.getSubsections("permission-overwrites").map(async overwrite => {
       return {
         id: await Utils.applyVariables(overwrite.getString("id"), variables, context),
         allow: overwrite.getStringsOrNull("allow"),
         deny: overwrite.getStringsOrNull("deny")
       } as OverwriteResolvable;
-    }) || []);
-
-
+    })) : undefined;
 
     const type = script.args.getStringOrNull("channel-type");
     let channelType: GuildChannelTypes;

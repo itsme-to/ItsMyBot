@@ -6,16 +6,16 @@ export default class EditChannelAction extends Action {
   id = "editChannel";
 
   async onTrigger(script: ActionData, context: Context, variables: Variable[]) {
-    const channelName = await Utils.applyVariables(script.args.getStringOrNull("value"), variables, context) || undefined
+    const channelName = await Utils.applyVariables(script.args.getStringOrNull("value", true), variables, context) || undefined
     const parent = script.args.getStringOrNull("parent");
-    const description = await Utils.applyVariables(script.args.getStringOrNull("description"), variables, context) || undefined;
-    const permissionOverwrites = await Promise.all(script.args.getSubsectionsOrNull("permission-overwrites")?.map(async overwrite => {
+    const description = await Utils.applyVariables(script.args.getStringOrNull("description", true), variables, context) || undefined;
+    const permissionOverwrites = script.args.has("permission-overwrites") ? await Promise.all(script.args.getSubsections("permission-overwrites").map(async overwrite => {
       return {
         id: await Utils.applyVariables(overwrite.getString("id"), variables, context),
         allow: overwrite.getStringsOrNull("allow"),
         deny: overwrite.getStringsOrNull("deny")
       } as OverwriteResolvable;
-    }) || []);
+    })) : undefined;
 
     if (!context.channel) return script.missingContext("channel", context);
     if (context.channel.type === ChannelType.DM || context.channel.type === ChannelType.GroupDM) {

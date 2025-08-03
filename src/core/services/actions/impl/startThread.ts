@@ -34,7 +34,7 @@ export default class StartThreadAction extends Action {
       name: await Utils.applyVariables(script.args.getString("value"), variables, context) || "Thread",
       autoArchiveDuration: script.args.getNumberOrNull("duration") || 60,
       message: await Utils.setupMessage({ config: script.args, context, variables }) || undefined,
-      appliedTags: await Promise.all(script.args.getStringsOrNull("tags")?.map(async tag => await Utils.applyVariables(tag, variables, context)) || [])
+      appliedTags: script.args.has("tags") ? await Promise.all(script.args.getStrings("tags").map(async tag => await Utils.applyVariables(tag, variables, context))) : undefined
     });
 
   }
