@@ -13,7 +13,6 @@ export default class MetaSetAction extends Action {
     if (!value) return script.missingArg("value", context);
     if (!key) return script.missingArg("key", context);
 
-
     const meta = this.manager.services.engine.metaHandler.metas.get(key);
     if (!meta) return script.logError(`Meta with key ${key} is not registered.`);
 
