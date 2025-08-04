@@ -1,7 +1,7 @@
 
 import { Type } from 'class-transformer';
-import { IsString, IsInt, ValidateNested, IsOptional, ValidateIf, IsDefined, Max, Min, IsPositive, IsArray, IsBoolean, IsNumber } from 'class-validator';
-import { MessageValidator } from '@itsmybot';
+import { IsString, IsInt, ValidateNested, IsOptional, ValidateIf, IsDefined, Max, Min, IsPositive, IsArray, IsBoolean, IsNumber, Validate } from 'class-validator';
+import { IsChannelType, IsPermissionFlag, MessageValidator } from '@itsmybot';
 
 class ConditionArgumentValidator {
   @IsOptional()
@@ -87,6 +87,24 @@ export class MutatorValidator {
   message: string
 }
 
+class PermissionOverwrites {
+  @IsDefined()
+  @IsString()
+  id: string
+  
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  @Validate(IsPermissionFlag, { each: true })
+  allow: string[]
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  @Validate(IsPermissionFlag, { each: true })
+  deny: string[]
+}
+
 class ActionArgumentValidator extends MessageValidator {
   @IsOptional()
   @IsArray()
@@ -141,6 +159,30 @@ class ActionArgumentValidator extends MessageValidator {
 
   @IsOptional()
   headers: any
+
+  @IsOptional()
+  @IsString()
+  @Validate(IsChannelType)
+  'channel-type': string
+
+  @IsOptional()
+  @IsString()
+  parent: string
+
+  @IsOptional()
+  @IsString()
+  description: string
+
+  @IsOptional()
+  @IsArray()
+  @Type(() => PermissionOverwrites)
+  @ValidateNested({ each: true })
+  'permission-overwrites': PermissionOverwrites[]
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  'tags': string[]
 }
 
 export class ActionValidator {

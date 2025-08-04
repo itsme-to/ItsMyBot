@@ -9,7 +9,7 @@ interface ItemData {
 export interface Context {
   user?: User;
   member?: GuildMember;
-  channel?: Channel
+  channel?: Channel;
   message?: Message;
   guild?: Guild;
   content?: string;

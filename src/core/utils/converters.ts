@@ -129,19 +129,19 @@ export function getCommandOptionType(value: string): ApplicationCommandOptionTyp
 }
 
 const channelTypeValue = {
-  'GuildText': ['guildtext', '0'],
+  'GuildText': ['guildtext', 'text', '0'],
   'DM': ['dm', '1'],
-  'GuildVoice': ['guildvoice', '2'],
+  'GuildVoice': ['guildvoice', 'voice', '2'],
   'GroupDM': ['groupdm', '3'],
-  'GuildCategory': ['guildcategory', '4'],
-  'GuildAnnouncement': ['guildannouncement', 'guildnews', '5'],
+  'GuildCategory': ['guildcategory', 'category', '4'],
+  'GuildAnnouncement': ['guildannouncement', 'guildnews', 'news', 'announcement', '5'],
   'AnnouncementThread': ['announcementthread', 'guildnewsthread', '10'],
   'PublicThread': ['publicthread', 'guildpublicthread', '11'],
   'PrivateThread': ['privatethread', 'guildprivatethread', '12'],
-  'GuildStageVoice': ['guildstagevoice', '13'],
-  'GuildDirectory': ['guilddirectory', '14'],
-  'GuildForum': ['guildforum', '15'],
-  'GuildMedia': ['guildmedia', '16'],
+  'GuildStageVoice': ['guildstagevoice', 'stagevoice', '13'],
+  'GuildDirectory': ['guilddirectory', 'directory', '14'],
+  'GuildForum': ['guildforum', 'forum', '15'],
+  'GuildMedia': ['guildmedia', 'media', '16'],
 }
 export function getChannelType(value: string): ChannelType | undefined {
   const result = checkEnum(value, channelTypeValue)

@@ -24,15 +24,17 @@ export class ActionData extends BaseScript {
   }
 
   async run(context: Context, variables: Variable[] = []) {
-    if (!await this.shouldExecute(context, variables)) return;
+    const newVariables = [...variables];
+    const newContext = { ...context };
 
-    const variablesCopy = [...variables];
-    const updatedContext = await this.applyMutators(context, variables)
+    if (!await this.shouldExecute(newContext, newVariables)) return;
+
+    const updatedContext = await this.applyMutators(newContext, newVariables)
 
     if (this.args.has("delay")) {
-      setTimeout(async () => await this.executeActions(updatedContext, variablesCopy), this.args.getNumber("delay") * 1000)
+      setTimeout(async () => await this.executeActions(updatedContext, newVariables), this.args.getNumber("delay") * 1000)
     } else {
-      await this.executeActions(updatedContext, variablesCopy);
+      await this.executeActions(updatedContext, newVariables);
     }
   }
 
@@ -49,10 +51,10 @@ export class ActionData extends BaseScript {
   }
 
   async applyMutators(context: Context, variables: Variable[]) {
-    if (!this.mutators) return context
+    if (!this.mutators) return context;
 
     for (const [mutator, value] of this.mutators.values) {
-      const parsedValue = await Utils.applyVariables(value.toString(), variables, context)
+      const parsedValue = await Utils.applyVariables(value.toString(), variables, context);
 
       switch (mutator) {
         case "content":

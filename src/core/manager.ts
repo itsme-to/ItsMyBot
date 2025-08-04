@@ -44,7 +44,6 @@ export class Manager {
 
     if (!existsSync(managerOptions.dir.configs)) mkdirSync(managerOptions.dir.configs);
     if (!existsSync(managerOptions.dir.addons)) mkdirSync(managerOptions.dir.addons);
-    if (!existsSync(managerOptions.dir.logs)) mkdirSync(managerOptions.dir.logs);
   }
 
   public async initialize(): Promise<void> {
