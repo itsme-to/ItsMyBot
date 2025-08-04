@@ -5,6 +5,8 @@ export class CustomCommand extends BaseScript {
   async run(context: Context, variables: Variable[]) {
     if (!await this.meetsConditions(context, variables)) return;
 
-    this.actions.forEach(action => action.run(context, variables));
+    for (const action of this.actions) {
+      await action.run(context, variables);
+    }
   }
 }
