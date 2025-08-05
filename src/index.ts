@@ -34,45 +34,45 @@ const packageJsonPath = join(processFolder, 'package.json');
 const packageJSON = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
 
 const manager = new Manager({
-        intents: [
-            GatewayIntentBits.Guilds,
-            GatewayIntentBits.DirectMessages,
-            GatewayIntentBits.MessageContent,
-            GatewayIntentBits.GuildInvites,
-            GatewayIntentBits.GuildWebhooks,
-            GatewayIntentBits.GuildMessages,
-            GatewayIntentBits.GuildPresences,
-            GatewayIntentBits.GuildMembers,
-            GatewayIntentBits.GuildModeration,
-            GatewayIntentBits.GuildIntegrations,
-            GatewayIntentBits.GuildVoiceStates,
-            GatewayIntentBits.GuildMessageReactions
-        ],
-        partials: [
-            Partials.GuildMember,
-            Partials.Message,
-            Partials.Channel,
-            Partials.User,
-        ],
-    }, {
-    package: packageJSON,
-    dir: {
-        base: processFolder,
-        configs: join(processFolder, 'configs'),
-        addons: join(processFolder, 'build', 'addons'),
-        scripts: join(processFolder, 'scripts'),
-        customCommands: join(processFolder, 'custom-commands')
-    }
+    intents: [
+      GatewayIntentBits.Guilds,
+      GatewayIntentBits.DirectMessages,
+      GatewayIntentBits.MessageContent,
+      GatewayIntentBits.GuildInvites,
+      GatewayIntentBits.GuildWebhooks,
+      GatewayIntentBits.GuildMessages,
+      GatewayIntentBits.GuildPresences,
+      GatewayIntentBits.GuildMembers,
+      GatewayIntentBits.GuildModeration,
+      GatewayIntentBits.GuildIntegrations,
+      GatewayIntentBits.GuildVoiceStates,
+      GatewayIntentBits.GuildMessageReactions
+    ],
+    partials: [
+      Partials.GuildMember,
+      Partials.Message,
+      Partials.Channel,
+      Partials.User,
+    ],
+  }, {
+  package: packageJSON,
+  dir: {
+    base: processFolder,
+    configs: join(processFolder, 'configs'),
+    addons: join(processFolder, 'build', 'addons'),
+    scripts: join(processFolder, 'scripts'),
+    customCommands: join(processFolder, 'custom-commands')
+  }
 });
 
 manager.initialize();
 
 process.on("uncaughtException", (error, origin) => {
-    logger.error(error);
+  logger.error(error);
 });
 
 process.on("unhandledRejection", async (reason: any, promise) => {
-    logger.error(reason);
+  logger.error(reason);
 });
 
 export default manager;

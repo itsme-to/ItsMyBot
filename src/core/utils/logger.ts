@@ -29,10 +29,12 @@ export class Logger {
   
     for (const item of text) {
       if (item instanceof Error) {
+        const message = item.message || 'Unknown error';
+        messageParts.push(message);
+
         if (item.stack) {
-          messageParts.push(item.stack);
-        } else {
-          messageParts.push(item.message);
+          const stackLines = item.stack.split('\n').slice(1).join('\n');
+          messageParts.push(chalk.gray(stackLines));
         }
 
         if ('errors' in item) {
