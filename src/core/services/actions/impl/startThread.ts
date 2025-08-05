@@ -7,12 +7,17 @@ export default class StartThreadAction extends Action {
 
   async onTrigger(script: ActionData, context: Context, variables: Variable[]) {
     let thread: AnyThreadChannel;
+
     if (context.channel && context.channel.type === ChannelType.GuildForum) {
-      const output = await this.createForumPost(script, context, variables);
+      const output = await this.createThread(script, context, variables);
       if (!output) return script.missingContext("channel", context);
       thread = output;
+    } else if (context.message) {
+      const output = await this.createThreadFromMessage(script, context, variables);
+      if (!output) return script.missingContext("message", context);
+      thread = output;
     } else {
-      const output = await this.createThread(script, context, variables);
+      const output = await this.createThreadFromMessage(script, context, variables);
       if (!output) return script.missingContext("message", context);
       thread = output;
     }
@@ -27,19 +32,37 @@ export default class StartThreadAction extends Action {
     this.triggerActions(script, newContext, variables);
   }
 
-  async createForumPost(script: ActionData, context: Context, variables: Variable[]) {
-    if (!context.channel || context.channel.type !== ChannelType.GuildForum) return
+  async createThread(script: ActionData, context: Context, variables: Variable[]): Promise<AnyThreadChannel | void> {
+    const channel = context.channel;
 
-    return context.channel.threads.create({
-      name: await Utils.applyVariables(script.args.getString("value"), variables, context) || "Thread",
-      autoArchiveDuration: script.args.getNumberOrNull("duration") || 60,
-      message: await Utils.setupMessage({ config: script.args, context, variables }) || undefined,
-      appliedTags: script.args.has("tags") ? await Promise.all(script.args.getStrings("tags").map(async tag => await Utils.applyVariables(tag, variables, context))) : undefined
-    });
+    if (!channel) return;
+    const name = (await Utils.applyVariables(script.args.getString("value"), variables, context)) || "Thread";
+    const autoArchiveDuration = script.args.getNumberOrNull("duration") || 60;
 
+    if (channel.type === ChannelType.GuildForum) {
+      const message = (await Utils.setupMessage({ config: script.args, context, variables })) || undefined;
+      const appliedTags = script.args.has("tags")
+        ? await Promise.all(script.args.getStrings("tags").map((tag) => Utils.applyVariables(tag, variables, context)))
+        : undefined;
+
+      return channel.threads.create({ name, autoArchiveDuration, message, appliedTags });
+    }
+    if (channel.type === ChannelType.GuildAnnouncement) {
+      return channel.threads.create({ name, autoArchiveDuration });
+    }
+
+    if (channel.type === ChannelType.GuildText) {
+      const threadType =
+        script.args.getBoolOrNull("private") === true
+          ? ChannelType.PrivateThread
+          : ChannelType.PublicThread;
+
+      return channel.threads.create({ name, autoArchiveDuration, type: threadType });
+    }
+    return;
   }
 
-  async createThread(script: ActionData, context: Context, variables: Variable[]) {
+  async createThreadFromMessage(script: ActionData, context: Context, variables: Variable[]) {
     if (!context.message) return
 
     return context.message.startThread({
