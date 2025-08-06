@@ -183,6 +183,10 @@ class ActionArgumentValidator extends MessageValidator {
   @IsArray()
   @IsString({ each: true })
   'tags': string[]
+
+  @IsOptional()
+  @IsBoolean()
+  private: boolean
 }
 
 export class ActionValidator {
