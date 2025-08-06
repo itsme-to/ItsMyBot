@@ -14,7 +14,6 @@ export default class StartThreadAction extends Action {
 
     const newContext: Context = {
       ...context,
-      message: await thread.fetchStarterMessage() || context.message,
       content: thread.name,
       channel: thread
     };
