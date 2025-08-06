@@ -10,17 +10,19 @@ export default class CreateThreadAction extends Action {
 
     const channel = context.channel;
     if (!channel) return script.missingContext("channel", context);
+    let message = context.message;
 
     const name = (await Utils.applyVariables(script.args.getStringOrNull("value"), variables, context)) || "Thread";
     const autoArchiveDuration = script.args.getNumberOrNull("duration") || 60;
 
     if (channel.type === ChannelType.GuildForum) {
-      const message = (await Utils.setupMessage({ config: script.args, context, variables })) || undefined;
+      const messageConfig = (await Utils.setupMessage({ config: script.args, context, variables })) || undefined;
       const appliedTags = script.args.has("tags")
         ? await Promise.all(script.args.getStrings("tags").map((tag) => Utils.applyVariables(tag, variables, context)))
         : undefined;
 
-      thread = await channel.threads.create({ name, autoArchiveDuration, message, appliedTags });
+      thread = await channel.threads.create({ name, autoArchiveDuration, message: messageConfig, appliedTags });
+      message = await thread.fetchStarterMessage() || message;
     }
     if (channel.type === ChannelType.GuildAnnouncement) {
       thread = await channel.threads.create({ name, autoArchiveDuration });
@@ -39,7 +41,7 @@ export default class CreateThreadAction extends Action {
 
     const newContext: Context = {
       ...context,
-      message: await thread.fetchStarterMessage() || context.message,
+      message: message,
       content: thread.name,
       channel: thread
     };
