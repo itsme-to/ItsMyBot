@@ -6,14 +6,12 @@ export default class SetTagAction extends Action {
 
   async onTrigger(script: ActionData, context: Context, variables: Variable[]) {
     if (!context.channel || !context.channel.isThread()) return script.missingContext("channel", context);
-    const tags = script.args.getStringsOrNull("value")
-    if (!tags) return script.missingArg("value", context);
-
+    const tags = script.args.getStringsOrNull("value") || [];
     const parsedTag: string[] = []
 
     await Promise.all(tags.map(async tag => {
       const resolvedTag = await Utils.applyVariables(tag, variables, context);
-        parsedTag.push(resolvedTag);
+      parsedTag.push(resolvedTag);
     }));
 
     await context.channel.setAppliedTags(parsedTag, `Tags added by action: ${script.id}`);
