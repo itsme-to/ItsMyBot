@@ -2,7 +2,7 @@
 
 ItsMyBot is a self-hosted modular Discord bot. Developed with TypeScript and Node.js, it is designed to be easily modifiable through a addon system. The core of the bot has limited functionalities to allow room for addons. It is frequently updated to enhance its features and fix bugs. Feel free to join our Discord server to share your suggestions and report any issues.
 
-[Documentation](https://docs.itsme.to/itsmybot) - [Support](https://itsme.to/discord) - [Purchase](https://builtbybit.com/resources/24369/) - [Official Addons](https://builtbybit.com/itsmybot)
+[Documentation](https://docs.itsme.to/itsmybot) - [Support](https://itsmy.studio/discord) - [Purchase](https://builtbybit.com/resources/24369/) - [Official Addons](https://builtbybit.com/itsmybot)
 
 ## Features
 Here you can find all the main features of the bot's core.
@@ -27,5 +27,5 @@ If you wish to develop and distribute paid addons for ItsMyBot, you must obtain 
 - **Feature Requests**: Request new features that you need for your addon development.
 - **Community Exposure**: Get featured in our addon marketplace, reaching a broader audience.
 
-For more information or to apply for a Commercial Developer License, please join our [discord](https://itsme.to/discord).
+For more information or to apply for a Commercial Developer License, please join our [discord](https://itsmy.studio/discord).
 

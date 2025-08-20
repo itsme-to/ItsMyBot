@@ -8,7 +8,7 @@
 #    ╚═╝   ╚═╝   ╚══════╝╚═╝     ╚═╝   ╚═╝   ╚═════╝  ╚═════╝    ╚═╝
 #
 #      Contact: @itsme.to
-#      Support: https://itsme.to/discord
+#      Support: https://itsmy.studio/discord
 #      Documentation: https://docs.itsme.to/itsmybot
 #
 #################################################################################################
@@ -37,7 +37,7 @@ debug: true
 
 # Bot presence settings
 presence:
-  interval: 5 # Interval in seconds between each status change
+  interval: 30 # Interval in seconds between each status change
   status: "online"  # Bot status (online, idle, dnd, invisible)
 
   # Activities the bot can display
