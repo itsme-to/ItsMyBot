@@ -5,7 +5,7 @@ export default class RandomAction extends Action {
   id = "randomAction";
 
   async onTrigger(script: ActionData, context: Context, variables: Variable[]) {
-    script.triggerActions = [Utils.getRandom(script.triggerActions)]
-    this.triggerActions(script, context, variables);
+    script.followUpActions = [Utils.getRandom(script.followUpActions)]
+    this.triggerFollowUpActions(script, context, variables);
   }
 }

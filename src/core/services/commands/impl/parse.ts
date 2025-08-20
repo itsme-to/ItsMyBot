@@ -1,6 +1,6 @@
 import Utils from '@utils';
 import { CommandBuilder } from '@builders';
-import { Command, User, Context, CommandInteraction } from '@itsmybot';
+import { Command, User, CommandInteraction } from '@itsmybot';
 export default class ParseCommand extends Command {
 
   build() {
@@ -23,20 +23,16 @@ export default class ParseCommand extends Command {
     const target = interaction.options.getMember("user")
     const targetUser = target ? await this.manager.services.user.findOrCreate(target) : user;
 
-    const context: Context = {
-      user: targetUser,
-      guild: interaction.guild || undefined,
-      channel: interaction.channel || undefined
-    }
-
-    const text = await Utils.applyVariables(interaction.options.getString("text", true), [], context);
-
     interaction.reply(await Utils.setupMessage({
       config: this.manager.configs.lang.getSubsection("parsed"),
       variables: [
-        { searchFor: "%parsed_text%", replaceWith: text },
+        { searchFor: "%parsed_text%", replaceWith: interaction.options.getString("text", true) },
       ],
-      context: context,
+      context: {
+        user: targetUser,
+        guild: interaction.guild || undefined,
+        channel: interaction.channel || undefined
+      },
     }))
   }
 }

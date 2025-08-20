@@ -29,6 +29,7 @@ async function rawFindRole(identifier: string, guild: Guild): Promise<Role | und
 
 export async function findChannel(identifier: string, guild?: Guild): Promise<GuildBasedChannel | undefined> {
   const search = String(identifier)
+  if (search === 'none') return undefined;
 
   if (search.includes(';')) {
     const [guildId, name] = search.split(';', 2);

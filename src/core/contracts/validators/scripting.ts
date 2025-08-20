@@ -51,6 +51,35 @@ export class ConditionValidator {
   args: ConditionArgumentValidator
 
   @IsOptional()
+  @IsBoolean()
+  inverse: boolean
+
+  @IsOptional()
+  @IsString({ each: true })
+  value: string[] | string
+
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => ConditionValidator)
+  conditions: ConditionValidator[]
+
+  @IsOptional()
+  @IsBoolean()
+  'ignore-case': boolean
+
+  @IsOptional()
+  @IsNumber()
+  amount: number
+
+  @IsOptional()
+  @IsString()
+  key: string
+
+  @IsOptional()
+  @IsBoolean()
+  inherit: boolean
+
+  @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => ActionValidator)
@@ -111,6 +140,12 @@ class ActionArgumentValidator extends MessageValidator {
   @ValidateNested({ each: true })
   @Type(() => ActionValidator)
   actions: ActionValidator[]
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ActionValidator)
+  'follow-up-actions': ActionValidator[]
 
   @IsOptional()
   @IsString({ each: true })

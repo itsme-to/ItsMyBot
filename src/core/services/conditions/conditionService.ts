@@ -64,7 +64,7 @@ export default class ConditionService extends Service {
 
     let isMet = await condition.isMet(conditionData, context, variables);
 
-    if (conditionData.args.getBoolOrNull("inverse")) {
+    if (conditionData.config.getBoolOrNull("inverse")) {
       isMet = !isMet;
     }
 

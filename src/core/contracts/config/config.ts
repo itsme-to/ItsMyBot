@@ -260,6 +260,7 @@ export class Config {
       this.values.set(nearestPath, constrained);
     }
   }
+
   public async setFileContent(path: string, obj: unknown) {
     if (!this.filePath) return false;
 
@@ -277,9 +278,8 @@ export class Config {
     await fs.writeFile(this.filePath, file.toString(), 'utf8');
 
     return true;
-}
-    
-
+  }
+  
   private normalizeToConfig(obj: unknown): Map<string, ConfigPrimitive> {
     const normalized = new Map();
 

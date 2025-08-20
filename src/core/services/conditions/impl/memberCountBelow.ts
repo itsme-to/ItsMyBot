@@ -5,7 +5,7 @@ export default class MemberCountBelowCondition extends Condition {
 
   isMet(condition: ConditionData, context: Context, variables: Variable[]) {
     if (!context.guild) return condition.missingContext("guild");
-    const amount = condition.args.getNumberOrNull("amount");
+    const amount = condition.config.getNumberOrNull("amount");
     if (!amount) return condition.missingArg("amount");
 
     return context.guild!.memberCount < amount;

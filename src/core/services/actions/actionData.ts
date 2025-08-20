@@ -9,7 +9,7 @@ export class ActionData extends BaseScript {
   private filePath: string;
   public triggers?: string[];
   public mutators?: Config;
-  public triggerActions: ActionData[];
+  public followUpActions: ActionData[];
   public executionCounter: number = 0;
   public lastExecutionTime: number = 0;
 
@@ -20,7 +20,12 @@ export class ActionData extends BaseScript {
     this.args = data.getSubsectionOrNull("args") || data.empty();
     this.triggers = data.getStringsOrNull("triggers");
     this.mutators = data.getSubsectionOrNull("mutators");
-    this.triggerActions = data.has("args.actions") ? data.getSubsections("args.actions").map((actionData: Config) => new ActionData(manager, actionData, logger)) : [];
+    this.followUpActions = data.has("args.follow-up-actions") ? data.getSubsections("args.follow-up-actions").map((actionData: Config) => new ActionData(manager, actionData, logger)) : [];
+
+    if (data.has('args.actions')) {
+      this.logger.warn(`args.actions is deprecated, use args.follow-up-actions instead. in ${this.filePath}`);
+      this.followUpActions = data.getSubsections('args.actions').map((actionData: Config) => new ActionData(manager, actionData, logger));
+    }
   }
 
   async run(context: Context, variables: Variable[] = []) {

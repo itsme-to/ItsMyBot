@@ -38,5 +38,4 @@ actions:
 
 conditions:
   - id: hasRole
-    args:
-      value: "118488015502"
+    value: "118488015502"

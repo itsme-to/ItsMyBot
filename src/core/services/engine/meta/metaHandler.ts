@@ -31,7 +31,7 @@ export default class MetaHandler extends Service {
   }
 
   async initialize() {
-    await MetaData.sync({ force: true });
+    await MetaData.sync({ alter: true });
     await this.loadMetas();
     this.manager.logger.info("Meta handler initialized.");
   }

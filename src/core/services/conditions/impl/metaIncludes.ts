@@ -5,10 +5,10 @@ export default class MetaIncludesCondition extends Condition {
   id = "metaIncludes";
 
   async isMet(condition: ConditionData, context: Context, variables: Variable[]) {
-    const arg = condition.args.getStringOrNull("key")
+    const arg = condition.config.getStringOrNull("key")
     if (!arg) return condition.missingArg("key");
 
-    let value = condition.args.getStringOrNull("value");
+    let value = condition.config.getStringOrNull("value");
     value = await Utils.applyVariables(value, variables, context);
     if (!value) return condition.missingArg("value");
 

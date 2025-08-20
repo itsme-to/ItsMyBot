@@ -53,7 +53,7 @@ export default class ExpansionService extends Service{
       if (expansion) {
         const resolvedPlaceholder = await this.resolveNestedPlaceholders(placeholder, context);
         const replacement = await expansion.onRequest(context, resolvedPlaceholder);
-        if (replacement === null || replacement === undefined) return text
+        if (replacement === undefined) continue;
         text = text.replace(fullMatch, replacement);
       }
     }
@@ -70,7 +70,7 @@ export default class ExpansionService extends Service{
       const nestedExpansion = this.expansions.get(nestedIdentifier);
       if (nestedExpansion) {
         const nestedReplacement = await nestedExpansion.onRequest(context, nestedPlaceholder);
-        if (!nestedReplacement) return placeholder
+        if (nestedReplacement === undefined) continue;
         return placeholder.replace(fullNestedMatch, nestedReplacement);
       }
     }

@@ -6,7 +6,7 @@ export default class InChannelCondition extends Condition {
   id = "inChannel";
 
   async isMet(condition: ConditionData, context: Context, variables: Variable[]) {
-    const arg = condition.args.getStringsOrNull("value")
+    const arg = condition.config.getStringsOrNull("value")
     if (!arg) return condition.missingArg("value");
     if (!context.channel) return condition.missingContext("channel");
     if (!(context.channel instanceof GuildChannel)) return false;

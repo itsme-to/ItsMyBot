@@ -292,6 +292,7 @@ export default class Utils {
 
   /**
    * Log a message to a discord channel
+   * @deprecated
    * @param id The channel id to log the message to or 'none' to disable logging
    * @param message The message to log
    */

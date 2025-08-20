@@ -6,7 +6,7 @@ export default class HasTagCondition extends Condition {
 
   async isMet(condition: ConditionData, context: Context, variables: Variable[]) {
     if (!context.channel || !context.channel.isThread()) return condition.missingContext("channel");
-    let tags = condition.args.getStringsOrNull("value");
+    let tags = condition.config.getStringsOrNull("value");
     if (!tags) return condition.missingArg("value");
 
     const channelTags = context.channel.appliedTags;

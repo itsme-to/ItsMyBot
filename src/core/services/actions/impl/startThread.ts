@@ -18,6 +18,6 @@ export default class StartThreadAction extends Action {
       channel: thread
     };
 
-    this.triggerActions(script, newContext, variables);
+    this.triggerFollowUpActions(script, newContext, variables);
   }
 }
