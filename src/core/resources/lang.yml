@@ -32,7 +32,8 @@ pagination:
         content: "No values to display."
       - type: action-row
         conditions:
-          - expression: "%pagination_has_filter%"
+          - id: isExpressionTrue
+            value: "%pagination_has_filter%"
         components:
           - type: select-menu
             placeholder: "Select a filter"
@@ -54,17 +55,20 @@ pagination:
           style: "Secondary"
           custom-id: "pagination_previous"
           conditions:
-            - expression: "%pagination_has_previous%"
+            - id: isExpressionTrue
+              value: "%pagination_has_previous%"
         - type: button
           label: "Next"
           emoji: "▶️"
           style: "Secondary"
           custom-id: "pagination_next"
           conditions:
-            - expression: "%pagination_has_next%"
+            - id: isExpressionTrue
+              value: "%pagination_has_next%"
     - type: action-row
       conditions:
-        - expression: "%pagination_is_select%"
+        - id: isExpressionTrue
+          value: "%pagination_is_select%"
       components:
         - type: select-menu
           placeholder: "%pagination_placeholder%"
@@ -77,7 +81,8 @@ pagination:
             emoji: "%item_emoji%"
     - type: action-row
       conditions:
-        - expression: "%pagination_has_filter%"
+        - id: isExpressionTrue
+          value: "%pagination_has_filter%"
       components:
         - type: select-menu
           placeholder: "Select a filter"
@@ -120,7 +125,8 @@ addon:
           - type: text-display
             content: "%addon_description%"
             conditions:
-              - expression: "%addon_has_description%"
+              - id: isExpressionTrue
+                value: "%addon_has_description%"
           - type: action-row
             components:
               - type: button
@@ -128,7 +134,8 @@ addon:
                 emoji: "🌐"
                 url: "%addon_website%"
                 conditions:
-                  - expression: "%addon_has_website%"
+                  - id: isExpressionTrue
+                    value: "%addon_has_website%"
   enabled:
     components:
       - type: text-display
