@@ -42,6 +42,6 @@ export default class CreateChannelAction extends Action {
       content: channel.name,
     };
 
-    this.triggerActions(script, newContext, variables)
+    this.triggerFollowUpActions(script, newContext, variables)
   }
 }

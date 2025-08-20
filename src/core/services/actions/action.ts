@@ -10,8 +10,8 @@ export abstract class Action<T extends Addon | undefined = undefined> extends Ba
 
   public abstract onTrigger(script: ActionData, context: Context, variables: Variable[]): Promise<any>;
 
-  public async triggerActions(script: ActionData, context: Context, variables: Variable[]) {
-    for (const subAction of script.triggerActions) {
+  public async triggerFollowUpActions(script: ActionData, context: Context, variables: Variable[]) {
+    for (const subAction of script.followUpActions) {
       await subAction.run(context, variables);
     }
   }

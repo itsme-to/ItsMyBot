@@ -36,7 +36,7 @@ export default class SendRequestAction extends Action {
         variables.push({ searchFor: "%data%", replaceWith: data });
       }
 
-      return this.triggerActions(script, context, variables);
+      return this.triggerFollowUpActions(script, context, variables);
     } catch (error) {
       script.logger.error(`Error fetching data: ${error}`);
     }

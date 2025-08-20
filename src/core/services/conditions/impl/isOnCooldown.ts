@@ -4,7 +4,7 @@ export default class IsOnCooldownCondition extends Condition {
   id = "isOnCooldown";
 
   isMet(condition: ConditionData, context: Context, variables: Variable[]) {
-    const cooldownId = condition.args.getStringOrNull("value");
+    const cooldownId = condition.config.getStringOrNull("value");
     if (!cooldownId) return condition.missingArg("value");
 
     const user = context.user;

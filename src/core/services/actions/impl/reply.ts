@@ -27,6 +27,6 @@ export default class ReplyAction extends Action {
       channel: message.channel
     };
 
-    this.triggerActions(script, newContext, variables);
+    this.triggerFollowUpActions(script, newContext, variables);
   }
 }

@@ -5,7 +5,7 @@ export default class IsExpressionTrueCondition extends Condition {
   id = "isExpressionTrue";
 
   async isMet(condition: ConditionData, context: Context, variables: Variable[]) {
-    const expressionArg = condition.args.getStringOrNull("value");
+    const expressionArg = condition.config.getStringOrNull("value");
     if (!expressionArg) return condition.missingArg("value");
 
     const expression = await Utils.applyVariables(expressionArg, variables, context);

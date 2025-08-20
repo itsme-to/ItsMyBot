@@ -5,7 +5,7 @@ export default class isUserCondition extends Condition {
 
   isMet(condition: ConditionData, context: Context, variables: Variable[]) {
     if (!context.user) return condition.missingContext("user");
-    const users = condition.args.getStringsOrNull("value");
+    const users = condition.config.getStringsOrNull("value");
     if (!users) return condition.missingArg("value");
 
     if (users.some((user: string) => user === context.user?.id || user === context.user?.username)) {

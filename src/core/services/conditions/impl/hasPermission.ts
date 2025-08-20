@@ -7,7 +7,7 @@ export default class HasPermissionCondition extends Condition {
   isMet(condition: ConditionData, context: Context, variables: Variable[]) {
     if (!context.member) return condition.missingContext("member");
 
-    const permissionsArg = condition.args.getStringsOrNull("value");
+    const permissionsArg = condition.config.getStringsOrNull("value");
     if (!permissionsArg) return condition.missingArg("value");
 
     for (const permissionArg in permissionsArg) {

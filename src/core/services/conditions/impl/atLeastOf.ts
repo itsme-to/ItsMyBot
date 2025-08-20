@@ -4,9 +4,9 @@ export default class AtLeastOfCondition extends Condition {
   id = "atLeastOf";
 
   async isMet(condition: ConditionData, context: Context, variables: Variable[]) {
-    const conditionsConfig = condition.args.getSubsectionsOrNull("conditions");
+    const conditionsConfig = condition.config.getSubsectionsOrNull("conditions");
     if (!conditionsConfig) return condition.missingArg("conditions");
-    const amount = condition.args.getNumberOrNull("amount");
+    const amount = condition.config.getNumberOrNull("amount");
     if (!amount || amount < 1) return condition.missingArg("amount");
 
     const conditions = this.manager.services.condition.buildConditions(conditionsConfig, false);

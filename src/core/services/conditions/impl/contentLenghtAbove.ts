@@ -4,7 +4,7 @@ export default class ContentLengthAboveCondition extends Condition {
   id = "contentLengthAbove";
 
   isMet(condition: ConditionData, context: Context, variables: Variable[]) {
-    const arg = condition.args.getNumberOrNull("value")
+    const arg = condition.config.getNumberOrNull("value")
     if (arg === undefined) return condition.missingArg("value");
     if (!context.content) return false
 
