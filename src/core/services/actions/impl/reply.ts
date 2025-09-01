@@ -1,8 +1,9 @@
-import { Action, ActionData, Context, Variable } from '@itsmybot';
+import { Action, ActionData, Context, FollowUpActionArgumentsValidator, Variable } from '@itsmybot';
 import Utils from '@utils';
 
 export default class ReplyAction extends Action {
   id = "reply";
+  argumentsValidator = FollowUpActionArgumentsValidator;
 
   async onTrigger(script: ActionData, context: Context, variables: Variable[]) {
     let message

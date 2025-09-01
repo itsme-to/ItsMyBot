@@ -1,13 +1,20 @@
-import { Action, ActionData, Context, Variable } from '@itsmybot';
+import { Action, ActionArgumentsValidator, ActionData, Context, Variable } from '@itsmybot';
+import { IsDefined, IsNumber } from 'class-validator';
+
+class ArgumentsValidator extends ActionArgumentsValidator {
+  @IsDefined()
+  @IsNumber()
+  amount: number;
+}
 
 export default class AddCoinsAction extends Action {
   id = "addCoins";
+  argumentsValidator = ArgumentsValidator;
 
   async onTrigger(script: ActionData, context: Context, variables: Variable[]) {
-    const amount = script.args.getNumberOrNull("amount");
-
+    const amount = script.args.getNumber("amount");
+    
     if (!context.user) return script.missingContext("user", context);
-    if (!amount) return script.missingArg("amount", context);
 
     context.user.addCoins(amount);
   }

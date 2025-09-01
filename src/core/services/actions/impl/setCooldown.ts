@@ -1,15 +1,24 @@
-import { Action, ActionData, Context, Variable } from '@itsmybot';
+import { Action, ActionArgumentsValidator, ActionData, Context, Variable } from '@itsmybot';
 import { Cooldown } from '@utils';
+import { IsDefined, IsNumber, IsString } from 'class-validator';
+
+class ArgumentsValidator extends ActionArgumentsValidator {
+  @IsDefined()
+  @IsString()
+  value: string;
+
+  @IsDefined()
+  @IsNumber()
+  duration: number;
+}
 
 export default class SetCooldownAction extends Action {
   id = "setCooldown";
+  argumentsValidator = ArgumentsValidator;
 
   async onTrigger(script: ActionData, context: Context, variables: Variable[]) {
-    const duration = script.args.getNumberOrNull("duration");
-    if (!duration) return script.missingArg("duration", context);
-
-    const cooldownId = script.args.getStringOrNull("value");
-    if (!cooldownId) return script.missingArg("value", context);
+    const duration = script.args.getNumber("duration");
+    const cooldownId = script.args.getString("value");
 
     const user = context.user
     if (!user) return script.missingContext("user", context);
