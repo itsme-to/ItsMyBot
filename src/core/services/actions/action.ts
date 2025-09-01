@@ -1,7 +1,8 @@
-import { Addon, ActionData, Base, Context, Variable } from '@itsmybot';
+import { Addon, ActionData, Base, Context, Variable, ActionArgumentsValidator } from '@itsmybot';
 
 export abstract class Action<T extends Addon | undefined = undefined> extends Base<T>{
   abstract id: string;
+  argumentsValidator = ActionArgumentsValidator;
 
   public async trigger(script: ActionData, context: Context, variables: Variable[]) {
     const variablesCopy = [...variables];
