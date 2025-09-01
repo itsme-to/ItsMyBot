@@ -34,16 +34,16 @@ export default class AddonService extends Service {
 
       const logger = new Logger(addonFolder);
       try {
-        await this.loadAddon(addonFolder);
+        await this.registerAddon(addonFolder);
       } catch (error: any) {
-        logger.error("Error loading:", error);
+        logger.error("Error registering addon:", error);
       }
     }
 
     this.manager.logger.info("Addon service initialized.");
   }
 
-  async loadAddon(name: string) {
+  async registerAddon(name: string) {
     const addonClassPath = join(this.addonsDir, name, 'index.js');
     try {
       await fs.access(addonClassPath);
@@ -63,9 +63,19 @@ export default class AddonService extends Service {
     if (!addonData.enabled) {
       addon.setEnabled(false);
     } else {
-      await addon.init();
+      await addon.registerComponents();
     }
 
     this.addons.set(addon.name, addon);
+  }
+
+  async initializeAddons() {
+    await Promise.all(this.addons.map(addon => {
+      try {
+        addon.init();
+      } catch (error) {
+        addon.logger.error("Error initializing addon:", error);
+      }
+    }));
   }
 }

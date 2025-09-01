@@ -61,6 +61,7 @@ export class Manager {
     await this.initializeDatabase();
 
     this.services = {
+      addon: new AddonService(this),
       condition: new ConditionService(this),
       action: new ActionService(this),
       engine: new EngineService(this),
@@ -69,15 +70,15 @@ export class Manager {
       event: new EventService(this),
       command: new CommandService(this),
       component: new ComponentService(this),
-      leaderboard: new LeaderboardService(this),
-      addon: new AddonService(this)
+      leaderboard: new LeaderboardService(this)
     }
 
     await this.initializeServices();
 
-    await this.services.engine.loadCustomCommands();
+    await this.services.engine.registerCustomCommands();
     this.services.leaderboard.registerLeaderboards();
     this.services.event.initializeEvents();
+    await this.services.addon.initializeAddons();
 
     this.client.login(this.configs.config.getString("token"));
 

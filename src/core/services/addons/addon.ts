@@ -43,13 +43,14 @@ export abstract class Addon {
 
   async init() {
     await this.loadDatabaseModels();
-    await this.load()
+    await this.load();
     await this.initialize();
-    await this.loadComponents();
+    await this.registerInteractionComponents();
+    await this.registerCommands();
     this.logger.info(`Addon loaded in v${this.version}`);
   }
 
-  public async loadComponents(includes: string[] = []) {
+  public async registerComponents() {
     const basePath = this.path;
     const directories = readdirSync(basePath).filter((name: string) => {
       const fullPath = join(basePath, name);
@@ -57,12 +58,32 @@ export abstract class Addon {
     });
 
     const componentHandlers: Record<string, (dir: string) => Promise<void>> = {
-      commands: (dir) => this.manager.services.command.registerFromDir(dir, this),
       events: (dir) => this.manager.services.event.registerFromDir(dir, this),
       expansions: (dir) => this.manager.services.expansion.registerFromDir(dir, this),
       leaderboards: (dir) => this.manager.services.leaderboard.registerFromDir(dir, this),
       actions: (dir) => this.manager.services.action.registerFromDir(dir, this),
       conditions: (dir) => this.manager.services.condition.registerFromDir(dir, this),
+    };
+  
+    for (const dirName of directories) {
+      const dir = join(basePath, dirName);
+      if (!sync(`${dir}/*`).length) continue;
+
+      const handler = componentHandlers[dirName];
+      if (handler) {
+        await handler(dir);
+      }
+    }
+  }
+
+  public async registerInteractionComponents() {
+    const basePath = this.path;
+    const directories = readdirSync(basePath).filter((name: string) => {
+      const fullPath = join(basePath, name);
+      return statSync(fullPath).isDirectory();
+    });
+
+    const componentHandlers: Record<string, (dir: string) => Promise<void>> = {
       buttons: (dir) => this.manager.services.component.registerFromDir(dir, 'button', this),
       selectMenus: (dir) => this.manager.services.component.registerFromDir(dir, 'selectMenu', this),
       modals: (dir) => this.manager.services.component.registerFromDir(dir, 'modal', this),
@@ -72,13 +93,17 @@ export abstract class Addon {
       const dir = join(basePath, dirName);
       if (!sync(`${dir}/*`).length) continue;
 
-      if (includes.length && !includes.includes(dirName)) continue;
-
       const handler = componentHandlers[dirName];
       if (handler) {
         await handler(dir);
       }
     }
+  }
+
+  public async registerCommands() {
+    const commandsDir = join(this.path, 'commands');
+    if (!sync(`${commandsDir}/*`).length) return;
+    await this.manager.services.command.registerFromDir(commandsDir, this);
   }
 
   private async loadDatabaseModels() {

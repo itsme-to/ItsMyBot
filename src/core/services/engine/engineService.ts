@@ -33,7 +33,7 @@ export default class EngineService extends Service {
     }
   }
 
-  async loadCustomCommands() {
+  async registerCustomCommands() {
     const customCommands = await new BaseConfigSection(this.manager.logger, 'scripting/custom-commands', 'build/core/resources/scripting/custom-commands').initialize(CustomCommandConfig);
 
     for (const filePath of customCommands) {

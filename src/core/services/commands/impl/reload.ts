@@ -27,12 +27,12 @@ export default class ReloadCommand extends Command {
     try {
       await this.manager.services.engine.loadScripts();
       await this.manager.services.engine.metaHandler.loadMetas();
-      await this.manager.services.engine.loadCustomCommands();
+      await this.manager.services.engine.registerCustomCommands();
 
       await Promise.all(this.manager.addons.map(async addon => {
         await addon.unload()
         await addon.load()
-        await addon.loadComponents(['commands'])
+        await addon.registerCommands()
       }))
     } catch (e) {
       error = e
