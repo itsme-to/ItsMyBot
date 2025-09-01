@@ -5,7 +5,7 @@ import * as fs from 'fs/promises';
 import { join, resolve } from 'path';
 import { parseDocument, Document } from 'yaml';
 import { plainToInstance } from 'class-transformer';
-import { validate, ValidationError } from 'class-validator';
+import { validate } from 'class-validator';
 
 export class BaseConfig extends Config {
   public update: boolean
@@ -60,7 +60,7 @@ export class BaseConfig extends Config {
 
     const errors = await validate(config, { validationError: { target: false }, whitelist: true, forbidNonWhitelisted: true, skipMissingProperties: true });
 
-    const formattedErrors = formatValidationErrors(errors);
+    const formattedErrors = Utils.formatValidationErrors(errors);
 
     if (defaultContent) {
       const corrected = await this.correctWithDefaults(formattedErrors, configContent, defaultContent);
@@ -105,20 +105,4 @@ export class BaseConfig extends Config {
       this.logger.warn(`Tabulation replaced in ${this.configFilePath}, please use double spaces instead of tabs!`);
     }
   }
-}
-
-function formatValidationErrors(errors: ValidationError[], parentPath?: string): string[] {
-  const messages: string[] = [];
-  errors.forEach(error => {
-    const propertyPath = parentPath ? `${parentPath}.${error.property}` : error.property;
-    if (error.constraints) {
-      const errorMessages = Object.values(error.constraints).map(msg => `${propertyPath}: ${msg}`);
-      messages.push(...errorMessages);
-    }
-    if (error.children && error.children.length > 0) {
-      const childMessages = formatValidationErrors(error.children, propertyPath);
-      messages.push(...childMessages);
-    }
-  });
-  return messages;
 }

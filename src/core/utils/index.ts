@@ -20,6 +20,7 @@ export { Pagination } from './pagination.js';
 import manager, { Context, Variable, MessageOutput }from '@itsmybot';
 import { GuildMember } from 'discord.js';
 import { Parser } from 'expr-eval';
+import { ValidationError } from 'class-validator';
 
 const discordEpoch = 1420070400000;
 
@@ -307,5 +308,21 @@ export default class Utils {
 
   static capitalizeFirst(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  static formatValidationErrors(errors: ValidationError[], parentPath?: string): string[] {
+    const messages: string[] = [];
+    errors.forEach(error => {
+      const propertyPath = parentPath ? `${parentPath}.${error.property}` : error.property;
+      if (error.constraints) {
+        const errorMessages = Object.values(error.constraints).map(msg => `${propertyPath}: ${msg}`);
+        messages.push(...errorMessages);
+      }
+      if (error.children && error.children.length > 0) {
+        const childMessages = Utils.formatValidationErrors(error.children, propertyPath);
+        messages.push(...childMessages);
+      }
+    });
+    return messages;
   }
 };
