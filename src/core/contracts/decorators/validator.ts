@@ -1,5 +1,7 @@
+import manager, { ActionValidator } from '@itsmybot';
 import Utils from '@utils';
-import { ValidationArguments, ValidatorConstraintInterface, ValidatorConstraint } from 'class-validator';
+import { validate, ValidationArguments, ValidatorConstraintInterface, ValidatorConstraint } from 'class-validator';
+import { plainToInstance } from 'class-transformer';
 
 @ValidatorConstraint({ name: 'isPermissionFlag', async: false })
 export class IsPermissionFlag implements ValidatorConstraintInterface {
@@ -73,5 +75,61 @@ export class IsBooleanOrString implements ValidatorConstraintInterface {
 
   defaultMessage(args: ValidationArguments) {
     return 'This is not a valid type. Please use either a boolean or a string.';
+  }
+}
+
+@ValidatorConstraint({ name: 'isValidConditionId', async: false })
+export class IsValidConditionId implements ValidatorConstraintInterface {
+  validate(value: any, args: ValidationArguments) {
+    return manager.services.condition.conditions.has(value.replace('!', ''));
+  }
+
+  defaultMessage(args: ValidationArguments) {
+    return `The condition ID ${args.value} is not valid.`;
+  }
+}
+
+
+@ValidatorConstraint({ name: 'isValidActionId', async: false })
+export class IsValidActionId implements ValidatorConstraintInterface {
+  validate(value: any, args: ValidationArguments) {
+    return manager.services.action.actions.has(value);
+  }
+
+  defaultMessage(args: ValidationArguments) {
+    return `The action ID ${args.value} is not valid.`;
+  }
+}
+
+const isValidActionArgsErrors = new Map<string, string>();
+
+@ValidatorConstraint({ name: 'isValidActionArgs', async: false })
+export class IsValidActionArgs implements ValidatorConstraintInterface {
+  errors: string[] = [];
+
+  async validate(value: any, args: ValidationArguments) {
+    const object: ActionValidator = args.object as ActionValidator;
+    if (!object.id) return true;
+
+    const action = manager.services.action.actions.get(object.id);
+    if (!action) return true;
+
+    if (action.argumentsValidator) {
+      const config = plainToInstance(action.argumentsValidator, value);
+      const errors = await validate(config, { validationError: { target: false }, whitelist: true, forbidNonWhitelisted: true, skipMissingProperties: true });
+      if (errors.length > 0) {
+        const lines = Utils.formatValidationErrors(errors);
+        isValidActionArgsErrors.set(object.id, `Invalid action arguments for action ${object.id}:\n  - ${lines.join('\n  - ')}`);
+        return false;
+      }
+    }
+
+    isValidActionArgsErrors.delete(object.id);
+    return true;
+  }
+
+  defaultMessage(args: ValidationArguments) {
+    const object: ActionValidator = args.object as ActionValidator;
+    return isValidActionArgsErrors.get(object.id) || '';
   }
 }
