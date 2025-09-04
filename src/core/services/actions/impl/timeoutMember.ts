@@ -20,13 +20,10 @@ export default class TimeoutMemberAction extends Action {
   argumentsValidator = ArgumentsValidator;
 
   async onTrigger(script: ActionData, context: Context, variables: Variable[]) {
-    const duration = script.args.getNumberOrNull("duration");
-    let reason = script.args.getStringOrNull("value");
-
-    reason = await Utils.applyVariables(reason, variables, context);
+    const duration = script.args.getNumber("duration");
+    const reason = await Utils.applyVariables(script.args.getStringOrNull("value"), variables, context);
 
     if (!context.member) return script.missingContext("member", context);
-    if (!duration) return script.missingArg("duration", context);
 
     await context.member.timeout(duration, reason);
   }

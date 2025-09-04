@@ -1,12 +1,19 @@
-import { Condition, ConditionData, Context, Variable } from '@itsmybot';
+import { Condition, ConditionData, Context, Variable, ConditionArgumentValidator } from '@itsmybot';
 import Utils from '@utils';
+import { IsDefined, IsString } from 'class-validator';
+
+class ArgumentsValidator extends ConditionArgumentValidator {
+  @IsDefined()
+  @IsString()
+  value: string
+}
 
 export default class IsExpressionTrueCondition extends Condition {
   id = "isExpressionTrue";
+  argumentsValidator = ArgumentsValidator;
 
   async isMet(condition: ConditionData, context: Context, variables: Variable[]) {
-    const expressionArg = condition.config.getStringOrNull("value");
-    if (!expressionArg) return condition.missingArg("value");
+    const expressionArg = condition.args.getString("value");
 
     const expression = await Utils.applyVariables(expressionArg, variables, context);
     if (!expression) return condition.logError("Invalid expression");

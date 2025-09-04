@@ -73,6 +73,7 @@ export class Manager {
       leaderboard: new LeaderboardService(this)
     }
 
+    await this.services.engine.metaHandler.initialize();
     await this.initializeServices();
 
     await this.services.engine.registerCustomCommands();

@@ -1,14 +1,25 @@
-import { Condition, ConditionData, Context, Variable } from '@itsmybot';
+import { Condition, ConditionData, Context, Variable, ConditionArgumentValidator } from '@itsmybot';
 import Utils from '@utils';
+import { IsBoolean, IsDefined, IsOptional, IsString } from 'class-validator';
+
+class ArgumentsValidator extends ConditionArgumentValidator {
+  @IsDefined()
+  @IsString({ each: true })
+  value: string | string[]
+
+  @IsOptional()
+  @IsBoolean()
+  inherit: boolean
+}
 
 export default class HasRoleCondition extends Condition {
   id = "hasRole";
+  argumentsValidator = ArgumentsValidator;
 
   isMet(condition: ConditionData, context: Context, variables: Variable[]) {
     if (!context.member) return condition.missingContext("member");
-    const role = condition.config.getStringsOrNull("value");
-    if (!role) return condition.missingArg("value");
+    const roles = condition.args.getStrings("value");
 
-    return Utils.hasRole(context.member, role, condition.config.getBoolOrNull("inherit"));
+    return Utils.hasRole(context.member, roles, condition.args.getBoolOrNull("inherit"));
   }
 }

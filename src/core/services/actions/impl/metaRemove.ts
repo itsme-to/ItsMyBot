@@ -1,9 +1,10 @@
-import { Action, ActionArgumentsValidator, ActionData, Context, Variable } from '@itsmybot';
-import { IsDefined, IsString } from 'class-validator';
+import { Action, ActionArgumentsValidator, ActionData, Context, IsValidMetaKey, Variable } from '@itsmybot';
+import { IsDefined, IsString, Validate } from 'class-validator';
 
 class ArgumentsValidator extends ActionArgumentsValidator {
   @IsDefined()
   @IsString()
+  @Validate(IsValidMetaKey)
   key: string
 }
 
@@ -14,8 +15,7 @@ export default class MetaRemoveAction extends Action {
   async onTrigger(script: ActionData, context: Context, variables: Variable[]) {
     const key = script.args.getString("key");
 
-    const meta = this.manager.services.engine.metaHandler.metas.get(key);
-    if (!meta) return script.logError(`Meta with key ${key} is not registered.`);
+    const meta = this.manager.services.engine.metaHandler.metas.get(key)!;
 
     switch (meta.mode) {
       case 'user':

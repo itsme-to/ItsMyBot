@@ -1,6 +1,6 @@
-import { Action, ActionArgumentsValidator, ActionData, Context, Variable } from '@itsmybot';
+import { Action, ActionArgumentsValidator, ActionData, Context, IsValidMetaKey, Variable } from '@itsmybot';
 import Utils from '@utils';
-import { IsDefined, IsString } from 'class-validator';
+import { IsDefined, IsString, Validate } from 'class-validator';
 
 class ArgumentsValidator extends ActionArgumentsValidator {
   @IsDefined()
@@ -9,6 +9,7 @@ class ArgumentsValidator extends ActionArgumentsValidator {
 
   @IsDefined()
   @IsString()
+  @Validate(IsValidMetaKey)
   key: string
 }
 
@@ -22,8 +23,7 @@ export default class MetaToggleAction extends Action {
     const parsedValue = Utils.evaluateBoolean(value)
     if (!parsedValue) return script.missingArg("value", context);
 
-    const meta = this.manager.services.engine.metaHandler.metas.get(key);
-    if (!meta) return script.logError(`Meta with key ${key} is not registered.`);
+    const meta = this.manager.services.engine.metaHandler.metas.get(key)!;
 
     switch (meta.mode) {
       case 'user':

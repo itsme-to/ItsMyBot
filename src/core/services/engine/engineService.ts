@@ -22,7 +22,6 @@ export default class EngineService extends Service {
 
   async initialize() {
     await this.loadScripts();
-    await this.metaHandler.initialize();
     this.manager.logger.info('Script engine initialized.');
   }
 

@@ -1,41 +1,43 @@
-import { Condition, ConditionData, Context, Variable } from '@itsmybot';
+import { Condition, ConditionData, Context, Variable, ConditionArgumentValidator, IsValidMetaKey, IsNumberMeta } from '@itsmybot';
 import Utils from '@utils';
+import { IsDefined, IsString, Validate } from 'class-validator';
+
+class ArgumentsValidator extends ConditionArgumentValidator {
+  @IsDefined()
+  @IsString()
+  @Validate(IsValidMetaKey)
+  @Validate(IsNumberMeta)
+  key: string;
+
+  @IsDefined()
+  @IsString()
+  value: string;
+}
 
 export default class MetaAboveCondition extends Condition {
   id = "metaAbove";
+  argumentsValidator = ArgumentsValidator;
 
   async isMet(condition: ConditionData, context: Context, variables: Variable[]) {
-    const arg = condition.config.getStringOrNull("key")
-    if (!arg) return condition.missingArg("key");
-
-    let value = condition.config.getStringOrNull("value");
+    const key = condition.args.getString("key");
+    let value = condition.args.getString("value");
     value = await Utils.applyVariables(value, variables, context);
-    if (!value) return condition.missingArg("value");
 
-    const meta = this.manager.services.engine.metaHandler.metas.get(arg);
-    if (!meta) {
-      this.logger.error(`Meta with key ${arg} is not registered.`);
-      return false;
-    }
-
-    if (meta.type !== 'number') {
-      this.logger.error(`Meta with key ${arg} is not a number type.`);
-      return false;
-    }
+    const meta = this.manager.services.engine.metaHandler.metas.get(key)!;
 
     const scopeId = this.manager.services.engine.metaHandler.resolveScopeId(context, meta.mode);
     if (!scopeId) {
-      this.logger.error(`Could not resolve scope ID for meta ${arg} in mode ${meta.mode}.`);
+      this.logger.error(`Could not resolve scope ID for meta ${key} in mode ${meta.mode}.`);
       return false;
     }
 
-    const metaData = await this.manager.services.engine.metaHandler.findOrCreate(arg, '[ ]', scopeId);
-    
+    const metaData = await this.manager.services.engine.metaHandler.findOrCreate(key, '[ ]', scopeId);
+
     try {
       const numberValue = parseFloat(metaData.value);
       return numberValue > parseFloat(value);
     } catch (error) {
-      this.logger.error(`Failed to parse meta value for ${arg}: ${error}`);
+      this.logger.error(`Failed to parse meta value for ${key}: ${error}`);
       return false;
     }
   }

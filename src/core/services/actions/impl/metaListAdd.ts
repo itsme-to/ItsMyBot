@@ -1,6 +1,6 @@
-import { Action, ActionArgumentsValidator, ActionData, Context, Variable } from '@itsmybot';
+import { Action, ActionArgumentsValidator, ActionData, Context, IsListMeta, IsValidMetaKey, Variable } from '@itsmybot';
 import Utils from '@utils';
-import { IsDefined, IsString } from 'class-validator';
+import { IsDefined, IsString, Validate } from 'class-validator';
 
 class ArgumentsValidator extends ActionArgumentsValidator {
   @IsDefined()
@@ -9,6 +9,8 @@ class ArgumentsValidator extends ActionArgumentsValidator {
 
   @IsDefined()
   @IsString()
+  @Validate(IsValidMetaKey)
+  @Validate(IsListMeta)
   key: string
 }
 
@@ -20,9 +22,8 @@ export default class MetaListAddAction extends Action {
     const key = script.args.getString("key");
     let value = script.args.getString("value", true);
     value = await Utils.applyVariables(value, variables, context);
-  
-    const meta = this.manager.services.engine.metaHandler.metas.get(key);
-    if (!meta) return script.logError(`Meta with key ${key} is not registered.`);
+
+    const meta = this.manager.services.engine.metaHandler.metas.get(key)!;
 
     switch (meta.mode) {
       case 'user':

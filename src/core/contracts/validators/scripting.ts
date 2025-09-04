@@ -1,37 +1,12 @@
 
 import { Type } from 'class-transformer';
 import { IsString, IsInt, ValidateNested, IsOptional, ValidateIf, IsDefined, Max, Min, IsPositive, IsArray, IsBoolean, IsNumber, Validate } from 'class-validator';
-import { IsPermissionFlag, IsValidActionArgs, IsValidActionId, IsValidConditionId, MessageValidator } from '@itsmybot';
+import { IsPermissionFlag, IsValidActionArgs, IsValidActionId, IsValidConditionArgs, IsValidConditionId, MessageValidator } from '@itsmybot';
 
-class ConditionArgumentValidator {
+export class ConditionArgumentValidator {
   @IsOptional()
   @IsBoolean()
   inverse: boolean
-
-  @IsOptional()
-  @IsString({ each: true })
-  value: string[] | string
-
-  @IsOptional()
-  @ValidateNested({ each: true })
-  @Type(() => ConditionValidator)
-  conditions: ConditionValidator[]
-
-  @IsOptional()
-  @IsBoolean()
-  'ignore-case': boolean
-
-  @IsOptional()
-  @IsNumber()
-  amount: number
-
-  @IsOptional()
-  @IsString()
-  key: string
-
-  @IsOptional()
-  @IsBoolean()
-  inherit: boolean
 }
 
 export class ConditionValidator {
@@ -47,8 +22,7 @@ export class ConditionValidator {
   expression: string
 
   @IsOptional()
-  @ValidateNested()
-  @Type(() => ConditionArgumentValidator)
+  @Validate(IsValidConditionArgs)
   args: ConditionArgumentValidator
 
   @IsOptional()
