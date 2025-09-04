@@ -1,6 +1,6 @@
-import manager, { ActionValidator } from '@itsmybot';
+import manager, { ActionValidator, ConditionValidator } from '@itsmybot';
 import Utils from '@utils';
-import { validate, ValidationArguments, ValidatorConstraintInterface, ValidatorConstraint } from 'class-validator';
+import { validate, ValidationArguments, ValidatorConstraintInterface, ValidatorConstraint, ValidationError } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 
 @ValidatorConstraint({ name: 'isPermissionFlag', async: false })
@@ -15,7 +15,6 @@ export class IsPermissionFlag implements ValidatorConstraintInterface {
   }
 }
 
-
 @ValidatorConstraint({ name: 'isActivityType', async: false })
 export class IsActivityType implements ValidatorConstraintInterface {
   validate(value: string, args: ValidationArguments) {
@@ -27,7 +26,6 @@ export class IsActivityType implements ValidatorConstraintInterface {
     return 'This is not a valid activity type. Please use one of the following: PLAYING, STREAMING, LISTENING, WATCHING, COMPETING';
   }
 }
-
 
 @ValidatorConstraint({ name: 'isTextInputStyle', async: false })
 export class IsTextInputStyle implements ValidatorConstraintInterface {
@@ -41,7 +39,6 @@ export class IsTextInputStyle implements ValidatorConstraintInterface {
   }
 }
 
-
 @ValidatorConstraint({ name: 'isCommandOptionType', async: false })
 export class IsCommandOptionType implements ValidatorConstraintInterface {
   validate(value: string, args: ValidationArguments) {
@@ -53,7 +50,6 @@ export class IsCommandOptionType implements ValidatorConstraintInterface {
     return 'This is not a command option type.';
   }
 }
-
 
 @ValidatorConstraint({ name: 'isChannelType', async: false })
 export class IsChannelType implements ValidatorConstraintInterface {
@@ -78,58 +74,157 @@ export class IsBooleanOrString implements ValidatorConstraintInterface {
   }
 }
 
-@ValidatorConstraint({ name: 'isValidConditionId', async: false })
-export class IsValidConditionId implements ValidatorConstraintInterface {
+@ValidatorConstraint({ name: 'isValidMetaKey', async: false })
+export class IsValidMetaKey implements ValidatorConstraintInterface {
   validate(value: any, args: ValidationArguments) {
-    return manager.services.condition.conditions.has(value.replace('!', ''));
+    return manager.services.engine.metaHandler.metas.has(value);
   }
 
   defaultMessage(args: ValidationArguments) {
-    return `The condition ID ${args.value} is not valid.`;
+    return `The meta key ${args.value} does not exist. Please define it in the meta configuration.`;
   }
 }
 
+@ValidatorConstraint({ name: 'isNumberMeta', async: false })
+export class IsNumberMeta implements ValidatorConstraintInterface {
+  validate(value: any, args: ValidationArguments) {
+    const meta = manager.services.engine.metaHandler.metas.get(value);
+    return meta?.type == 'number'
+  }
+
+  defaultMessage(args: ValidationArguments) {
+    return `The meta key ${args.value} is not of type number.`;
+  }
+}
+
+@ValidatorConstraint({ name: 'isBooleanMeta', async: false })
+export class IsBooleanMeta implements ValidatorConstraintInterface {
+  validate(value: any, args: ValidationArguments) {
+    const meta = manager.services.engine.metaHandler.metas.get(value);
+    return meta?.type == 'boolean'
+  }
+
+  defaultMessage(args: ValidationArguments) {
+    return `The meta key ${args.value} is not of type boolean.`;
+  }
+}
+
+@ValidatorConstraint({ name: 'isListMeta', async: false })
+export class IsListMeta implements ValidatorConstraintInterface {
+  validate(value: any, args: ValidationArguments) {
+    const meta = manager.services.engine.metaHandler.metas.get(value);
+    return meta?.type == 'list'
+  }
+
+  defaultMessage(args: ValidationArguments) {
+    return `The meta key ${args.value} is not of type list.`;
+  }
+}
+
+@ValidatorConstraint({ name: 'isNotListMeta', async: false })
+export class IsNotListMeta implements ValidatorConstraintInterface {
+  validate(value: any, args: ValidationArguments) {
+    const meta = manager.services.engine.metaHandler.metas.get(value);
+    return meta?.type !== 'list'
+  }
+
+  defaultMessage(args: ValidationArguments) {
+    return `The meta key ${args.value} is not a valid type. Should be string, number, or boolean.`;
+  }
+}
+
+const actionArgsErrors = new WeakMap<object, ValidationError[]>();
+const conditionArgsErrors = new WeakMap<object, ValidationError[]>();
+
+export const getActionArgsChildErrors = (value: any) => actionArgsErrors.get(value);
+export const getConditionArgsChildErrors = (value: any) => conditionArgsErrors.get(value);
 
 @ValidatorConstraint({ name: 'isValidActionId', async: false })
 export class IsValidActionId implements ValidatorConstraintInterface {
   validate(value: any, args: ValidationArguments) {
     return manager.services.action.actions.has(value);
   }
-
   defaultMessage(args: ValidationArguments) {
-    return `The action ID ${args.value} is not valid.`;
+    return `The action ID ${args.value} does not exist.`;
   }
 }
 
-const isValidActionArgsErrors = new Map<string, string>();
-
-@ValidatorConstraint({ name: 'isValidActionArgs', async: false })
+@ValidatorConstraint({ name: 'isValidActionArgs', async: true })
 export class IsValidActionArgs implements ValidatorConstraintInterface {
-  errors: string[] = [];
-
   async validate(value: any, args: ValidationArguments) {
     const object: ActionValidator = args.object as ActionValidator;
-    if (!object.id) return true;
+    if (!object?.id) return true;
 
     const action = manager.services.action.actions.get(object.id);
     if (!action) return true;
 
+    // reset cache pour cet objet
+    actionArgsErrors.delete(value);
+
     if (action.argumentsValidator) {
       const config = plainToInstance(action.argumentsValidator, value);
-      const errors = await validate(config, { validationError: { target: false }, whitelist: true, forbidNonWhitelisted: true, skipMissingProperties: true });
+      const errors = await validate(config, {
+        validationError: { target: false },
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        skipMissingProperties: true,
+      });
+
       if (errors.length > 0) {
-        const lines = Utils.formatValidationErrors(errors);
-        isValidActionArgsErrors.set(object.id, `Invalid action arguments for action ${object.id}:\n  - ${lines.join('\n  - ')}`);
+        actionArgsErrors.set(value, errors);
         return false;
       }
     }
-
-    isValidActionArgsErrors.delete(object.id);
     return true;
   }
 
   defaultMessage(args: ValidationArguments) {
     const object: ActionValidator = args.object as ActionValidator;
-    return isValidActionArgsErrors.get(object.id) || '';
+    // message court, le détail sera rendu par le formateur
+    return `Invalid action arguments for action ${object?.id ?? '(unknown)'}:`;
+  }
+}
+
+@ValidatorConstraint({ name: 'isValidConditionId', async: false })
+export class IsValidConditionId implements ValidatorConstraintInterface {
+  validate(value: any, args: ValidationArguments) {
+    return manager.services.condition.conditions.has(String(value).replace('!', ''));
+  }
+  defaultMessage(args: ValidationArguments) {
+    return `The condition ID ${args.value} does not exist.`;
+  }
+}
+
+@ValidatorConstraint({ name: 'isValidConditionArgs', async: true })
+export class IsValidConditionArgs implements ValidatorConstraintInterface {
+  async validate(value: any, args: ValidationArguments) {
+    const object: ConditionValidator = args.object as ConditionValidator;
+    if (!object?.id) return true;
+
+    const condition = manager.services.condition.conditions.get(object.id);
+    if (!condition) return true;
+
+    conditionArgsErrors.delete(value);
+
+    if (condition.argumentsValidator) {
+      const config = plainToInstance(condition.argumentsValidator, value);
+      const errors = await validate(config, {
+        validationError: { target: false },
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        skipMissingProperties: true,
+      });
+
+      if (errors.length > 0) {
+        conditionArgsErrors.set(value, errors);
+        return false;
+      }
+    }
+    return true;
+  }
+
+  defaultMessage(args: ValidationArguments) {
+    const object: ConditionValidator = args.object as ConditionValidator;
+    return `Invalid condition arguments for condition ${object?.id ?? '(unknown)'}:`;
   }
 }

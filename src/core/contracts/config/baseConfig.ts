@@ -6,6 +6,7 @@ import { join, resolve } from 'path';
 import { parseDocument, Document } from 'yaml';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
+import { getActionArgsChildErrors, getConditionArgsChildErrors } from '../decorators/validator.js';
 
 export class BaseConfig extends Config {
   public update: boolean
@@ -59,8 +60,14 @@ export class BaseConfig extends Config {
     if (!config) return this.handleValidationErrors(['Empty configuration file, please delete it or fill it with the values. If the error persists, contact the addon developer.']);
 
     const errors = await validate(config, { validationError: { target: false }, whitelist: true, forbidNonWhitelisted: true, skipMissingProperties: true });
+    const formattedErrors = [];
 
-    const formattedErrors = Utils.formatValidationErrors(errors);
+    if (errors.length > 0) {
+      formattedErrors.push(...Utils.formatValidationErrors(errors, {
+        isValidActionArgs: getActionArgsChildErrors,
+        isValidConditionArgs: getConditionArgsChildErrors
+      }));
+    }
 
     if (defaultContent) {
       const corrected = await this.correctWithDefaults(formattedErrors, configContent, defaultContent);
@@ -78,6 +85,7 @@ export class BaseConfig extends Config {
 
     for (const error of errors) {
       const [path, errorMessage] = error.split(': ', 2);
+      if (!errorMessage) continue;
       if (errorMessage.includes('should not be null or undefined')) {
         const pathArray = path.split('.');
         const defaultValue: unknown = defaultContent.getIn(pathArray, true);
@@ -94,7 +102,7 @@ export class BaseConfig extends Config {
 
   handleValidationErrors(errors: string[]) {
     if (errors.length === 0) return;
-    throw [`Validation errors in the configuration file '${this.configFilePath}':`, ...errors.map(error => `- ${error}`)]
+    throw [`Validation errors in the configuration file '${this.configFilePath}':`, ...errors]
   }
 
   private async replaceTabs() {
