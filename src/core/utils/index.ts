@@ -12,6 +12,7 @@ import { setupThumbnail } from './setup/setupThumbnail.js';
 import { setupTextDisplay } from './setup/setupTextDisplay.js';
 import { userVariables, channelVariables, roleVariables, timeVariables } from './variables.js';
 import { transcript, transcriptMessage } from './transcript.js';
+import { formatValidationErrors } from './validation.js';
 
 export { Logger } from './logger.js';
 export { Cooldown } from './cooldown.js';
@@ -20,7 +21,6 @@ export { Pagination } from './pagination.js';
 import manager, { Context, Variable, MessageOutput }from '@itsmybot';
 import { GuildMember } from 'discord.js';
 import { Parser } from 'expr-eval';
-import { ValidationError } from 'class-validator';
 
 const discordEpoch = 1420070400000;
 
@@ -88,6 +88,8 @@ export default class Utils {
    * @param message The message to transcript
    */
   static transcriptMessage = transcriptMessage;
+
+  static formatValidationErrors = formatValidationErrors;
 
   static async fileExists(filePath: string) {
     try {
@@ -308,21 +310,5 @@ export default class Utils {
 
   static capitalizeFirst(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
-  }
-
-  static formatValidationErrors(errors: ValidationError[], parentPath?: string): string[] {
-    const messages: string[] = [];
-    errors.forEach(error => {
-      const propertyPath = parentPath ? `${parentPath}.${error.property}` : error.property;
-      if (error.constraints) {
-        const errorMessages = Object.values(error.constraints).map(msg => `${propertyPath}: ${msg}`);
-        messages.push(...errorMessages);
-      }
-      if (error.children && error.children.length > 0) {
-        const childMessages = Utils.formatValidationErrors(error.children, propertyPath);
-        messages.push(...childMessages);
-      }
-    });
-    return messages;
   }
 };
