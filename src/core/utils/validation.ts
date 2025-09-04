@@ -18,13 +18,12 @@ function walkTree(
   indent: number,
   out: string[],
   dynamicChildren?: Record<string, DynamicChildrenProvider>,
-  baseForRel?: string // si défini, enfants imprimés en libellés *relatifs*
+  baseForRel?: string
 ) {
   for (const e of errs) {
     const path = parentPath ? `${parentPath}.${e.property}` : e.property;
     const hasConstraints = !!e.constraints && Object.keys(e.constraints!).length > 0;
 
-    // enfants dynamiques attachés à ce nœud
     let dynChildren: ValidationError[] = [];
     if (dynamicChildren && e.constraints) {
       for (const [constraintName, provider] of Object.entries(dynamicChildren)) {
@@ -37,41 +36,35 @@ function walkTree(
     const normalChildren = e.children ?? [];
     const allChildren = normalChildren.concat(dynChildren);
 
-    // 1) s'il y a des contraintes locales : header
     if (hasConstraints) {
       const headerLabel = relLabel(path, baseForRel);
       for (const msg of Object.values(e.constraints!)) {
         out.push(`${'  '.repeat(indent)}- ${headerLabel}: ${msg}`);
       }
 
-      // S’il n’y a PAS de dynamiques plus bas, on aplatit les enfants en lignes complètes
       if (!hasDynamicInSubtree(e, dynamicChildren)) {
-        flattenToOut(allChildren, path, out, indent); // chemins complets au même niveau
+        flattenToOut(allChildren, path, out, indent);
       } else {
-        // Sinon, on garde l'arbo pour lisibilité (relative aux headers dynamiques)
         for (const child of allChildren) {
-          walkTree([child], path, indent + 1, out, dynamicChildren, /*baseForRel*/ path);
+          walkTree([child], path, indent + 1, out, dynamicChildren, path);
         }
       }
       continue;
     }
 
-    // 2) pas de contraintes sur ce nœud
     if (allChildren.length > 0) {
       const shouldShowContainer =
         allChildren.length > 1 && hasDynamicInSubtree(e, dynamicChildren);
 
       if (shouldShowContainer) {
-        // On affiche un conteneur uniquement s’il existe un descendant dynamique
         const containerLabel = relLabel(path, baseForRel);
         out.push(`${'  '.repeat(indent)}- ${containerLabel}`);
         for (const child of allChildren) {
-          walkTree([child], path, indent + 1, out, dynamicChildren, /*baseForRel*/ path);
+          walkTree([child], path, indent + 1, out, dynamicChildren, path);
         }
       } else {
-        // Sinon, on *aplatit* : pas de conteneur, chemins complets
         for (const child of allChildren) {
-          walkTree([child], path, indent, out, dynamicChildren, /*baseForRel*/ baseForRel);
+          walkTree([child], path, indent, out, dynamicChildren, baseForRel);
         }
       }
     }

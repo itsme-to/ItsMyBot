@@ -158,7 +158,6 @@ export class IsValidActionArgs implements ValidatorConstraintInterface {
     const action = manager.services.action.actions.get(object.id);
     if (!action) return true;
 
-    // reset cache pour cet objet
     actionArgsErrors.delete(value);
 
     if (action.argumentsValidator) {
@@ -180,7 +179,6 @@ export class IsValidActionArgs implements ValidatorConstraintInterface {
 
   defaultMessage(args: ValidationArguments) {
     const object: ActionValidator = args.object as ActionValidator;
-    // message court, le détail sera rendu par le formateur
     return `Invalid action arguments for action ${object?.id ?? '(unknown)'}:`;
   }
 }
