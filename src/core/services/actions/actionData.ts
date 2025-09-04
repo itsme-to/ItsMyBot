@@ -83,7 +83,7 @@ export class ActionData extends BaseScript {
           break;
         
         case 'channel':
-          const newChannel = await Utils.findChannel(parsedValue, context.guild)
+          const newChannel = Utils.findChannel(parsedValue, context.guild)
           if (!newChannel) continue
 
           context.channel = newChannel
@@ -105,7 +105,7 @@ export class ActionData extends BaseScript {
           break;
         
         case 'role':
-          const newRole = await Utils.findRole(parsedValue, context.guild)
+          const newRole = Utils.findRole(parsedValue, context.guild)
           if (!newRole) continue
 
           context.role = newRole

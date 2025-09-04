@@ -5,7 +5,7 @@ import * as fs from 'fs/promises';
 import { join, resolve } from 'path';
 import { parseDocument, Document } from 'yaml';
 import { plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
+import { validateSync } from 'class-validator';
 import { getActionArgsChildErrors, getConditionArgsChildErrors } from '../decorators/validator.js';
 
 export class BaseConfig extends Config {
@@ -59,7 +59,7 @@ export class BaseConfig extends Config {
 
     if (!config) return this.handleValidationErrors(['Empty configuration file, please delete it or fill it with the values. If the error persists, contact the addon developer.']);
 
-    const errors = await validate(config, { validationError: { target: false }, whitelist: true, forbidNonWhitelisted: true, skipMissingProperties: true });
+    const errors = validateSync(config, { validationError: { target: false }, whitelist: true, forbidNonWhitelisted: true, skipMissingProperties: true });
     const formattedErrors = [];
 
     if (errors.length > 0) {
@@ -70,7 +70,7 @@ export class BaseConfig extends Config {
     }
 
     if (defaultContent) {
-      const corrected = await this.correctWithDefaults(formattedErrors, configContent, defaultContent);
+      const corrected = this.correctWithDefaults(formattedErrors, configContent, defaultContent);
       if (corrected) {
         await fs.writeFile(this.configFilePath, configContent.toString(), 'utf8');
         return this.loadConfigs();
@@ -80,7 +80,7 @@ export class BaseConfig extends Config {
     this.handleValidationErrors(formattedErrors);
   }
 
-  async correctWithDefaults(errors: string[], configContent: Document, defaultContent: Document): Promise<boolean> {
+  correctWithDefaults(errors: string[], configContent: Document, defaultContent: Document): boolean {
     let corrected = false;
 
     for (const error of errors) {

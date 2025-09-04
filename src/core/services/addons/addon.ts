@@ -25,7 +25,6 @@ export abstract class Addon {
     this.path = join(manager.managerOptions.dir.addons, name);
   }
 
-
   private sanitizeName(name: string): string {
     return name.replace(/[^A-Za-z0-9 _.-]/g, "").replace(/\s+/g, "_");
   }

@@ -13,13 +13,13 @@ export default class InChannelCondition extends Condition {
   id = "inChannel";
   argumentsValidator = ArgumentsValidator;
 
-  async isMet(condition: ConditionData, context: Context, variables: Variable[]) {
+  isMet(condition: ConditionData, context: Context, variables: Variable[]) {
     const arg = condition.args.getStrings("value");
     if (!context.channel) return condition.missingContext("channel");
     if (!(context.channel instanceof GuildChannel)) return false;
 
     for (const channel of arg) {
-      const dChannel = await Utils.findChannel(channel, context.guild);
+      const dChannel = Utils.findChannel(channel, context.guild);
       if (!dChannel) {
         this.logger.warn(`Channel ${channel} not found in guild ${context.guild?.name}`);
         continue;
