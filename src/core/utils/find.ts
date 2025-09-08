@@ -1,7 +1,7 @@
 import { Guild, GuildBasedChannel, TextChannel, Channel, Role } from 'discord.js';
 import manager from '@itsmybot';
 
-export async function findRole(identifier: string, guild?: Guild): Promise<Role | undefined> {
+export function findRole(identifier: string, guild?: Guild): Role | undefined {
   const search = String(identifier).toLowerCase();
 
   if (search.includes(';')) {
@@ -19,7 +19,7 @@ export async function findRole(identifier: string, guild?: Guild): Promise<Role 
   return undefined
 }
 
-async function rawFindRole(identifier: string, guild: Guild): Promise<Role | undefined> {
+function rawFindRole(identifier: string, guild: Guild): Role | undefined {
   if (identifier === 'everyone' || identifier === '@everyone') return guild.roles.everyone;
 
   const role = guild.roles.cache.find(r => r.name.toLowerCase() === identifier || r.id === identifier);
@@ -27,7 +27,7 @@ async function rawFindRole(identifier: string, guild: Guild): Promise<Role | und
   return role;
 }
 
-export async function findChannel(identifier: string, guild?: Guild): Promise<GuildBasedChannel | undefined> {
+export function findChannel(identifier: string, guild?: Guild): GuildBasedChannel | undefined {
   const search = String(identifier)
   if (search === 'none') return undefined;
 
@@ -50,15 +50,15 @@ function isGuildTextBasedChannel(channel?: Channel): channel is TextChannel {
   return channel && channel.isTextBased() && !channel.isDMBased() || false
 }
 
-export async function findTextChannel(identifier: string, guild?: Guild): Promise<TextChannel | undefined> {
-  const channel = await findChannel(identifier, guild);
+export function findTextChannel(identifier: string, guild?: Guild): TextChannel | undefined {
+  const channel = findChannel(identifier, guild);
 
   if (isGuildTextBasedChannel(channel)) return channel;
 
   return undefined;
 }
 
-async function rawFindChannel(identifier: string, guild: Guild): Promise<GuildBasedChannel | undefined> {
+function rawFindChannel(identifier: string, guild: Guild): GuildBasedChannel | undefined {
   const channel = guild.channels.cache.find(c => c.name === identifier || c.id === identifier);
 
   return channel;

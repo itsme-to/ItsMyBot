@@ -36,7 +36,7 @@ export default class RawEvent extends Event {
 
   async createContextFromPacket(packet: RawEventPacket): Promise<Context | undefined> {
     const { d: data } = packet;
-    const channel = await Utils.findTextChannel(data.channel_id);
+    const channel = Utils.findTextChannel(data.channel_id);
     if (!channel || channel instanceof DMChannel) return;
 
     if (!channel.guild || channel.guild.id !== this.manager.primaryGuildId) return;

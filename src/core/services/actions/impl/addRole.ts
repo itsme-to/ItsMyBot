@@ -1,16 +1,23 @@
-import { Action, ActionData, Context, Variable } from '@itsmybot';
+import { Action, ActionData, Context, ActionArgumentsValidator, Variable } from '@itsmybot';
 import Utils from '@utils';
+import { IsDefined, IsString } from 'class-validator';
 import { Role } from 'discord.js';
+
+class ArgumentsValidator extends ActionArgumentsValidator {
+  @IsDefined()
+  @IsString({ each: true})
+  value: string | string[]
+}
 
 export default class AddRoleAction extends Action {
   id = "addRole";
+  argumentsValidator = ArgumentsValidator;
 
   async onTrigger(script: ActionData, context: Context, variables: Variable[]) {
-    const rolesToAdd = script.args.getStringsOrNull("value")
+    const rolesToAdd = script.args.getStrings("value")
 
     if (!context.member) return script.missingContext("member", context);
     if (!context.guild) return script.missingContext("guild", context);
-    if (!rolesToAdd) return script.missingArg("value", context);
 
     let roles = await Promise.all(
       rolesToAdd.map(async roleName =>

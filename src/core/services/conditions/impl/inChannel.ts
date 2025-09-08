@@ -1,18 +1,25 @@
-import { Condition, ConditionData, Context, Variable } from '@itsmybot';
+import { Condition, ConditionData, Context, Variable, ConditionArgumentValidator } from '@itsmybot';
 import Utils from '@utils';
 import { GuildChannel } from 'discord.js';
+import { IsDefined, IsString } from 'class-validator';
+
+class ArgumentsValidator extends ConditionArgumentValidator {
+  @IsDefined()
+  @IsString({ each: true })
+  value: string | string[]
+}
 
 export default class InChannelCondition extends Condition {
   id = "inChannel";
+  argumentsValidator = ArgumentsValidator;
 
-  async isMet(condition: ConditionData, context: Context, variables: Variable[]) {
-    const arg = condition.config.getStringsOrNull("value")
-    if (!arg) return condition.missingArg("value");
+  isMet(condition: ConditionData, context: Context, variables: Variable[]) {
+    const arg = condition.args.getStrings("value");
     if (!context.channel) return condition.missingContext("channel");
     if (!(context.channel instanceof GuildChannel)) return false;
 
     for (const channel of arg) {
-      const dChannel = await Utils.findChannel(channel, context.guild);
+      const dChannel = Utils.findChannel(channel, context.guild);
       if (!dChannel) {
         this.logger.warn(`Channel ${channel} not found in guild ${context.guild?.name}`);
         continue;

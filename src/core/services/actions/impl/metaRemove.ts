@@ -1,40 +1,41 @@
-import { Action, ActionData, Context, Variable } from '@itsmybot';
-import Utils from '@utils';
+import { Action, ActionArgumentsValidator, ActionData, Context, IsValidMetaKey, Variable } from '@itsmybot';
+import { IsDefined, IsString, Validate } from 'class-validator';
+
+class ArgumentsValidator extends ActionArgumentsValidator {
+  @IsDefined()
+  @IsString()
+  @Validate(IsValidMetaKey)
+  key: string
+}
 
 export default class MetaRemoveAction extends Action {
   id = "metaRemove";
+  argumentsValidator = ArgumentsValidator;
 
   async onTrigger(script: ActionData, context: Context, variables: Variable[]) {
-    const key = script.args.getStringOrNull("key");
-    let value = script.args.getStringOrNull("value");
+    const key = script.args.getString("key");
 
-    value = await Utils.applyVariables(script.args.getStringOrNull("value"), variables, context);
-
-    if (!value) return script.missingArg("value", context);
-    if (!key) return script.missingArg("key", context);
-
-    const meta = this.manager.services.engine.metaHandler.metas.get(key);
-    if (!meta) return script.logError(`Meta with key ${key} is not registered.`);
+    const meta = this.manager.services.engine.metaHandler.metas.get(key)!;
 
     switch (meta.mode) {
       case 'user':
         if (!context.user) return script.missingContext("user", context);
-        const userMeta = await this.manager.services.engine.metaHandler.findOrCreate(key, value, context.user.id);
-        await userMeta.destroy();
+        const userMeta = await this.manager.services.engine.metaHandler.findOrNull(key, context.user.id);
+        await userMeta?.destroy();
         break;
       case 'channel':
         if (!context.channel) return script.missingContext("channel", context);
-        const channelMeta = await this.manager.services.engine.metaHandler.findOrCreate(key, value, context.channel.id);
-        await channelMeta.destroy();
+        const channelMeta = await this.manager.services.engine.metaHandler.findOrNull(key, context.channel.id);
+        await channelMeta?.destroy();
         break;
       case 'message':
         if (!context.message) return script.missingContext("message", context);
-        const messageMeta = await this.manager.services.engine.metaHandler.findOrCreate(key, value, context.message.id);
-        await messageMeta.destroy();
+        const messageMeta = await this.manager.services.engine.metaHandler.findOrNull(key, context.message.id);
+        await messageMeta?.destroy();
         break;
       case 'global':
-        const globalMeta = await this.manager.services.engine.metaHandler.findOrCreate(key, value);
-        await globalMeta.destroy();
+        const globalMeta = await this.manager.services.engine.metaHandler.findOrNull(key);
+        await globalMeta?.destroy();
         break;
     }
   }

@@ -12,6 +12,7 @@ import { setupThumbnail } from './setup/setupThumbnail.js';
 import { setupTextDisplay } from './setup/setupTextDisplay.js';
 import { userVariables, channelVariables, roleVariables, timeVariables } from './variables.js';
 import { transcript, transcriptMessage } from './transcript.js';
+import { formatValidationErrors } from './validation.js';
 
 export { Logger } from './logger.js';
 export { Cooldown } from './cooldown.js';
@@ -87,6 +88,8 @@ export default class Utils {
    * @param message The message to transcript
    */
   static transcriptMessage = transcriptMessage;
+
+  static formatValidationErrors = formatValidationErrors;
 
   static async fileExists(filePath: string) {
     try {
@@ -193,7 +196,7 @@ export default class Utils {
    * @param identifiers The role name or id to check for, can be an array of roles
    * @param inherited Whether to check if the role is inherited
    */
-  static async hasRole(member: GuildMember, identifiers: string | string[], inherited = false) {
+  static hasRole(member: GuildMember, identifiers: string | string[], inherited = false) {
     const searchIdentifiers = Array.isArray(identifiers) ? identifiers : [identifiers];
 
     for (const identifier of searchIdentifiers) {
@@ -201,7 +204,7 @@ export default class Utils {
 
       if (search === '@everyone') return true;
 
-      const role = await this.findRole(search, member.guild);
+      const role = this.findRole(search, member.guild);
       if (!role) continue;
       if (member.roles.cache.has(role.id)) return true;
 
@@ -296,10 +299,10 @@ export default class Utils {
    * @param id The channel id to log the message to or 'none' to disable logging
    * @param message The message to log
    */
-  static async logToDiscord(id: string, message: MessageOutput) {
+  static logToDiscord(id: string, message: MessageOutput) {
     if (id === 'none') return;
 
-    const channel = await findTextChannel(id);
+    const channel = findTextChannel(id);
     if (!channel) return;
 
     channel.send(message)

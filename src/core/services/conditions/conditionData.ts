@@ -7,36 +7,37 @@ export class ConditionData {
   public logger: Logger;
   public notMetActions: ActionData[];
   public manager: Manager;
+  public args: Config;
 
   constructor(manager: Manager, condition: Config, notMetAction: boolean = true) {
     this.config = condition;
 
-    if (this.config.has("expression")) {
+    if (condition.has("expression")) {
       condition.set('id', "isExpressionTrue");
-      this.id = "isExpressionTrue";
-      this.logger = new Logger(`Condition/${this.id}`);
-      this.config.set('value', this.config.getString("expression"));
-      this.logWarning(`The "expression" argument is deprecated. Please use "value" instead with the id "isExpressionTrue"`);
+      condition.set('args.value', condition.getString("expression"));
     }
 
     this.id = condition.getString("id");
 
     if (this.id.startsWith('!')) {
       this.id = this.id.substring(1);
-      this.config.set("id", this.id);
-      this.config.set("inverse", true);
+      condition.set("id", this.id);
+      condition.set("args.inverse", true);
     }
 
     this.logger = new Logger(`Condition/${this.id}`);
 
-    if (this.config.has("args")) {
-      this.logWarning(`The "args" section is deprecated. Please put everything in the main condition object.`);
-      for (const [id, arg] of this.config.getSubsection("args").values) {
-        this.config.set(id, arg);
+    for (const [id, value] of condition.values) {
+      const allowed = ['id', 'args', 'inverse', 'not-met-actions', 'expression'];
+      if (!allowed.includes(id)) {
+        condition.set(`args.${id}`, value);
+        this.logWarning(`The "${id}" argument should be in the "args" section. Please move it there.`);
       }
+      continue;
     }
 
     this.manager = manager;
+    this.args = condition.getSubsectionOrNull("args") || condition.empty()
     this.notMetActions = notMetAction && condition.has("not-met-actions") ? condition.getSubsections("not-met-actions").map((actionData: Config) => new ActionData(this.manager, actionData, condition.logger)) : [];
   }
 

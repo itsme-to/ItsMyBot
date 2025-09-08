@@ -22,7 +22,6 @@ export default class EngineService extends Service {
 
   async initialize() {
     await this.loadScripts();
-    await this.metaHandler.initialize();
     this.manager.logger.info('Script engine initialized.');
   }
 
@@ -33,7 +32,7 @@ export default class EngineService extends Service {
     }
   }
 
-  async loadCustomCommands() {
+  async registerCustomCommands() {
     const customCommands = await new BaseConfigSection(this.manager.logger, 'scripting/custom-commands', 'build/core/resources/scripting/custom-commands').initialize(CustomCommandConfig);
 
     for (const filePath of customCommands) {

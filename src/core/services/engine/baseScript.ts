@@ -8,12 +8,12 @@ export class BaseScript {
   logger: Logger;
   manager: Manager;
 
-  constructor(manager: Manager, data: Config, logger: Logger, ) {
+  constructor(manager: Manager, data: Config, logger: Logger ) {
     this.logger = logger;
     this.manager = manager
     this.data = data;
     this.conditions = data.has("conditions") ? manager.services.condition.buildConditions(data.getSubsections("conditions")) : [];
-    this.actions = data.has("actions") ? data.getSubsections("actions").map((actionData: Config) => new ActionData(manager, actionData, logger, )) : [];
+    this.actions = data.has("actions") ? data.getSubsections("actions").map((actionData: Config) => new ActionData(manager, actionData, logger )) : [];
   }
 
   async meetsConditions(context: Context, variables: Variable[]): Promise<boolean> {

@@ -1,12 +1,29 @@
-import { Action, ActionData, Context, Variable } from '@itsmybot';
+import { Action, ActionData, FollowUpActionArgumentsValidator, Context, Variable } from '@itsmybot';
 import Utils from '@utils';
+import { IsDefined, IsOptional, IsString } from 'class-validator';
+
+class ArgumentsValidator extends FollowUpActionArgumentsValidator {
+  @IsDefined()
+  @IsString()
+  value: string;
+  
+  @IsOptional()
+  @IsString()
+  method: string
+
+  @IsOptional()
+  body: any
+
+  @IsOptional()
+  headers: any
+}
 
 export default class SendRequestAction extends Action {
   id = "sendRequest";
+  argumentsValidator = ArgumentsValidator;
 
   async onTrigger(script: ActionData, context: Context, variables: Variable[]) {
-    const url = script.args.getStringOrNull("value");
-    if (!url) return script.missingArg("value", context);
+    const url = script.args.getString("value");
 
     const method = script.args.getStringOrNull("method") || "GET";
     const headers = await this.applyVariablesToObject(script.args.getObjectOrNull("headers"), variables, context);

@@ -14,7 +14,6 @@ export default class ActionService extends Service{
   constructor(manager: Manager) {
     super(manager);
     this.actions = new Collection();
-
   }
 
   async initialize() {

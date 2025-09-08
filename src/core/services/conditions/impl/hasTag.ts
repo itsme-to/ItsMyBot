@@ -1,13 +1,20 @@
-import { Condition, ConditionData, Context, Variable } from '@itsmybot';
+import { Condition, ConditionData, Context, Variable, ConditionArgumentValidator } from '@itsmybot';
 import Utils from '@utils';
+import { IsDefined, IsString } from 'class-validator';
+
+class ArgumentsValidator extends ConditionArgumentValidator {
+  @IsDefined()
+  @IsString({ each: true })
+  value: string | string[]
+}
 
 export default class HasTagCondition extends Condition {
   id = "hasTag";
+  argumentsValidator = ArgumentsValidator;
 
   async isMet(condition: ConditionData, context: Context, variables: Variable[]) {
     if (!context.channel || !context.channel.isThread()) return condition.missingContext("channel");
-    let tags = condition.config.getStringsOrNull("value");
-    if (!tags) return condition.missingArg("value");
+    let tags = condition.args.getStrings("value");
 
     const channelTags = context.channel.appliedTags;
     tags = await Promise.all(tags.map(tag => Utils.applyVariables(tag, variables, context)));

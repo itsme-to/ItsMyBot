@@ -5,7 +5,8 @@ import * as fs from 'fs/promises';
 import { join, resolve } from 'path';
 import { parseDocument, Document } from 'yaml';
 import { plainToInstance } from 'class-transformer';
-import { validate, ValidationError } from 'class-validator';
+import { validate } from 'class-validator';
+import { getActionArgsChildErrors, getConditionArgsChildErrors } from '../decorators/validator.js';
 
 export class BaseConfig extends Config {
   public update: boolean
@@ -59,11 +60,17 @@ export class BaseConfig extends Config {
     if (!config) return this.handleValidationErrors(['Empty configuration file, please delete it or fill it with the values. If the error persists, contact the addon developer.']);
 
     const errors = await validate(config, { validationError: { target: false }, whitelist: true, forbidNonWhitelisted: true, skipMissingProperties: true });
+    const formattedErrors = [];
 
-    const formattedErrors = formatValidationErrors(errors);
+    if (errors.length > 0) {
+      formattedErrors.push(...Utils.formatValidationErrors(errors, {
+        isValidActionArgs: getActionArgsChildErrors,
+        isValidConditionArgs: getConditionArgsChildErrors
+      }));
+    }
 
     if (defaultContent) {
-      const corrected = await this.correctWithDefaults(formattedErrors, configContent, defaultContent);
+      const corrected = this.correctWithDefaults(formattedErrors, configContent, defaultContent);
       if (corrected) {
         await fs.writeFile(this.configFilePath, configContent.toString(), 'utf8');
         return this.loadConfigs();
@@ -73,11 +80,12 @@ export class BaseConfig extends Config {
     this.handleValidationErrors(formattedErrors);
   }
 
-  async correctWithDefaults(errors: string[], configContent: Document, defaultContent: Document): Promise<boolean> {
+  correctWithDefaults(errors: string[], configContent: Document, defaultContent: Document): boolean {
     let corrected = false;
 
     for (const error of errors) {
       const [path, errorMessage] = error.split(': ', 2);
+      if (!errorMessage) continue;
       if (errorMessage.includes('should not be null or undefined')) {
         const pathArray = path.split('.');
         const defaultValue: unknown = defaultContent.getIn(pathArray, true);
@@ -94,7 +102,7 @@ export class BaseConfig extends Config {
 
   handleValidationErrors(errors: string[]) {
     if (errors.length === 0) return;
-    throw [`Validation errors in the configuration file '${this.configFilePath}':`, ...errors.map(error => `- ${error}`)]
+    throw [`Validation errors in the configuration file '${this.configFilePath}':`, ...errors]
   }
 
   private async replaceTabs() {
@@ -105,20 +113,4 @@ export class BaseConfig extends Config {
       this.logger.warn(`Tabulation replaced in ${this.configFilePath}, please use double spaces instead of tabs!`);
     }
   }
-}
-
-function formatValidationErrors(errors: ValidationError[], parentPath?: string): string[] {
-  const messages: string[] = [];
-  errors.forEach(error => {
-    const propertyPath = parentPath ? `${parentPath}.${error.property}` : error.property;
-    if (error.constraints) {
-      const errorMessages = Object.values(error.constraints).map(msg => `${propertyPath}: ${msg}`);
-      messages.push(...errorMessages);
-    }
-    if (error.children && error.children.length > 0) {
-      const childMessages = formatValidationErrors(error.children, propertyPath);
-      messages.push(...childMessages);
-    }
-  });
-  return messages;
 }

@@ -1,20 +1,27 @@
-import { Action, ActionData, Context, Variable } from '@itsmybot';
+import { Action, ActionArgumentsValidator, ActionData, Context, IsValidMetaKey, Variable } from '@itsmybot';
 import Utils from '@utils';
+import { IsDefined, IsString, Validate } from 'class-validator';
+
+class ArgumentsValidator extends ActionArgumentsValidator {
+  @IsDefined()
+  @IsString({ each: true})
+  value: string | string[]
+
+  @IsDefined()
+  @IsString()
+  @Validate(IsValidMetaKey)
+  key: string
+}
 
 export default class MetaSetAction extends Action {
   id = "metaSet";
+  argumentsValidator = ArgumentsValidator;
 
   async onTrigger(script: ActionData, context: Context, variables: Variable[]) {
-    const key = script.args.getStringOrNull("key");
-    let value = script.args.getStringOrNull("value");
+    const key = script.args.getString("key");
+    const value = await Utils.applyVariables(script.args.getString("value", true), variables, context);
 
-    value = await Utils.applyVariables(script.args.getStringOrNull("value"), variables, context);
-
-    if (!value) return script.missingArg("value", context);
-    if (!key) return script.missingArg("key", context);
-
-    const meta = this.manager.services.engine.metaHandler.metas.get(key);
-    if (!meta) return script.logError(`Meta with key ${key} is not registered.`);
+    const meta = this.manager.services.engine.metaHandler.metas.get(key)!;
 
     switch (meta.mode) {
       case 'user':

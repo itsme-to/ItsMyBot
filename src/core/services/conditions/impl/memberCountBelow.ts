@@ -1,12 +1,21 @@
-import { Condition, ConditionData, Context, Variable } from '@itsmybot';
+import { Condition, ConditionArgumentValidator, ConditionData, Context, Variable } from '@itsmybot';
+import { IsDefined, IsNumber, IsPositive, Min } from 'class-validator';
+
+class ArgumentsValidator extends ConditionArgumentValidator {
+  @IsDefined()
+  @IsNumber()
+  @IsPositive()
+  @Min(1)
+  amount: number
+}
 
 export default class MemberCountBelowCondition extends Condition {
   id = "memberCountBelow";
+  argumentsValidator = ArgumentsValidator;
 
   isMet(condition: ConditionData, context: Context, variables: Variable[]) {
     if (!context.guild) return condition.missingContext("guild");
-    const amount = condition.config.getNumberOrNull("amount");
-    if (!amount) return condition.missingArg("amount");
+    const amount = condition.args.getNumber("amount");
 
     return context.guild!.memberCount < amount;
   }

@@ -1,9 +1,26 @@
-import { Action, ActionData, Context, Variable } from '@itsmybot';
+import { Action, ActionData, Context, FollowUpActionArgumentsValidator, Variable } from '@itsmybot';
 import Utils from '@utils';
+import { IsInt, IsPositive, IsOptional, IsString, IsBoolean } from 'class-validator';
 import { AnyThreadChannel, ChannelType } from 'discord.js';
+
+class ArgumentsValidator extends FollowUpActionArgumentsValidator {
+  @IsOptional()
+  @IsString({ each: true})
+  value: string | string[]
+
+  @IsOptional()
+  @IsInt()
+  @IsPositive()
+  duration: number
+
+  @IsOptional()
+  @IsBoolean()
+  private: boolean
+}
 
 export default class CreateThreadAction extends Action {
   id = "createThread";
+  argumentsValidator = ArgumentsValidator;
 
   async onTrigger(script: ActionData, context: Context, variables: Variable[]) {
     let thread: AnyThreadChannel | undefined;

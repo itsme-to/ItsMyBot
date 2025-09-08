@@ -1,9 +1,38 @@
-import { Action, ActionData, Context, Variable } from '@itsmybot';
+import { Action, ActionData, Context, IsChannelType, ActionArgumentsValidator, PermissionOverwrites, Variable } from '@itsmybot';
 import Utils from '@utils';
+import { Type } from 'class-transformer';
+import { IsArray, IsOptional, IsString, Validate, ValidateNested } from 'class-validator';
 import { ChannelType, OverwriteResolvable } from 'discord.js';
+
+
+class ArgumentsValidator extends ActionArgumentsValidator {
+  @IsOptional()
+  @IsString({ each: true})
+  value: string | string[]
+
+  @IsOptional()
+  @IsString({ each: true })
+  description?: string | string[];
+
+  @IsOptional()
+  @IsArray()
+  @Type(() => PermissionOverwrites)
+  @ValidateNested({ each: true })
+  'permission-overwrites': PermissionOverwrites[]
+
+  @IsOptional()
+  @IsString()
+  @Validate(IsChannelType)
+  'channel-type': string
+
+  @IsOptional()
+  @IsString()
+  parent: string
+}
 
 export default class EditChannelAction extends Action {
   id = "editChannel";
+  argumentsValidator = ArgumentsValidator;
 
   async onTrigger(script: ActionData, context: Context, variables: Variable[]) {
     const channelName = await Utils.applyVariables(script.args.getStringOrNull("value", true), variables, context) || undefined

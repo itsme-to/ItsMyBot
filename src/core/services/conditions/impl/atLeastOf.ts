@@ -1,13 +1,28 @@
-import { Condition, ConditionData, Context, Variable } from '@itsmybot';
+import { Condition, ConditionArgumentValidator, ConditionData, ConditionValidator, Context, Variable } from '@itsmybot';
+import { Type } from 'class-transformer';
+import { IsArray, IsDefined, IsNumber, IsPositive, Min, ValidateNested } from 'class-validator';
+
+class ArgumentsValidator extends ConditionArgumentValidator {
+  @IsDefined()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ConditionValidator)
+  conditions: ConditionValidator[]
+
+  @IsDefined()
+  @IsNumber()
+  @IsPositive()
+  @Min(1)
+  amount: number
+}
 
 export default class AtLeastOfCondition extends Condition {
   id = "atLeastOf";
+  argumentsValidator = ArgumentsValidator;
 
   async isMet(condition: ConditionData, context: Context, variables: Variable[]) {
-    const conditionsConfig = condition.config.getSubsectionsOrNull("conditions");
-    if (!conditionsConfig) return condition.missingArg("conditions");
-    const amount = condition.config.getNumberOrNull("amount");
-    if (!amount || amount < 1) return condition.missingArg("amount");
+    const conditionsConfig = condition.args.getSubsections("conditions");
+    const amount = condition.args.getNumber("amount");
 
     const conditions = this.manager.services.condition.buildConditions(conditionsConfig, false);
 

@@ -1,43 +1,19 @@
 
 import { Type } from 'class-transformer';
 import { IsString, IsInt, ValidateNested, IsOptional, ValidateIf, IsDefined, Max, Min, IsPositive, IsArray, IsBoolean, IsNumber, Validate } from 'class-validator';
-import { IsChannelType, IsPermissionFlag, MessageValidator } from '@itsmybot';
+import { IsPermissionFlag, IsValidActionArgs, IsValidActionId, IsValidConditionArgs, IsValidConditionId, MessageValidator } from '@itsmybot';
 
-class ConditionArgumentValidator {
+export class ConditionArgumentValidator {
   @IsOptional()
   @IsBoolean()
   inverse: boolean
-
-  @IsOptional()
-  @IsString({ each: true })
-  value: string[] | string
-
-  @IsOptional()
-  @ValidateNested({ each: true })
-  @Type(() => ConditionValidator)
-  conditions: ConditionValidator[]
-
-  @IsOptional()
-  @IsBoolean()
-  'ignore-case': boolean
-
-  @IsOptional()
-  @IsNumber()
-  amount: number
-
-  @IsOptional()
-  @IsString()
-  key: string
-
-  @IsOptional()
-  @IsBoolean()
-  inherit: boolean
 }
 
 export class ConditionValidator {
   @ValidateIf(o => !o.expression)
   @IsDefined()
   @IsString()
+  @Validate(IsValidConditionId)
   id: string
 
   @ValidateIf(o => !o.id)
@@ -46,8 +22,7 @@ export class ConditionValidator {
   expression: string
 
   @IsOptional()
-  @ValidateNested()
-  @Type(() => ConditionArgumentValidator)
+  @Validate(IsValidConditionArgs)
   args: ConditionArgumentValidator
 
   @IsOptional()
@@ -116,7 +91,7 @@ export class MutatorValidator {
   message: string
 }
 
-class PermissionOverwrites {
+export class PermissionOverwrites {
   @IsDefined()
   @IsString()
   id: string
@@ -134,35 +109,11 @@ class PermissionOverwrites {
   deny: string[]
 }
 
-class ActionArgumentValidator extends MessageValidator {
-  @IsOptional()
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => ActionValidator)
-  actions: ActionValidator[]
-
-  @IsOptional()
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => ActionValidator)
-  'follow-up-actions': ActionValidator[]
-
-  @IsOptional()
-  @IsString({ each: true })
-  value: string | string[]
-
-  @IsOptional()
-  @IsString()
-  message: string
-
+export class ActionArgumentsValidator extends MessageValidator{
   @IsOptional()
   @IsInt()
   @IsPositive()
   every: number
-
-  @IsOptional()
-  @IsString()
-  key: string
 
   @IsOptional()
   @IsInt()
@@ -179,54 +130,27 @@ class ActionArgumentValidator extends MessageValidator {
   @Min(0)
   @Max(100)
   chance: number
+}
 
-  @IsOptional()
-  @IsInt()
-  @IsPositive()
-  duration: number
-
-  @IsOptional()
-  @IsString()
-  method: string
-
-  @IsOptional()
-  body: any
-
-  @IsOptional()
-  headers: any
-
-  @IsOptional()
-  @IsString()
-  @Validate(IsChannelType)
-  'channel-type': string
-
-  @IsOptional()
-  @IsString()
-  parent: string
-
-  @IsOptional()
-  @IsString()
-  description: string
-
+export class FollowUpActionArgumentsValidator extends ActionArgumentsValidator {
   @IsOptional()
   @IsArray()
-  @Type(() => PermissionOverwrites)
   @ValidateNested({ each: true })
-  'permission-overwrites': PermissionOverwrites[]
+  @Type(() => ActionValidator)
+  actions: ActionValidator[]
 
   @IsOptional()
   @IsArray()
-  @IsString({ each: true })
-  'tags': string[]
-
-  @IsOptional()
-  @IsBoolean()
-  private: boolean
+  @ValidateNested({ each: true })
+  @Type(() => ActionValidator)
+  'follow-up-actions': ActionValidator[]
 }
 
 export class ActionValidator {
+
   @IsOptional()
   @IsString()
+  @Validate(IsValidActionId)
   id: string
 
   @IsOptional()
@@ -236,9 +160,8 @@ export class ActionValidator {
   actions: ActionValidator[]
 
   @IsOptional()
-  @ValidateNested()
-  @Type(() => ActionArgumentValidator)
-  args: ActionArgumentValidator
+  @Validate(IsValidActionArgs)
+  args: ActionArgumentsValidator
 
   @IsOptional()
   @IsArray()
