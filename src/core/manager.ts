@@ -1,10 +1,10 @@
 import { Client, Collection } from 'discord.js';
 import { existsSync, mkdirSync } from 'fs';
 import { Logger } from '@utils';
-import { Expansion, Leaderboard, Addon, ClientOptions, ManagerOptions, Services, ManagerConfigs, BaseConfig } from '@itsmybot'
+import { ClientOptions, ManagerOptions, Services, ManagerConfigs, BaseConfig, Addon } from '@itsmybot'
 import { Sequelize } from 'sequelize-typescript';
 
-import EventService, { EventExecutor } from './services/events/eventService.js';
+import EventService from './services/events/eventService.js';
 import UserService from './services/users/userService.js';
 import InteractionService from './services/interactions/interactionService.js';
 import EngineService from './services/engine/engineService.js';
@@ -24,10 +24,8 @@ export class Manager {
   public database: Sequelize;
 
   public managerOptions: ManagerOptions;
-  public events = new Collection<string, EventExecutor>();
+
   public addons = new Collection<string, Addon>();
-  public expansions = new Collection<string, Expansion>();
-  public leaderboards = new Collection<string, Leaderboard>();
 
   public logger = new Logger();
   public primaryGuildId: string;

@@ -13,7 +13,7 @@ export default class EventService extends Service {
 
   constructor(manager: Manager) {
     super(manager);
-    this.events = manager.events;
+    this.events = new Collection();
   }
 
   async initialize() {

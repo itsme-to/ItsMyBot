@@ -14,7 +14,7 @@ export default class LeaderboardService extends Service{
 
   constructor(manager: Manager) {
     super(manager);
-    this.leaderboards = manager.leaderboards;
+    this.leaderboards = new Collection();
   }
 
   async initialize() {

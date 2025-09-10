@@ -14,9 +14,9 @@ export default class ClientReadyEvent extends Event {
     this.logger.info(`Actions registered: ${this.manager.services.action.actions.size}`);
     this.logger.info(`Conditions registered: ${this.manager.services.condition.conditions.size}`);
     this.logger.info(`Commands registered: ${this.manager.services.interaction.registries.commands.size}`);
-    this.logger.info(`Events registered: ${this.manager.events.size}`);
+    this.logger.info(`Events registered: ${this.manager.services.event.events.size}`);
     this.logger.info(`Addons registered: ${this.manager.addons.size}`);
-    this.logger.info(`Placeholder Expansions registered: ${this.manager.expansions.size}`);
+    this.logger.info(`Placeholder Expansions registered: ${this.manager.services.expansion.expansions.size}`);
     this.logger.info(`Metas registered: ${this.manager.services.engine.metaHandler.metas.size}`);
     this.logger.info(`Custom Commands registered: ${this.manager.services.engine.customCommands.size}`);
     this.logger.info(`Scripts registered: ${this.manager.services.engine.scripts.size}`);
