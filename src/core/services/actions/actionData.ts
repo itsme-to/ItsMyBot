@@ -1,4 +1,4 @@
-import manager, { Config, BaseScript, Manager, Context, Variable, Utils, Logger } from '@itsmybot';
+import { manager, Config, BaseScript, Manager, Context, Variable, Utils, Logger } from '@itsmybot';
 
 export class ActionData extends BaseScript {
   public id?: string;

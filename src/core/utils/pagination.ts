@@ -1,5 +1,5 @@
 import { MessageComponentInteraction, StringSelectMenuInteraction, RepliableInteraction, InteractionResponse } from 'discord.js';
-import manager, { Config, Context, TopLevelComponentBuilder, Variable, Utils } from '@itsmybot'
+import { manager, Config, Context, TopLevelComponentBuilder, Variable, Utils } from '@itsmybot'
 
 interface Item {
   label?: string;

@@ -1,5 +1,5 @@
 import { Guild, GuildBasedChannel, TextChannel, Channel, Role } from 'discord.js';
-import manager from '@itsmybot';
+import { manager } from '@itsmybot';
 
 export function findRole(identifier: string, guild?: Guild): Role | undefined {
   const search = String(identifier).toLowerCase();

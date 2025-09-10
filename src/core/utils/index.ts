@@ -18,7 +18,7 @@ export { Logger } from './logger.js';
 export { Cooldown } from './cooldown.js';
 export { Pagination } from './pagination.js';
 
-import manager, { Context, Variable, MessageOutput }from '@itsmybot';
+import { manager, Context, Variable }from '@itsmybot';
 import { GuildMember } from 'discord.js';
 import { Parser } from 'expr-eval';
 
