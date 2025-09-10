@@ -1,4 +1,4 @@
-import { Command, Event, User, Events, Context, ResolvableInteraction, Utils, CommandSubcommandBuilder, CommandSubcommandGroupBuilder } from '@itsmybot';
+import { Command, Event, User, Events, Context, ResolvableInteraction, Utils, CommandSubcommandGroupBuilder } from '@itsmybot';
 import { ChatInputCommandInteraction, Interaction, MessageComponentInteraction } from 'discord.js';
 
 export default class InteractionCreateEvent extends Event {
@@ -43,12 +43,25 @@ export default class InteractionCreateEvent extends Event {
     if (!requirementsMet) return;
 
     try {
+      let execute = component.execute;
+
       if (component instanceof Command) {
         if (!interaction.isChatInputCommand()) return;
-        console.log(component.data.subcommands)
-
         if (component.data.subcommands?.length) {
-          const subcommand = component.data.subcommands.find((subcommand: CommandSubcommandBuilder | CommandSubcommandGroupBuilder) => subcommand.name === interaction.options.getSubcommand());
+          let subcommands = component.data.subcommands;
+          const subcommandGroup = interaction.options.getSubcommandGroup();
+
+          if (subcommandGroup) {
+            const group = subcommands.find((subcommand) => subcommand.name === subcommandGroup);
+            if (!group || !(group instanceof CommandSubcommandGroupBuilder)) return;
+
+            subcommands = group.subcommands;
+            if (group.execute) {
+              execute = group.execute;
+            }
+          }
+
+          const subcommand = subcommands.find((subcommand) => subcommand.name === interaction.options.getSubcommand());
           if (!subcommand) return;
 
           if (subcommand.execute) {
@@ -57,7 +70,7 @@ export default class InteractionCreateEvent extends Event {
           }
         }
       }
-      await component.execute(interaction as any, user);
+      await execute(interaction as any, user);
     } catch (error: any) {
       this.logger.error(`Error executing the interaction '${(component.data && 'name' in component.data ? (component.data as any).name : 'unknown')}'`, error);
     }

@@ -57,6 +57,8 @@ export class CommandSubcommandBuilder extends SlashCommandSubcommandBuilder {
 }
 
 export class CommandSubcommandGroupBuilder extends SlashCommandSubcommandGroupBuilder {
+  subcommands: CommandSubcommandBuilder[] = [];
+
   execute?: (interaction: ChatInputCommandInteraction<'cached'>, user: User) => Promise<void | any>;
   
   public setExecute(execute: (interaction: ChatInputCommandInteraction<'cached'>, user: User) => Promise<void | any>): this {
@@ -71,6 +73,7 @@ export class CommandSubcommandGroupBuilder extends SlashCommandSubcommandGroupBu
       ? input(new CommandSubcommandBuilder())
       : input;
 
+    this.subcommands.push(builder);
     super.addSubcommand(builder);
     return this;
   }
