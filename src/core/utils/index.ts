@@ -293,21 +293,6 @@ export class Utils {
     return result * 1000;
   }
 
-  /**
-   * Log a message to a discord channel
-   * @deprecated
-   * @param id The channel id to log the message to or 'none' to disable logging
-   * @param message The message to log
-   */
-  static logToDiscord(id: string, message: MessageOutput) {
-    if (id === 'none') return;
-
-    const channel = findTextChannel(id);
-    if (!channel) return;
-
-    channel.send(message)
-  }
-
   static capitalizeFirst(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
