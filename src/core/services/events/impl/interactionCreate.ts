@@ -1,7 +1,7 @@
 import Utils from '@utils';
-import { Command, ContextMenu, Event, User, Addon, Events, Context, Button, SelectMenu, Modal } from '@itsmybot';
+import { Command, Event, User, Events, Context, ResolvableInteraction } from '@itsmybot';
 import { CommandSubcommandBuilder, CommandSubcommandGroupBuilder } from '@builders';
-import { Interaction, RepliableInteraction } from 'discord.js';
+import { ChatInputCommandInteraction, Interaction, MessageComponentInteraction } from 'discord.js';
 
 export default class InteractionCreateEvent extends Event {
   name = Events.InteractionCreate;
@@ -12,49 +12,26 @@ export default class InteractionCreateEvent extends Event {
       ? await this.manager.services.user.findOrCreate(interaction.member)
       : await this.manager.services.user.findOrNull(interaction.user.id) as User;
 
-    if (interaction.isChatInputCommand() || interaction.isAutocomplete()) {
-      const command = this.manager.services.interaction.getCommand(interaction.commandName);
-      if (!command) return;
+    if (interaction.isChatInputCommand() || interaction.isAutocomplete() || interaction.isMessageComponent()) {
+      const interactionComponent = this.manager.services.interaction.resolveInteraction(interaction);
+      if (!interactionComponent) return;
 
       if (interaction.isAutocomplete()) {
+        if (!(interactionComponent instanceof Command) || !interactionComponent.autocomplete) return;
         try {
-          await command.autocomplete(interaction)
+          await interactionComponent.autocomplete(interaction)
         } catch (error: any) {
-          this.logger.error(`Error executing autocomplete command '${command.data.name}`, error);
+          this.logger.error(`Error executing autocomplete command '${interactionComponent.data.name}`, error);
         }
       } else {
-        this.handleInteraction(interaction, command, user);
+        this.handleInteraction(interaction, interactionComponent, user);
       }
-    } else if (interaction.isContextMenuCommand()) {
-      const contextMenu = this.manager.services.interaction.getContextMenu(interaction.commandName)
-      if (!contextMenu) return;
-      this.handleInteraction(interaction, contextMenu, user);
-    } else if (interaction.isButton()) {
-      const button = this.manager.services.interaction.getButton(interaction.customId);
-      if (!button) return this.manager.client.emit(Events.ButtonClick, interaction, user);
-
-      this.handleInteraction(interaction, button, user)
-    } else if (interaction.isAnySelectMenu()) {
-      const selectMenu = this.manager.services.interaction.getSelectMenu(interaction.customId);
-      if (!selectMenu) return this.manager.client.emit(Events.SelectMenu, interaction, user);
-
-      this.handleInteraction(interaction, selectMenu, user);
-    } else if (interaction.isModalSubmit()) {
-      const modal = this.manager.services.interaction.getModal(interaction.customId);
-      if (!modal) return this.manager.client.emit(Events.ModalSubmit, interaction, user);
-
-      this.handleInteraction(interaction, modal, user);
     }
   }
 
   private async handleInteraction(
-    interaction: RepliableInteraction<'cached'>,
-    component: ContextMenu<Addon | undefined> | Button<Addon | undefined> | SelectMenu<Addon | undefined> | Modal<Addon | undefined> | Command<Addon | undefined>,
-    user: User
-  ): Promise<void>;
-  private async handleInteraction<T extends Command | Button | SelectMenu | Modal | ContextMenu>(
-    interaction: any,
-    component: T,
+    interaction: ChatInputCommandInteraction<'cached'> | MessageComponentInteraction<'cached'>,
+    component: ResolvableInteraction,
     user: User
   ) {
     if (!component.data.public && interaction.guildId && interaction.guildId !== this.manager.primaryGuildId) {
@@ -69,6 +46,7 @@ export default class InteractionCreateEvent extends Event {
 
     try {
       if (component instanceof Command) {
+        if (!interaction.isChatInputCommand()) return;
         console.log(component.data.subcommands)
 
         if (component.data.subcommands?.length) {
@@ -81,15 +59,15 @@ export default class InteractionCreateEvent extends Event {
           }
         }
       }
-      await component.execute(interaction, user);
+      await component.execute(interaction as any, user);
     } catch (error: any) {
-      this.logger.error(`Error executing the command/component '${(component.data && 'name' in component.data ? (component.data as any).name : 'unknown')}'`, error);
+      this.logger.error(`Error executing the interaction '${(component.data && 'name' in component.data ? (component.data as any).name : 'unknown')}'`, error);
     }
 
     component.data.cooldown.setCooldown(interaction.user.id);
   }
 
-  async checkRequirements(interaction: RepliableInteraction<'cached'>, component: Command | Button | SelectMenu | Modal | ContextMenu, user: User) {
+  async checkRequirements(interaction: ChatInputCommandInteraction<'cached'> | MessageComponentInteraction<'cached'>, component: ResolvableInteraction, user: User) {
     const context: Context = {
       user: user,
       member: interaction.member,

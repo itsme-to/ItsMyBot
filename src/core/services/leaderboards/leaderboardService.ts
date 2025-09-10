@@ -1,5 +1,5 @@
-import { Manager, Leaderboard, Command, Addon, CommandInteraction, Service } from '@itsmybot';
-import { Collection } from 'discord.js';
+import { Manager, Leaderboard, Command, Addon, Service } from '@itsmybot';
+import { ChatInputCommandInteraction, Collection } from 'discord.js';
 import { CommandBuilder } from '@builders';
 import Utils, { Pagination } from '@utils';
 import { sync } from 'glob';
@@ -62,7 +62,7 @@ export default class LeaderboardService extends Service{
         return data;
       }
 
-      async execute(interaction: CommandInteraction) {
+      async execute(interaction: ChatInputCommandInteraction<'cached'>) {
         await this.manager.services.leaderboard.leaderboardCommand(interaction, interaction.options.getSubcommand());
       }
     }
@@ -70,7 +70,7 @@ export default class LeaderboardService extends Service{
     this.manager.services.interaction.registerCommand(new LeaderboardCommands(this.manager));
   }
 
-  async leaderboardCommand(interaction: CommandInteraction, indentifier: string) {
+  async leaderboardCommand(interaction: ChatInputCommandInteraction<'cached'>, indentifier: string) {
     const leaderboard = this.leaderboards.get(indentifier)
     if (!leaderboard) return interaction.reply("Leaderboard not found.");
 

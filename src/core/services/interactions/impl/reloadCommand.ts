@@ -1,6 +1,7 @@
 import { CommandBuilder } from '@builders';
-import { Command, User, CommandInteraction } from '@itsmybot';
+import { Command, User } from '@itsmybot';
 import Utils from '@utils';
+import { ChatInputCommandInteraction } from 'discord.js';
 
 export default class ReloadCommand extends Command {
 
@@ -13,7 +14,7 @@ export default class ReloadCommand extends Command {
       .using(command)
   }
 
-  async execute(interaction: CommandInteraction, user: User) {
+  async execute(interaction: ChatInputCommandInteraction<'cached'>, user: User) {
     this.logger.info(`Reloading the bot...`);
     this.manager.services.interaction.registries.commands.clear()
     this.manager.services.interaction.registries.contextMenus.clear()

@@ -1,6 +1,7 @@
 import Utils from '@utils';
 import { CommandBuilder } from '@builders';
-import { Command, User, CommandInteraction } from '@itsmybot';
+import { Command, User } from '@itsmybot';
+import { ChatInputCommandInteraction } from 'discord.js';
 export default class ParseCommand extends Command {
 
   build() {
@@ -19,7 +20,7 @@ export default class ParseCommand extends Command {
           .setRequired(false))
   }
 
-  async execute(interaction: CommandInteraction, user: User) {
+  async execute(interaction: ChatInputCommandInteraction<'cached'>, user: User) {
     const target = interaction.options.getMember("user")
     const targetUser = target ? await this.manager.services.user.findOrCreate(target) : user;
 

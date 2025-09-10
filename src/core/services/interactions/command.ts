@@ -1,6 +1,6 @@
 import { CommandBuilder } from '@builders';
-import { Manager, Addon, User, ConditionData, CommandInteraction, Base } from '@itsmybot';
-import { AutocompleteInteraction } from 'discord.js';
+import { Manager, Addon, User, ConditionData, Base } from '@itsmybot';
+import { AutocompleteInteraction, ChatInputCommandInteraction } from 'discord.js';
 
 export abstract class Command<T extends Addon | undefined = undefined>  extends Base<T> {
   public data: CommandBuilder;
@@ -19,7 +19,7 @@ export abstract class Command<T extends Addon | undefined = undefined>  extends 
     throw new Error('Method not implemented.');
   }
 
-  public execute(interaction: CommandInteraction, user: User): Promise<void | any> {
+  public execute(interaction: ChatInputCommandInteraction<'cached'>, user: User): Promise<void | any> {
     throw new Error('Method not implemented.');
   }
 }

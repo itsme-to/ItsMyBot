@@ -1,5 +1,5 @@
-import { ActionRowData, APIMessageTopLevelComponent, BitFieldResolvable, APIEmbed, Attachment, AttachmentBuilder, BufferResolvable, MessageMentionOptions, PollData, ChatInputCommandInteraction, MessageActionRowComponentBuilder, MessageActionRowComponentData, TopLevelComponentData, JSONEncodable, ActionRowBuilder, ContainerBuilder, FileBuilder, MediaGalleryBuilder, SectionBuilder, SeparatorBuilder, TextDisplayBuilder,  } from 'discord.js';
-import { Manager, Addon } from '@itsmybot';
+import { ActionRowData, APIMessageTopLevelComponent, BitFieldResolvable, APIEmbed, Attachment, AttachmentBuilder, BufferResolvable, MessageMentionOptions, PollData, MessageActionRowComponentBuilder, MessageActionRowComponentData, TopLevelComponentData, JSONEncodable, ActionRowBuilder, ContainerBuilder, FileBuilder, MediaGalleryBuilder, SectionBuilder, SeparatorBuilder, TextDisplayBuilder,  } from 'discord.js';
+import { Manager, Addon, Button, SelectMenu, Command, ContextMenu, Modal } from '@itsmybot';
 import { Logger } from '@utils';
 import { Stream } from 'stream';
 
@@ -40,8 +40,6 @@ export interface MessageOutput {
   flags?: BitFieldResolvable<any, number> | undefined
 }
 
-export type CommandInteraction = ChatInputCommandInteraction<'cached'>;
-
 export class Base<T extends Addon | undefined = undefined> {
   public manager: Manager;
   public addon: T;
@@ -63,3 +61,10 @@ export abstract class Service {
 
   abstract initialize(): Promise<void>
 }
+
+export type ResolvableInteraction =
+  | Button<Addon | undefined>
+  | SelectMenu<Addon | undefined>
+  | Command<Addon | undefined>
+  | ContextMenu<Addon | undefined>
+  | Modal<Addon | undefined>;

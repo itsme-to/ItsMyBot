@@ -1,7 +1,7 @@
-import { AutocompleteInteraction } from 'discord.js';
+import { AutocompleteInteraction, ChatInputCommandInteraction } from 'discord.js';
 import Utils, { Pagination } from '@utils';
 import { CommandBuilder } from '@builders';
-import { Command, User, CommandInteraction } from '@itsmybot';
+import { Command, User } from '@itsmybot';
 import AddonModel from '../../addons/addon.model.js';
 
 export default class AddonCommand extends Command {
@@ -60,7 +60,7 @@ export default class AddonCommand extends Command {
     await interaction.respond(choices);
   }
 
-  async list(interaction: CommandInteraction, user: User) {
+  async list(interaction: ChatInputCommandInteraction<'cached'>, user: User) {
     const addons = []
     for (const [_, addon] of this.manager.services.addon.addons) {
       const status = addon.enabled ? '✅' : '❌';
@@ -92,7 +92,7 @@ export default class AddonCommand extends Command {
       .send();
   }
 
-  async enableOrDisable(interaction: CommandInteraction, user: User) {
+  async enableOrDisable(interaction: ChatInputCommandInteraction<'cached'>, user: User) {
     const subcommand = interaction.options.getSubcommand();
     const lang = this.manager.configs.lang;
 

@@ -1,13 +1,13 @@
-import { ContextMenuCommandBuilder, SlashCommandBuilder, SlashCommandSubcommandBuilder, SlashCommandStringOption, SlashCommandAttachmentOption, SlashCommandChannelOption, SlashCommandBooleanOption, SlashCommandIntegerOption, SlashCommandMentionableOption, SlashCommandNumberOption, SlashCommandRoleOption, SlashCommandUserOption, SlashCommandSubcommandGroupBuilder } from 'discord.js';
+import { ContextMenuCommandBuilder, SlashCommandBuilder, SlashCommandSubcommandBuilder, SlashCommandStringOption, SlashCommandAttachmentOption, SlashCommandChannelOption, SlashCommandBooleanOption, SlashCommandIntegerOption, SlashCommandMentionableOption, SlashCommandNumberOption, SlashCommandRoleOption, SlashCommandUserOption, SlashCommandSubcommandGroupBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { ComponentBuilder } from '@builders';
 import Utils from '@utils';
-import { Config, User, CommandInteraction } from '@itsmybot';
+import { Config, User } from '@itsmybot';
 import { Mixin } from 'ts-mixer';
 
 export class CommandSubcommandBuilder extends SlashCommandSubcommandBuilder {
-  execute?: (interaction: CommandInteraction, user: User) => Promise<void | any>;
-  
-  public setExecute(execute: (interaction: CommandInteraction, user: User) => Promise<void | any>): this {
+  execute?: (interaction: ChatInputCommandInteraction<'cached'>, user: User) => Promise<void | any>;
+
+  public setExecute(execute: (interaction: ChatInputCommandInteraction<'cached'>, user: User) => Promise<void | any>): this {
     this.execute = execute
     return this;
   }
@@ -59,9 +59,9 @@ export class CommandSubcommandBuilder extends SlashCommandSubcommandBuilder {
 }
 
 export class CommandSubcommandGroupBuilder extends SlashCommandSubcommandGroupBuilder {
-  execute?: (interaction: CommandInteraction, user: User) => Promise<void | any>;
+  execute?: (interaction: ChatInputCommandInteraction<'cached'>, user: User) => Promise<void | any>;
   
-  public setExecute(execute: (interaction: CommandInteraction, user: User) => Promise<void | any>): this {
+  public setExecute(execute: (interaction: ChatInputCommandInteraction<'cached'>, user: User) => Promise<void | any>): this {
     this.execute = execute
     return this;
   }

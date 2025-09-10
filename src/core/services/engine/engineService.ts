@@ -1,7 +1,7 @@
-import { Collection, ApplicationCommandOptionType, ChannelType } from 'discord.js';
+import { Collection, ApplicationCommandOptionType, ChannelType, ChatInputCommandInteraction } from 'discord.js';
 import Utils, { Cooldown } from '@utils';
 
-import { Script, CustomCommand, Command, User, BaseConfigSection, BaseConfig, Config, Variable, CommandInteraction, Service } from '@itsmybot';
+import { Script, CustomCommand, Command, User, BaseConfigSection, BaseConfig, Config, Variable, Service } from '@itsmybot';
 import { Logger } from '@utils';
 import MetaHandler from './meta/metaHandler.js';
 
@@ -40,7 +40,7 @@ export default class EngineService extends Service {
     }
   }
 
-  async handleCustomCommand(id: string, interaction: CommandInteraction, user: User) {
+  async handleCustomCommand(id: string, interaction: ChatInputCommandInteraction<'cached'>, user: User) {
     const customCommand = this.customCommands.get(id);
     if (!customCommand) return this.manager.logger.error(`Custom command ${id} not found`);
 
@@ -157,7 +157,7 @@ export default class EngineService extends Service {
         return data
       }
 
-      async execute(interaction: CommandInteraction, user: User) {
+      async execute(interaction: ChatInputCommandInteraction<'cached'>, user: User) {
         this.manager.services.engine.handleCustomCommand(id, interaction, user);
       }
     }

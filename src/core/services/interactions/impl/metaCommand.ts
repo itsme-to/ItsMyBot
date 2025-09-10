@@ -1,7 +1,7 @@
 import Utils from '@utils';
 import { CommandBuilder } from '@builders';
-import { Command, User, MetaData, CommandInteraction } from '@itsmybot';
-import { AutocompleteInteraction } from 'discord.js';
+import { Command, User, MetaData } from '@itsmybot';
+import { AutocompleteInteraction, ChatInputCommandInteraction } from 'discord.js';
 export default class MetaCommand extends Command {
 
   build() {
@@ -143,7 +143,7 @@ export default class MetaCommand extends Command {
     await interaction.respond(filteredMetas.map(key => ({ name: key, value: key })));
   }
 
-  async execute(interaction: CommandInteraction, user: User) {
+  async execute(interaction: ChatInputCommandInteraction<'cached'>, user: User) {
     const subcommand = interaction.options.getSubcommand();
     const key = Utils.blockPlaceholders(interaction.options.getString("key", true));
     const scope = Utils.blockPlaceholders(interaction.options.getString("scope")) ?? undefined;

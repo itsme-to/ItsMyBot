@@ -1,5 +1,5 @@
-import { Addon, User, CommandInteraction, Variable } from '@itsmybot';
-import { Channel, Guild, GuildMember, Message, MessageComponentInteraction, Role } from 'discord.js';
+import { Addon, User, Variable } from '@itsmybot';
+import { Channel, ChatInputCommandInteraction, Guild, GuildMember, Message, MessageComponentInteraction, Role } from 'discord.js';
 
 interface ItemData {
   variables: Variable[];
@@ -14,7 +14,7 @@ export interface Context {
   guild?: Guild;
   content?: string;
   addon?: Addon;
-  interaction?: CommandInteraction | MessageComponentInteraction;
+  interaction?: ChatInputCommandInteraction<'cached'> | MessageComponentInteraction;
   role?: Role;
   data?: Map<string, ItemData[]>;
 }

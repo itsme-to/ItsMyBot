@@ -1,7 +1,7 @@
 import { CommandBuilder } from '@builders';
-import { Command, User, CommandInteraction } from '@itsmybot';
+import { Command, User } from '@itsmybot';
 import ExampleAddon from '..';
-import { AutocompleteInteraction } from 'discord.js';
+import { AutocompleteInteraction, ChatInputCommandInteraction } from 'discord.js';
 
 export default class HelloWorldCommand extends Command<ExampleAddon> {
 
@@ -76,6 +76,6 @@ export default class HelloWorldCommand extends Command<ExampleAddon> {
   async autocomplete(interaction: AutocompleteInteraction) {
   }
 
-  async execute(interaction: CommandInteraction, user: User) {
+  async execute(interaction: ChatInputCommandInteraction<'cached'>, user: User) {
   }
 }
