@@ -1,5 +1,4 @@
-import { Logger } from '@utils';
-import Utils from '@utils';
+import { Logger, Utils } from '@itsmybot';
 import { Config } from './config.js';
 import * as fs from 'fs/promises';
 import { join, resolve } from 'path';

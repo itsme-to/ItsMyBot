@@ -1,5 +1,4 @@
-import Utils from '@utils';
-import { Config, Context, Variable } from '@itsmybot';
+import { Config, Context, Variable, Utils } from '@itsmybot';
 import { TextDisplayBuilder } from 'discord.js';
 
 interface TextDisplaySettings {

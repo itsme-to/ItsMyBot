@@ -1,5 +1,4 @@
-import { Condition, ConditionData, Context, Variable, ConditionArgumentValidator, IsValidMetaKey, IsNumberMeta } from '@itsmybot';
-import Utils from '@utils';
+import { Condition, ConditionData, Context, Variable, ConditionArgumentValidator, IsValidMetaKey, IsNumberMeta, Utils } from '@itsmybot';
 import { IsDefined, IsString, Validate } from 'class-validator';
 
 class ArgumentsValidator extends ConditionArgumentValidator {

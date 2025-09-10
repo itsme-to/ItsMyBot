@@ -1,13 +1,9 @@
 import { Collection, ApplicationCommandOptionType, ChannelType, ChatInputCommandInteraction } from 'discord.js';
-import Utils, { Cooldown } from '@utils';
-
-import { Script, CustomCommand, Command, User, BaseConfigSection, BaseConfig, Config, Variable, Service } from '@itsmybot';
-import { Logger } from '@utils';
+import { Script, CustomCommand, Command, User, BaseConfigSection, BaseConfig, Config, Variable, Service, Utils, Cooldown, Logger, CommandBuilder } from '@itsmybot';
 import MetaHandler from './meta/metaHandler.js';
 
 import ScriptConfig from '../../resources/scripting/script.js';
 import CustomCommandConfig from '../../resources/scripting/customCommand.js';
-import { CommandBuilder } from '@builders';
 import EngineEventEmitter from './eventEmitter.js';
 
 /**

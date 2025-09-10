@@ -1,6 +1,5 @@
-import { Manager, Addon, User, ConditionData, Base } from '@itsmybot';
+import { Manager, Addon, User, ConditionData, Base, ComponentBuilder } from '@itsmybot';
 import { ButtonInteraction, ModalSubmitInteraction, AnySelectMenuInteraction } from 'discord.js';
-import { ComponentBuilder } from '@builders';
 
 abstract class BaseComponent<T extends Addon | undefined = undefined> extends Base<T> {
   public abstract customId: string;

@@ -1,5 +1,4 @@
-import { Logger } from '@utils';
-import { Config, ActionData, ConditionData, Manager, Context, Variable } from '@itsmybot';
+import { Config, ActionData, ConditionData, Manager, Context, Variable, Logger } from '@itsmybot';
 
 export class BaseScript {
   data: Config;

@@ -1,6 +1,5 @@
 import { ActionRowBuilder, MessageFlags, MessageActionRowComponentBuilder } from 'discord.js';
-import { Config, Context, Variable, MessageOutput, TopLevelComponentBuilder } from '@itsmybot';
-import Utils from '@utils';
+import { Config, Context, Variable, MessageOutput, TopLevelComponentBuilder, Utils } from '@itsmybot';
 
 interface MessageSettings {
   config: Config,

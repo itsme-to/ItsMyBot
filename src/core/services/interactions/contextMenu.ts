@@ -1,5 +1,4 @@
-import { ContextMenuBuilder } from '@builders';
-import { Manager, Addon, User, ConditionData, Base } from '@itsmybot';
+import { Manager, Addon, User, ConditionData, Base, ContextMenuBuilder } from '@itsmybot';
 import { ContextMenuCommandInteraction } from 'discord.js';
 
 export abstract class ContextMenu<T extends Addon | undefined = undefined>  extends Base<T> {

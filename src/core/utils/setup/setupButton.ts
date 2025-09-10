@@ -1,6 +1,5 @@
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
-import Utils from '@utils';
-import { Config, Context, Variable } from '@itsmybot';
+import { Config, Context, Variable, Utils } from '@itsmybot';
 
 interface ButtonSettings {
   config: Config,

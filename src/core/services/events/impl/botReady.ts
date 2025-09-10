@@ -1,5 +1,4 @@
-import Utils from '@utils';
-import { Manager, Event, Events } from '@itsmybot';
+import { Manager, Event, Events, Utils } from '@itsmybot';
 import { Guild } from 'discord.js';
 
 export default class BotReadyEvent extends Event {

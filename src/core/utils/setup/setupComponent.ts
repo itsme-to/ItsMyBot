@@ -1,5 +1,4 @@
-import Utils from '@utils';
-import manager, { Config, Context, Variable } from '@itsmybot';
+import manager, { Config, Context, Variable, Utils } from '@itsmybot';
 import { ActionRowComponent, MessageComponentBuilder, ContainerComponentBuilder, ActionRowBuilder, MessageActionRowComponentBuilder, SeparatorBuilder, SectionBuilder, MediaGalleryBuilder, FileBuilder, MediaGalleryItemBuilder } from 'discord.js';
 
 interface ComponentSettings {

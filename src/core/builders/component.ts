@@ -1,5 +1,4 @@
-import { Cooldown } from '@utils';
-import { Config } from '@itsmybot';
+import { Config, Cooldown } from '@itsmybot';
 
 export class ComponentBuilder {
   cooldown: Cooldown = new Cooldown(0);

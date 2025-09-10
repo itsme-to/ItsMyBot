@@ -1,5 +1,4 @@
-import { Action, ActionArgumentsValidator, ActionData, Context, IsNumberMeta, IsValidMetaKey, Variable } from '@itsmybot';
-import Utils from '@utils';
+import { Action, ActionArgumentsValidator, ActionData, Context, IsNumberMeta, IsValidMetaKey, Variable, Utils } from '@itsmybot';
 import { IsDefined, IsString, Validate } from 'class-validator';
 
 class ArgumentsValidator extends ActionArgumentsValidator {

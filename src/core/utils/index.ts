@@ -24,7 +24,7 @@ import { Parser } from 'expr-eval';
 
 const discordEpoch = 1420070400000;
 
-export default class Utils {
+export class Utils {
   /** Try to return the closest permission flag to the given string */
   static getPermissionFlags = getPermissionFlags;
   /** Try to return the closest button style to the given string */

@@ -1,6 +1,4 @@
-import Utils from '@utils';
-import { CommandBuilder } from '@builders';
-import { Command, User, MetaData } from '@itsmybot';
+import { Command, User, CommandBuilder, Utils, MetaData } from '@itsmybot';
 import { AutocompleteInteraction, ChatInputCommandInteraction } from 'discord.js';
 export default class MetaCommand extends Command {
 

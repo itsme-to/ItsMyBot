@@ -1,7 +1,5 @@
-import { Event, Events, Context } from '@itsmybot';
+import { Event, Events, Context, Utils } from '@itsmybot';
 import { DMChannel } from 'discord.js';
-import Utils from '@utils';
-
 
 interface RawEventPacket {
   t: string;

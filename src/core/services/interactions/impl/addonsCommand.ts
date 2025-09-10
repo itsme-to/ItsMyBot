@@ -1,7 +1,5 @@
 import { AutocompleteInteraction, ChatInputCommandInteraction } from 'discord.js';
-import Utils, { Pagination } from '@utils';
-import { CommandBuilder } from '@builders';
-import { Command, User } from '@itsmybot';
+import { Command, User, CommandBuilder, Utils, Pagination } from '@itsmybot';
 import AddonModel from '../../addons/addon.model.js';
 
 export default class AddonCommand extends Command {

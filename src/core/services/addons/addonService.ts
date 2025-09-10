@@ -3,9 +3,8 @@ import { join } from 'path';
 import { sync } from 'glob';
 import { promises as fs } from 'fs';
 
-import { Manager, Addon, Service } from '@itsmybot';
+import { Manager, Addon, Service, Logger } from '@itsmybot';
 import { Collection } from 'discord.js';
-import { Logger } from '@utils';
 import AddonModel from './addon.model.js';
 
 /**

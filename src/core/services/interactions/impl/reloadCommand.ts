@@ -1,6 +1,4 @@
-import { CommandBuilder } from '@builders';
-import { Command, User } from '@itsmybot';
-import Utils from '@utils';
+import { Command, User, CommandBuilder, Utils } from '@itsmybot';
 import { ChatInputCommandInteraction } from 'discord.js';
 
 export default class ReloadCommand extends Command {

@@ -1,5 +1,4 @@
-import Utils from '@utils';
-import { Config, Context, Variable } from '@itsmybot';
+import { Config, Context, Variable, Utils } from '@itsmybot';
 import { ThumbnailBuilder } from 'discord.js';
 
 interface ThumbnailSettings {

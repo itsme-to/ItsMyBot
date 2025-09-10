@@ -1,5 +1,4 @@
-import { Action, ActionData, Context, IsChannelType, ActionArgumentsValidator, PermissionOverwrites, Variable } from '@itsmybot';
-import Utils from '@utils';
+import { Action, ActionData, Context, IsChannelType, Utils, ActionArgumentsValidator, PermissionOverwrites, Variable } from '@itsmybot';
 import { Type } from 'class-transformer';
 import { IsArray, IsOptional, IsString, Validate, ValidateNested } from 'class-validator';
 import { ChannelType, OverwriteResolvable } from 'discord.js';

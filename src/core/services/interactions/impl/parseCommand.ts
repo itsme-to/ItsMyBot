@@ -1,6 +1,4 @@
-import Utils from '@utils';
-import { CommandBuilder } from '@builders';
-import { Command, User } from '@itsmybot';
+import { Command, User, CommandBuilder, Utils } from '@itsmybot';
 import { ChatInputCommandInteraction } from 'discord.js';
 export default class ParseCommand extends Command {
 

@@ -1,6 +1,5 @@
 import { ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
-import Utils from '@utils';
-import { Config, Context, Variable } from '@itsmybot';
+import { Config, Context, Variable, Utils } from '@itsmybot';
 
 interface ModalSettings {
   config: Config,

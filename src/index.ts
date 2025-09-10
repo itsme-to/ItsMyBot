@@ -4,7 +4,7 @@ import { GatewayIntentBits, Partials } from 'discord.js';
 import { join } from 'path';
 import { readFileSync } from 'fs';
 import { Manager } from './core/manager.js';
-import { Logger } from '@utils';
+import { Logger } from './core/utils/index.js';
 
 export { Action } from './core/services/actions/action.js';
 export { ConditionData } from './core/services/conditions/conditionData.js';
@@ -25,6 +25,8 @@ export { Leaderboard } from './core/services/leaderboards/leaderboard.js';
 export { CustomCommand } from './core/services/engine/customCommand.js';
 export { MetaMode, MetaType } from './core/services/engine/meta/metaHandler.js';
 export * from './core/contracts/index.js';
+export * from './core/builders/index.js';
+export * from './core/utils/index.js';
 export { Manager };
 
 const logger = new Logger();

@@ -1,5 +1,4 @@
-import { Logger } from '@utils';
-import { Config, ActionData, Manager } from '@itsmybot';
+import { Config, ActionData, Manager, Logger } from '@itsmybot';
 
 export class ConditionData {
   public id: string;

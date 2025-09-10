@@ -1,5 +1,4 @@
-import { CommandBuilder } from '@builders';
-import { Manager, Addon, User, ConditionData, Base } from '@itsmybot';
+import { Manager, Addon, User, ConditionData, Base, CommandBuilder } from '@itsmybot';
 import { AutocompleteInteraction, ChatInputCommandInteraction } from 'discord.js';
 
 export abstract class Command<T extends Addon | undefined = undefined>  extends Base<T> {

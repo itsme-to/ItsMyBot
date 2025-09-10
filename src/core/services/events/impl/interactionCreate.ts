@@ -1,6 +1,4 @@
-import Utils from '@utils';
-import { Command, Event, User, Events, Context, ResolvableInteraction } from '@itsmybot';
-import { CommandSubcommandBuilder, CommandSubcommandGroupBuilder } from '@builders';
+import { Command, Event, User, Events, Context, ResolvableInteraction, Utils, CommandSubcommandBuilder, CommandSubcommandGroupBuilder } from '@itsmybot';
 import { ChatInputCommandInteraction, Interaction, MessageComponentInteraction } from 'discord.js';
 
 export default class InteractionCreateEvent extends Event {

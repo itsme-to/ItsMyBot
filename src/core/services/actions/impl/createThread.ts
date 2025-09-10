@@ -1,5 +1,4 @@
-import { Action, ActionData, Context, FollowUpActionArgumentsValidator, Variable } from '@itsmybot';
-import Utils from '@utils';
+import { Action, ActionData, Context, FollowUpActionArgumentsValidator, Variable, Utils } from '@itsmybot';
 import { IsInt, IsPositive, IsOptional, IsString, IsBoolean } from 'class-validator';
 import { AnyThreadChannel, ChannelType } from 'discord.js';
 

@@ -1,5 +1,5 @@
 import { Embed, Message, MessageComponent, ActionRow, ButtonComponent, TextDisplayComponent, SeparatorComponent, SectionComponent, ContainerComponent, TextBasedChannel } from 'discord.js';
-import Utils from '@utils';
+import { Utils } from '@itsmybot';
 
 export async function transcript(channel: TextBasedChannel, limit = 100) {
   const messages = await channel.messages.fetch({ limit });

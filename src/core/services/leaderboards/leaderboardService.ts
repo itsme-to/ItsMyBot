@@ -1,7 +1,5 @@
-import { Manager, Leaderboard, Command, Addon, Service } from '@itsmybot';
+import { Manager, Leaderboard, Command, Addon, Service, Utils, Pagination, CommandBuilder } from '@itsmybot';
 import { ChatInputCommandInteraction, Collection } from 'discord.js';
-import { CommandBuilder } from '@builders';
-import Utils, { Pagination } from '@utils';
 import { sync } from 'glob';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';

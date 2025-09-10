@@ -1,6 +1,5 @@
 import { Message } from 'discord.js';
-import { Event, Context, Events } from '@itsmybot';
-import Utils from '@utils';
+import { Event, Context, Events, Utils } from '@itsmybot';
 
 export default class MessageCreateEvent extends Event {
   name = Events.MessageCreate;

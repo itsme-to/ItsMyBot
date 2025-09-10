@@ -1,6 +1,5 @@
 import { ActionRowData, APIMessageTopLevelComponent, BitFieldResolvable, APIEmbed, Attachment, AttachmentBuilder, BufferResolvable, MessageMentionOptions, PollData, MessageActionRowComponentBuilder, MessageActionRowComponentData, TopLevelComponentData, JSONEncodable, ActionRowBuilder, ContainerBuilder, FileBuilder, MediaGalleryBuilder, SectionBuilder, SeparatorBuilder, TextDisplayBuilder,  } from 'discord.js';
-import { Manager, Addon, Button, SelectMenu, Command, ContextMenu, Modal } from '@itsmybot';
-import { Logger } from '@utils';
+import { Manager, Addon, Button, SelectMenu, Command, ContextMenu, Modal, Logger } from '@itsmybot';
 import { Stream } from 'stream';
 
 export * from './context.js';
