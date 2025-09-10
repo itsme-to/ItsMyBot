@@ -18,8 +18,9 @@ export { User } from './core/services/users/user.model.js';
 export { MetaData } from './core/services/engine/meta/metadata.model.js';
 export { Event } from './core/services/events/event.js';
 export { Config } from './core/contracts/config/config.js'
-export { Command } from './core/services/commands/command.js';
-export { Component } from './core/services/components/component.js';
+export { Command } from './core/services/interactions/command.js';
+export { ContextMenu } from './core/services/interactions/contextMenu.js';
+export { Button, SelectMenu, Modal } from './core/services/interactions/baseComponent.js';
 export { Leaderboard } from './core/services/leaderboards/leaderboard.js';
 export { CustomCommand } from './core/services/engine/customCommand.js';
 export { MetaMode, MetaType } from './core/services/engine/meta/metaHandler.js';

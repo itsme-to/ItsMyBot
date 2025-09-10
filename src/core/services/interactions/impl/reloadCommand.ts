@@ -15,8 +15,12 @@ export default class ReloadCommand extends Command {
 
   async execute(interaction: CommandInteraction, user: User) {
     this.logger.info(`Reloading the bot...`);
-    this.manager.commands.clear()
-    await this.manager.services.command.initialize()
+    this.manager.services.interaction.registries.commands.clear()
+    this.manager.services.interaction.registries.contextMenus.clear()
+    this.manager.services.interaction.registries.buttons.clear()
+    this.manager.services.interaction.registries.selectMenus.clear()
+    this.manager.services.interaction.registries.modals.clear()
+    await this.manager.services.interaction.initialize()
     await this.manager.services.leaderboard.registerLeaderboards()
     this.manager.services.engine.event.removeAllListeners()
     this.manager.services.engine.scripts.clear()
@@ -32,14 +36,14 @@ export default class ReloadCommand extends Command {
       await Promise.all(this.manager.addons.map(async addon => {
         await addon.unload()
         await addon.load()
-        await addon.registerCommands()
+        await addon.registerInteractions()
       }))
     } catch (e) {
       error = e
     }
 
     this.logger.info(`Bot reloaded! Deploying commands...`);
-    this.manager.services.command.deployCommands();
+    this.manager.services.interaction.deployCommands();
 
     if (error) {
       return interaction.reply(await Utils.setupMessage({

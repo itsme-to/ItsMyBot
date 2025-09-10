@@ -1,8 +1,7 @@
 import Utils from '@utils';
-import { Command, Component, Event, User, Addon, Events, Context } from '@itsmybot';
-import { CommandInteraction, Interaction, ButtonInteraction, RepliableInteraction, AnySelectMenuInteraction, ModalSubmitInteraction } from 'discord.js';
-import { CommandSubcommandBuilder } from 'core/builders/command';
-
+import { Command, ContextMenu, Event, User, Addon, Events, Context, Button, SelectMenu, Modal } from '@itsmybot';
+import { CommandSubcommandBuilder, CommandSubcommandGroupBuilder } from '@builders';
+import { Interaction, RepliableInteraction } from 'discord.js';
 
 export default class InteractionCreateEvent extends Event {
   name = Events.InteractionCreate;
@@ -13,8 +12,8 @@ export default class InteractionCreateEvent extends Event {
       ? await this.manager.services.user.findOrCreate(interaction.member)
       : await this.manager.services.user.findOrNull(interaction.user.id) as User;
 
-    if (interaction.isCommand() || interaction.isContextMenuCommand() || interaction.isAutocomplete()) {
-      const command = this.manager.services.command.getCommand(interaction.commandName);
+    if (interaction.isChatInputCommand() || interaction.isAutocomplete()) {
+      const command = this.manager.services.interaction.getCommand(interaction.commandName);
       if (!command) return;
 
       if (interaction.isAutocomplete()) {
@@ -26,18 +25,22 @@ export default class InteractionCreateEvent extends Event {
       } else {
         this.handleInteraction(interaction, command, user);
       }
+    } else if (interaction.isContextMenuCommand()) {
+      const contextMenu = this.manager.services.interaction.getContextMenu(interaction.commandName)
+      if (!contextMenu) return;
+      this.handleInteraction(interaction, contextMenu, user);
     } else if (interaction.isButton()) {
-      const button = this.manager.services.component.getButton(interaction.customId);
+      const button = this.manager.services.interaction.getButton(interaction.customId);
       if (!button) return this.manager.client.emit(Events.ButtonClick, interaction, user);
 
       this.handleInteraction(interaction, button, user)
     } else if (interaction.isAnySelectMenu()) {
-      const selectMenu = this.manager.services.component.getSelectMenu(interaction.customId);
+      const selectMenu = this.manager.services.interaction.getSelectMenu(interaction.customId);
       if (!selectMenu) return this.manager.client.emit(Events.SelectMenu, interaction, user);
 
       this.handleInteraction(interaction, selectMenu, user);
     } else if (interaction.isModalSubmit()) {
-      const modal = this.manager.services.component.getModal(interaction.customId);
+      const modal = this.manager.services.interaction.getModal(interaction.customId);
       if (!modal) return this.manager.client.emit(Events.ModalSubmit, interaction, user);
 
       this.handleInteraction(interaction, modal, user);
@@ -45,18 +48,11 @@ export default class InteractionCreateEvent extends Event {
   }
 
   private async handleInteraction(
-    interaction: CommandInteraction<'cached'>,
-    component: Command<Addon | undefined>,
+    interaction: RepliableInteraction<'cached'>,
+    component: ContextMenu<Addon | undefined> | Button<Addon | undefined> | SelectMenu<Addon | undefined> | Modal<Addon | undefined> | Command<Addon | undefined>,
     user: User
   ): Promise<void>;
-
-  private async handleInteraction(
-    interaction: ButtonInteraction<'cached'> | AnySelectMenuInteraction<'cached'> | ModalSubmitInteraction<'cached'>,
-    component: Component<Addon | undefined>,
-    user: User
-  ): Promise<void>;
-
-  private async handleInteraction<T extends Command | Component>(
+  private async handleInteraction<T extends Command | Button | SelectMenu | Modal | ContextMenu>(
     interaction: any,
     component: T,
     user: User
@@ -73,8 +69,10 @@ export default class InteractionCreateEvent extends Event {
 
     try {
       if (component instanceof Command) {
+        console.log(component.data.subcommands)
+
         if (component.data.subcommands?.length) {
-          const subcommand = component.data.subcommands.find((subcommand: CommandSubcommandBuilder) => subcommand.name === interaction.options.getSubcommand());
+          const subcommand = component.data.subcommands.find((subcommand: CommandSubcommandBuilder | CommandSubcommandGroupBuilder) => subcommand.name === interaction.options.getSubcommand());
           if (!subcommand) return;
 
           if (subcommand.execute) {
@@ -85,13 +83,13 @@ export default class InteractionCreateEvent extends Event {
       }
       await component.execute(interaction, user);
     } catch (error: any) {
-      this.logger.error(`Error executing the commannd/component '${component.data.name}'`, error);
+      this.logger.error(`Error executing the command/component '${(component.data && 'name' in component.data ? (component.data as any).name : 'unknown')}'`, error);
     }
 
     component.data.cooldown.setCooldown(interaction.user.id);
   }
 
-  async checkRequirements(interaction: RepliableInteraction<'cached'>, component: Command | Component, user: User) {
+  async checkRequirements(interaction: RepliableInteraction<'cached'>, component: Command | Button | SelectMenu | Modal | ContextMenu, user: User) {
     const context: Context = {
       user: user,
       member: interaction.member,

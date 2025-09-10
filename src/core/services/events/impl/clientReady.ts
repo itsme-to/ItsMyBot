@@ -9,11 +9,11 @@ export default class ClientReadyEvent extends Event {
   priority = 1
 
   async execute(client: Client) {
-    this.manager.services.command.deployCommands();
+    this.manager.services.interaction.deployCommands();
 
     this.logger.info(`Actions registered: ${this.manager.services.action.actions.size}`);
     this.logger.info(`Conditions registered: ${this.manager.services.condition.conditions.size}`);
-    this.logger.info(`Commands registered: ${this.manager.commands.size}`);
+    this.logger.info(`Commands registered: ${this.manager.services.interaction.registries.commands.size}`);
     this.logger.info(`Events registered: ${this.manager.events.size}`);
     this.logger.info(`Addons registered: ${this.manager.addons.size}`);
     this.logger.info(`Placeholder Expansions registered: ${this.manager.expansions.size}`);

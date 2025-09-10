@@ -67,7 +67,7 @@ export default class LeaderboardService extends Service{
       }
     }
 
-    this.manager.services.command.registerCommand(new LeaderboardCommands(this.manager));
+    this.manager.services.interaction.registerCommand(new LeaderboardCommands(this.manager));
   }
 
   async leaderboardCommand(interaction: CommandInteraction, indentifier: string) {

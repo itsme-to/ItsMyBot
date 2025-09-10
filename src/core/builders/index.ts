@@ -1,2 +1,2 @@
-export { ComponentBuilder } from './component.js';
-export { CommandBuilder, ContextMenuBuilder } from './command.js';
+export * from './component.js';
+export * from './command.js';

@@ -162,7 +162,7 @@ export default class EngineService extends Service {
       }
     }
 
-    this.manager.services.command.registerCommand(new CustomCommandBase(this.manager));
+    this.manager.services.interaction.registerCommand(new CustomCommandBase(this.manager));
     this.customCommands.set(id, customCommandClass);
   }
 }

@@ -1,15 +1,14 @@
 import { GatewayIntentBits, Partials } from 'discord.js'
-import CommandService from 'core/services/commands/commandService'
-import ComponentService from 'core/services/components/componentService'
-import EngineService from 'core/services/engine/engineService'
-import EventService from 'core/services/events/eventService'
-import ExpansionService from 'core/services/expansions/expansionService'
-import AddonService from 'core/services/addons/addonService'
-import UserService from 'core/services/users/userService'
-import LeaderboardService from 'core/services/leaderboards/leaderboardService'
-import ConditionService from 'core/services/conditions/conditionService'
-import ActionService from 'core/services/actions/actionService'
-import { BaseConfig } from './config/baseConfig'
+import InteractionService from '../services/interactions/interactionService.js'
+import EngineService from '../services/engine/engineService.js'
+import EventService from '../services/events/eventService.js'
+import ExpansionService from '../services/expansions/expansionService.js'
+import AddonService from '../services/addons/addonService.js'
+import UserService from '../services/users/userService.js'
+import LeaderboardService from '../services/leaderboards/leaderboardService.js'
+import ConditionService from 'core/services/conditions/conditionService.js'
+import ActionService from 'core/services/actions/actionService.js'
+import { BaseConfig } from './config/baseConfig.js'
 
 export interface ClientOptions {
   intents: GatewayIntentBits[],
@@ -35,8 +34,8 @@ export interface Services {
   /** Service to manage users in the bot. Users are used to store information about Discord users. */
   user: UserService,
 
-  /** Service to manage commands in the bot. */
-  command: CommandService,
+  /** Service to manage interactions in the bot. */
+  interaction: InteractionService,
 
   /** Service to manage conditions in the bot. Conditions are used to check if a condition is met in the scripting system in the engine. */
   condition: ConditionService,
@@ -52,9 +51,6 @@ export interface Services {
 
   /** Service to manage expansions in the bot. Expansions are used to add custom placeholders to the bot. */
   expansion: ExpansionService,
-
-  /** Service to manage components in the bot. Components are used to create buttons, select menus, and modals. */
-  component: ComponentService,
 
   /** Service to manage leaderboards in the bot. */
   leaderboard: LeaderboardService
