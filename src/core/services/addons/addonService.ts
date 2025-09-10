@@ -53,7 +53,7 @@ export default class AddonService extends Service {
 
     const addonClass = new URL('file://' + addonClassPath.replace(/\\/g, '/')).href;
     const { default: Addon } = await import(addonClass);
-    const addon = new Addon(this.manager, name);
+    const addon = new Addon(this.manager, name) as Addon;
 
     if (this.addons.has(addon.name)) {
       throw new Error(`Addon ${addon.name} already exists.`);
@@ -61,9 +61,9 @@ export default class AddonService extends Service {
 
     const [addonData] = await AddonModel.findOrCreate({ where: { name: addon.name } });
     if (!addonData.enabled) {
-      addon.setEnabled(false);
+      addon.enabled = false;
     } else {
-      await addon.registerComponents();
+      await addon.registerModules();
     }
 
     this.addons.set(addon.name, addon);

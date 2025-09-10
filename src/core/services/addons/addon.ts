@@ -48,14 +48,14 @@ export abstract class Addon {
     this.logger.info(`Addon loaded in v${this.version}`);
   }
 
-  public async registerComponents() {
+  public async registerModules() {
     const basePath = this.path;
     const directories = readdirSync(basePath).filter((name: string) => {
       const fullPath = join(basePath, name);
       return statSync(fullPath).isDirectory();
     });
 
-    const componentHandlers: Record<string, (dir: string) => Promise<void>> = {
+    const moduleHandlers: Record<string, (dir: string) => Promise<void>> = {
       events: (dir) => this.manager.services.event.registerFromDir(dir, this),
       expansions: (dir) => this.manager.services.expansion.registerFromDir(dir, this),
       leaderboards: (dir) => this.manager.services.leaderboard.registerFromDir(dir, this),
@@ -67,7 +67,7 @@ export abstract class Addon {
       const dir = join(basePath, dirName);
       if (!sync(`${dir}/*`).length) continue;
 
-      const handler = componentHandlers[dirName];
+      const handler = moduleHandlers[dirName];
       if (handler) {
         await handler(dir);
       }
