@@ -4,36 +4,28 @@ import AddonModel from '../../addons/addon.model.js';
 
 export default class AddonCommand extends Command {
   build() {
-    const command = this.manager.configs.commands.getSubsection("addons");
-
     return new CommandBuilder()
       .setName('addons')
-      .using(command)
+      .using(this.manager.configs.commands.getSubsection("addons"))
       .setPublic()
       .addSubcommand(subcommand =>
         subcommand
           .setName('list')
-          .setDescription(command.getString("subcommands.list.description"))
-          .setExecute(this.list.bind(this))
-        )
+          .setExecute(this.list.bind(this)))
       .addSubcommand(subcommand =>
         subcommand
           .setName('enable')
-          .setDescription(command.getString("subcommands.enable.description"))
           .setExecute(this.enableOrDisable.bind(this))
           .addStringOption(option =>
             option.setName("addon")
-              .setDescription(command.getString("subcommands.enable.options.addon"))
               .setRequired(true)
               .setAutocomplete(true)))
       .addSubcommand(subcommand =>
         subcommand
           .setName('disable')
-          .setDescription(command.getString("subcommands.disable.description"))
           .setExecute(this.enableOrDisable.bind(this))
           .addStringOption(option =>
             option.setName("addon")
-              .setDescription(command.getString("subcommands.disable.options.addon"))
               .setRequired(true)
               .setAutocomplete(true))) 
   }

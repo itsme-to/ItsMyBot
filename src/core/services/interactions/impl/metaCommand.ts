@@ -10,7 +10,6 @@ export default class MetaCommand extends Command {
       .using(command)
       .addSubcommand(subcommand =>
         subcommand.setName("set")
-          .setDescription(command.getString("subcommands.set.description"))
           .addStringOption(option =>
             option.setName("key")
               .setDescription(command.getString("options.key"))
@@ -26,7 +25,6 @@ export default class MetaCommand extends Command {
               .setRequired(false)))
       .addSubcommand(subcommand =>
         subcommand.setName("add")
-          .setDescription(command.getString("subcommands.add.description"))
           .addStringOption(option =>
             option.setName("key")
               .setDescription(command.getString("options.key"))
@@ -42,7 +40,6 @@ export default class MetaCommand extends Command {
               .setRequired(false)))
       .addSubcommand(subcommand =>
         subcommand.setName("subtract")
-          .setDescription(command.getString("subcommands.subtract.description"))
           .addStringOption(option =>
             option.setName("key")
               .setDescription(command.getString("options.key"))
@@ -58,7 +55,6 @@ export default class MetaCommand extends Command {
               .setRequired(false)))
       .addSubcommand(subcommand =>
         subcommand.setName("toggle")
-          .setDescription(command.getString("subcommands.toggle.description"))
           .addStringOption(option =>
             option.setName("key")
               .setDescription(command.getString("options.key"))
@@ -74,7 +70,6 @@ export default class MetaCommand extends Command {
               .setRequired(false)))
       .addSubcommand(subcommand =>
         subcommand.setName("list-add")
-          .setDescription(command.getString("subcommands.list-add.description"))
           .addStringOption(option =>
             option.setName("key")
               .setDescription(command.getString("options.key"))
@@ -90,7 +85,6 @@ export default class MetaCommand extends Command {
               .setRequired(false))) 
       .addSubcommand(subcommand =>
         subcommand.setName("list-remove")
-          .setDescription(command.getString("subcommands.list-remove.description"))
           .addStringOption(option =>
             option.setName("key")
               .setDescription(command.getString("options.key"))
@@ -106,7 +100,6 @@ export default class MetaCommand extends Command {
               .setRequired(false))) 
       .addSubcommand(subcommand =>
         subcommand.setName("remove")
-          .setDescription(command.getString("description"))
           .addStringOption(option =>
             option.setName("key")
               .setDescription(command.getString("options.key"))

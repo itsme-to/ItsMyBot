@@ -12,7 +12,18 @@ export default class InteractionCreateEvent extends Event {
 
     if (interaction.isChatInputCommand() || interaction.isAutocomplete() || interaction.isMessageComponent()) {
       const interactionComponent = this.manager.services.interaction.resolveInteraction(interaction);
-      if (!interactionComponent) return;
+      if (!interactionComponent) {
+        if (interaction.isButton()) {
+          return this.manager.client.emit(Events.ButtonClick, interaction, user);
+        }
+        if (interaction.isAnySelectMenu()) {
+          return this.manager.client.emit(Events.SelectMenu, interaction, user);
+        }
+        if (interaction.isModalSubmit()) {
+          return this.manager.client.emit(Events.ModalSubmit, interaction, user);
+        }
+        return;
+      }
 
       if (interaction.isAutocomplete()) {
         if (!(interactionComponent instanceof Command) || !interactionComponent.autocomplete) return;

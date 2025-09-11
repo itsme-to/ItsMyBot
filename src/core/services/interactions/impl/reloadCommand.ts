@@ -4,12 +4,10 @@ import { ChatInputCommandInteraction } from 'discord.js';
 export default class ReloadCommand extends Command {
 
   build() {
-    const command = this.manager.configs.commands.getSubsection("reload");
-
     return new CommandBuilder()
       .setName('reload')
       .setPublic()
-      .using(command)
+      .using(this.manager.configs.commands.getSubsection("reload"))
   }
 
   async execute(interaction: ChatInputCommandInteraction<'cached'>, user: User) {

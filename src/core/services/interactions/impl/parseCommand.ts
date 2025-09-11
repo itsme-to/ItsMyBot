@@ -3,18 +3,14 @@ import { ChatInputCommandInteraction } from 'discord.js';
 export default class ParseCommand extends Command {
 
   build() {
-    const command = this.manager.configs.commands.getSubsection("parse");
-
     return new CommandBuilder()
       .setName('parse')
-      .using(command)
+      .using(this.manager.configs.commands.getSubsection("parse"))
       .addStringOption(option =>
         option.setName("text")
-          .setDescription(command.getString("options.text"))
           .setRequired(true))
       .addUserOption(option =>
         option.setName("user")
-          .setDescription(command.getString("options.user"))
           .setRequired(false))
   }
 
