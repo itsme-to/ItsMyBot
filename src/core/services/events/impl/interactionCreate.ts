@@ -1,5 +1,5 @@
 import { Command, Event, User, Events, Context, ResolvableInteraction, Utils, CommandSubcommandGroupBuilder } from '@itsmybot';
-import { ChatInputCommandInteraction, Interaction, MessageComponentInteraction } from 'discord.js';
+import { ChatInputCommandInteraction, ContextMenuCommandInteraction, Interaction, MessageComponentInteraction } from 'discord.js';
 
 export default class InteractionCreateEvent extends Event {
   name = Events.InteractionCreate;
@@ -10,7 +10,7 @@ export default class InteractionCreateEvent extends Event {
       ? await this.manager.services.user.findOrCreate(interaction.member)
       : await this.manager.services.user.findOrNull(interaction.user.id) as User;
 
-    if (interaction.isChatInputCommand() || interaction.isAutocomplete() || interaction.isMessageComponent()) {
+    if (interaction.isChatInputCommand() || interaction.isAutocomplete() || interaction.isContextMenuCommand() || interaction.isMessageComponent()) {
       const interactionComponent = this.manager.services.interaction.resolveInteraction(interaction);
       if (!interactionComponent) {
         if (interaction.isButton()) {
@@ -39,7 +39,7 @@ export default class InteractionCreateEvent extends Event {
   }
 
   private async handleInteraction(
-    interaction: ChatInputCommandInteraction<'cached'> | MessageComponentInteraction<'cached'>,
+    interaction: ChatInputCommandInteraction<'cached'> | ContextMenuCommandInteraction<'cached'> | MessageComponentInteraction<'cached'>,
     component: ResolvableInteraction,
     user: User
   ) {
@@ -54,7 +54,7 @@ export default class InteractionCreateEvent extends Event {
     if (!requirementsMet) return;
 
     try {
-      let execute = component.execute;
+      let executeComponent: any = component;
 
       if (component instanceof Command) {
         if (!interaction.isChatInputCommand()) return;
@@ -68,7 +68,7 @@ export default class InteractionCreateEvent extends Event {
 
             subcommands = group.subcommands;
             if (group.execute) {
-              execute = group.execute;
+              executeComponent = group;
             }
           }
 
@@ -78,10 +78,10 @@ export default class InteractionCreateEvent extends Event {
           if (subcommand.execute) {
             await subcommand.execute(interaction, user);
             return;
-          }
+          } 
         }
       }
-      await execute(interaction as any, user);
+      await executeComponent.execute(interaction, user);
     } catch (error: any) {
       this.logger.error(`Error executing the interaction '${(component.data && 'name' in component.data ? (component.data as any).name : 'unknown')}'`, error);
     }
@@ -89,7 +89,7 @@ export default class InteractionCreateEvent extends Event {
     component.data.cooldown.setCooldown(interaction.user.id);
   }
 
-  async checkRequirements(interaction: ChatInputCommandInteraction<'cached'> | MessageComponentInteraction<'cached'>, component: ResolvableInteraction, user: User) {
+  async checkRequirements(interaction: ChatInputCommandInteraction<'cached'> | ContextMenuCommandInteraction<'cached'> | MessageComponentInteraction<'cached'>, component: ResolvableInteraction, user: User) {
     const context: Context = {
       user: user,
       member: interaction.member,
