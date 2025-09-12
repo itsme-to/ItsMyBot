@@ -69,9 +69,9 @@ export default class AddonService extends Service {
   }
 
   async initializeAddons() {
-    await Promise.all(this.addons.map(addon => {
+    await Promise.all(this.addons.map(async addon => {
       try {
-        addon.init();
+        await addon.init();
       } catch (error) {
         addon.logger.error("Error initializing addon:", error);
       }

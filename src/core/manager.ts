@@ -71,7 +71,7 @@ export class Manager {
     this.services.event.initializeEvents();
     await this.services.addon.initializeAddons();
 
-    this.client.login(this.configs.config.getString("token"));
+    await this.client.login(this.configs.config.getString("token"));
 
     this.client.on('reconnecting', () => {
       this.logger.debug('The client is trying to reconnect.');
