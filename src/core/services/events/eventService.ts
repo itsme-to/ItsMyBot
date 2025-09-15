@@ -83,7 +83,10 @@ export class EventExecutor {
         } else {
           event.current = 1;
           await event.execute(...args);
-          if (event.canceled) break;
+          if (event.canceled === true) {
+            event.canceled = false;
+            break;
+          }
         }
       } catch (error: any) {
         event.logger.error(`Error executing event '${event.name}'`, error);

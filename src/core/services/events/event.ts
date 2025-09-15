@@ -12,8 +12,7 @@ export abstract class Event<T extends Addon | undefined = undefined> extends Bas
   public abstract execute(...args: any): any | void;
 
   /**
-    * Stop the function and it will not execute events with a lower priority.
-    * @throws stop
+    * Cancel the execution of further events in the current event cycle.
     */
   cancelEvent() {
     this.canceled = true;
