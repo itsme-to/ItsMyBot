@@ -87,8 +87,8 @@ export default class InteractionService extends Service {
   registerCommand(command: Command<Addon | undefined>) {
     try {
       if (!command.data) throw new Error("Command needs a data object.");
+      command.data.config === undefined
       if (this.registries.commands.has(command.data.name)) throw new Error("Command already exists.");
-
       this.registries.commands.set(command.data.name, command);
 
       if (command.data.aliases) {

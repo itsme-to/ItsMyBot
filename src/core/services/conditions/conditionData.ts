@@ -2,14 +2,14 @@ import { Config, ActionData, Manager, Logger } from '@itsmybot';
 
 export class ConditionData {
   public id: string;
-  public config: Config;
   public logger: Logger;
+  public filePath: string
   public notMetActions: ActionData[];
   public manager: Manager;
   public args: Config;
 
   constructor(manager: Manager, condition: Config, notMetAction: boolean = true) {
-    this.config = condition;
+    this.filePath = `${condition.filePath} at ${condition.currentPath}`
 
     if (condition.has("expression")) {
       condition.set('id', "isExpressionTrue");
@@ -41,12 +41,12 @@ export class ConditionData {
   }
 
   public logError(message: string) {
-    this.logger.error(`${message} in ${this.config.filePath} at ${this.config.currentPath}`);
+    this.logger.error(`${message} in ${this.filePath}`);
     return false;
   }
 
   public logWarning(message: string) {
-    this.logger.warn(`${message} in ${this.config.filePath} at ${this.config.currentPath}`);
+    this.logger.warn(`${message} in ${this.filePath}`);
   }
 
   public missingArg(missing: string) {

@@ -102,8 +102,8 @@ export default class EngineService extends Service {
       build() {
         const options = customCommand.getSubsectionsOrNull("options") || []
         const data = new CommandBuilder()
-          .setName(customCommandClass.data.getString("name"))
-          .using(customCommandClass.data)
+          .setName(customCommand.getString("name"))
+          .using(customCommand)
 
         for (const optionConfig of options) {
           const option: CommandApplicationOption = {
