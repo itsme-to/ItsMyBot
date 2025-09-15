@@ -89,6 +89,11 @@ export class EventExecutor {
           }
         }
       } catch (error: any) {
+        if (event.canceled === true) {
+          event.canceled = false;
+          break;
+        }
+        
         event.logger.error(`Error executing event '${event.name}'`, error);
       }
       i++;
