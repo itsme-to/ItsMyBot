@@ -69,7 +69,7 @@ export function getPermissionFlags(value: string): bigint | undefined {
 
 const buttonStyleValue = {
   'Primary': ['primary', 'blue', '1'],
-  'Secondary': ['secondary', 'grey', '2'],
+  'Secondary': ['secondary', 'grey', 'gray', '2'],
   'Success': ['success', 'green', '3'],
   'Danger': ['danger', 'red', '4'],
   'Link': ['link', 'url', '5'],

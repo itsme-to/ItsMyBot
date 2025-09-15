@@ -1,6 +1,5 @@
 import { Op } from 'sequelize';
-import { User, Leaderboard } from '@itsmybot';
-import Utils from '@utils';
+import { User, Leaderboard, Utils } from '@itsmybot';
 
 export default class MessagesLeaderboard extends Leaderboard {
   name = "messages"

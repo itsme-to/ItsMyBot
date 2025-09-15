@@ -1,5 +1,4 @@
-import { Event, Context, Events } from '@itsmybot';
-import Utils from '@utils';
+import { Event, Context, Events, Utils } from '@itsmybot';
 import { ActivityType, Presence } from 'discord.js';
 
 export default class PresenceUpdateEvent extends Event {

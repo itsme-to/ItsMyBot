@@ -50,7 +50,7 @@ export const userVariables = (user: User, prefix = "user") => {
     replaceWith: time(user.createdAt, "D"),
   }, {
     searchFor: `%${prefix}_join_date%`,
-    replaceWith: time(user.joinedAt, "D"),
+    replaceWith: user.joinedAt ? time(user.joinedAt, "D") : "Unknown",
   }, {
     searchFor: `%${prefix}_roles%`,
     replaceWith: user.roles ? user.roles.join(", ") : "None",

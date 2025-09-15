@@ -1,5 +1,4 @@
-import manager, { ActionValidator, ConditionValidator } from '@itsmybot';
-import Utils from '@utils';
+import { manager, ActionValidator, ConditionValidator, Utils } from '@itsmybot';
 import { validate, ValidationArguments, ValidatorConstraintInterface, ValidatorConstraint, ValidationError } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 

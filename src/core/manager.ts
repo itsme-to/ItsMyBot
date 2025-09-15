@@ -1,16 +1,14 @@
 import { Client, Collection } from 'discord.js';
 import { existsSync, mkdirSync } from 'fs';
-import { Logger } from '@utils';
-import { Command, Component, Expansion, Leaderboard, Addon, ClientOptions, ManagerOptions, Services, ManagerConfigs, BaseConfig } from '@itsmybot'
+import { ClientOptions, ManagerOptions, Services, ManagerConfigs, BaseConfig, Addon, Logger } from '@itsmybot'
 import { Sequelize } from 'sequelize-typescript';
 
-import EventService, { EventExecutor } from './services/events/eventService.js';
+import EventService from './services/events/eventService.js';
 import UserService from './services/users/userService.js';
-import CommandService from './services/commands/commandService.js';
+import InteractionService from './services/interactions/interactionService.js';
 import EngineService from './services/engine/engineService.js';
 import AddonService from './services/addons/addonService.js';
 import ExpansionService from './services/expansions/expansionService.js';
-import ComponentService from './services/components/componentService.js';
 import LeaderboardService from './services/leaderboards/leaderboardService.js';
 import ConditionService from './services/conditions/conditionService.js';
 import ActionService from './services/actions/actionService.js';
@@ -25,16 +23,9 @@ export class Manager {
   public database: Sequelize;
 
   public managerOptions: ManagerOptions;
-  public commands = new Collection<string, Command>();
-  public events = new Collection<string, EventExecutor>();
+
   public addons = new Collection<string, Addon>();
-  public expansions = new Collection<string, Expansion>();
-  public leaderboards = new Collection<string, Leaderboard>();
-  public components = {
-    buttons: new Collection<string, Component>(),
-    selectMenus: new Collection<string, Component>(),
-    modals: new Collection<string, Component>()
-  }
+
   public logger = new Logger();
   public primaryGuildId: string;
 
@@ -68,8 +59,7 @@ export class Manager {
       expansion: new ExpansionService(this),
       user: new UserService(this),
       event: new EventService(this),
-      command: new CommandService(this),
-      component: new ComponentService(this),
+      interaction: new InteractionService(this),
       leaderboard: new LeaderboardService(this)
     }
 
@@ -81,7 +71,7 @@ export class Manager {
     this.services.event.initializeEvents();
     await this.services.addon.initializeAddons();
 
-    this.client.login(this.configs.config.getString("token"));
+    await this.client.login(this.configs.config.getString("token"));
 
     this.client.on('reconnecting', () => {
       this.logger.debug('The client is trying to reconnect.');

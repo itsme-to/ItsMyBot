@@ -16,15 +16,9 @@
     ],
     "baseUrl": "./src/",
     "paths": {
-      "@utils": [
-        "./core/utils/index.js"
-      ],
       "@itsmybot": [
         "./index.js"
       ],
-      "@builders": [
-        "./core/builders/index.js"
-      ]
     }
   }
 }

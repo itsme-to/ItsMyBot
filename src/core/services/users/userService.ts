@@ -1,5 +1,5 @@
 import { Manager, User, Service } from '@itsmybot';
-import { GuildMember } from 'discord.js';
+import { GuildMember, User as DiscordUser } from 'discord.js';
 
 /**
  * Service to manage users in the bot.
@@ -26,18 +26,24 @@ export default class UserService extends Service {
     return user;
   }
 
-  async findOrCreate(member: GuildMember): Promise<User> {
-    const userData = {
-      id: member.id,
-      username: member.user.username,
-      displayName: member.user.displayName || member.user.globalName || member.user.username,
-      avatar: member.displayAvatarURL(),
-      isBot: member.user.bot,
-      createdAt: Math.round(member.user.createdTimestamp / 1000),
-      joinedAt: member.joinedTimestamp ? Math.round(member.joinedTimestamp / 1000) : new Date().getTime(),
-      roles: member.roles.cache
+  async findOrCreate(member: DiscordUser | GuildMember): Promise<User> {
+    const user = member instanceof DiscordUser ? member : member.user
+    const joinedTimestamp = member instanceof GuildMember ? member.joinedTimestamp : null
+    const memberRoles = member instanceof GuildMember 
+      ? member.roles.cache
         .filter(r => r.id != member.guild.roles.everyone.id)
-        .map(r => r.id),
+        .map(r => r.id)
+      : []
+
+    const userData = {
+      id: user.id,
+      username: user.username,
+      displayName: user.displayName || user.globalName || user.username,
+      avatar: user.displayAvatarURL(),
+      isBot: user.bot,
+      createdAt: Math.round(user.createdTimestamp / 1000),
+      joinedAt: joinedTimestamp ? Math.round(joinedTimestamp / 1000) : undefined,
+      roles: memberRoles
     };
 
     return User.upsert(userData, { returning: true }).then(([user]) => user);

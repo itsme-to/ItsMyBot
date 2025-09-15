@@ -7,14 +7,14 @@ export abstract class Event<T extends Addon | undefined = undefined> extends Bas
   priority: number = 3;
   every: number = 1;
   current: number = 1;
+  canceled: boolean = false;
 
   public abstract execute(...args: any): any | void;
 
   /**
-    * Stop the function and it will not execute events with a lower priority.
-    * @throws stop
+    * Cancel the execution of further events in the current event cycle.
     */
   cancelEvent() {
-    throw 'stop';
+    this.canceled = true;
   }
 }

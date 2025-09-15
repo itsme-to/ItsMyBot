@@ -13,7 +13,7 @@ export default class EventService extends Service {
 
   constructor(manager: Manager) {
     super(manager);
-    this.events = manager.events;
+    this.events = new Collection();
   }
 
   async initialize() {
@@ -83,9 +83,17 @@ export class EventExecutor {
         } else {
           event.current = 1;
           await event.execute(...args);
+          if (event.canceled === true) {
+            event.canceled = false;
+            break;
+          }
         }
       } catch (error: any) {
-        if (error === 'stop') break;
+        if (event.canceled === true) {
+          event.canceled = false;
+          break;
+        }
+        
         event.logger.error(`Error executing event '${event.name}'`, error);
       }
       i++;

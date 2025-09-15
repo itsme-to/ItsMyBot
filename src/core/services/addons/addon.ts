@@ -1,5 +1,4 @@
-import { Manager, BaseConfig, BaseConfigSection } from '@itsmybot';
-import { Logger } from '@utils';
+import { Manager, BaseConfig, BaseConfigSection, Logger } from '@itsmybot';
 import { join } from 'path';
 import { sync } from 'glob';
 import { Collection } from 'discord.js';
@@ -44,19 +43,18 @@ export abstract class Addon {
     await this.loadDatabaseModels();
     await this.load();
     await this.initialize();
-    await this.registerInteractionComponents();
-    await this.registerCommands();
+    await this.registerInteractions();
     this.logger.info(`Addon loaded in v${this.version}`);
   }
 
-  public async registerComponents() {
+  public async registerModules() {
     const basePath = this.path;
     const directories = readdirSync(basePath).filter((name: string) => {
       const fullPath = join(basePath, name);
       return statSync(fullPath).isDirectory();
     });
 
-    const componentHandlers: Record<string, (dir: string) => Promise<void>> = {
+    const moduleHandlers: Record<string, (dir: string) => Promise<void>> = {
       events: (dir) => this.manager.services.event.registerFromDir(dir, this),
       expansions: (dir) => this.manager.services.expansion.registerFromDir(dir, this),
       leaderboards: (dir) => this.manager.services.leaderboard.registerFromDir(dir, this),
@@ -68,41 +66,17 @@ export abstract class Addon {
       const dir = join(basePath, dirName);
       if (!sync(`${dir}/*`).length) continue;
 
-      const handler = componentHandlers[dirName];
+      const handler = moduleHandlers[dirName];
       if (handler) {
         await handler(dir);
       }
     }
   }
 
-  public async registerInteractionComponents() {
-    const basePath = this.path;
-    const directories = readdirSync(basePath).filter((name: string) => {
-      const fullPath = join(basePath, name);
-      return statSync(fullPath).isDirectory();
-    });
-
-    const componentHandlers: Record<string, (dir: string) => Promise<void>> = {
-      buttons: (dir) => this.manager.services.component.registerFromDir(dir, 'button', this),
-      selectMenus: (dir) => this.manager.services.component.registerFromDir(dir, 'selectMenu', this),
-      modals: (dir) => this.manager.services.component.registerFromDir(dir, 'modal', this),
-    };
-  
-    for (const dirName of directories) {
-      const dir = join(basePath, dirName);
-      if (!sync(`${dir}/*`).length) continue;
-
-      const handler = componentHandlers[dirName];
-      if (handler) {
-        await handler(dir);
-      }
-    }
-  }
-
-  public async registerCommands() {
-    const commandsDir = join(this.path, 'commands');
-    if (!sync(`${commandsDir}/*`).length) return;
-    await this.manager.services.command.registerFromDir(commandsDir, this);
+  public async registerInteractions() {
+    const interactionDir = join(this.path, 'interactions');
+    if (!sync(`${interactionDir}/*`).length) return;
+    await this.manager.services.interaction.registerFromDir(interactionDir, this);
   }
 
   private async loadDatabaseModels() {

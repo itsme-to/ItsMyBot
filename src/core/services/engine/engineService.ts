@@ -1,13 +1,9 @@
-import { Collection, ApplicationCommandOptionType, ChannelType } from 'discord.js';
-import Utils, { Cooldown } from '@utils';
-
-import { Script, CustomCommand, Command, User, BaseConfigSection, BaseConfig, Config, Variable, CommandInteraction, Service } from '@itsmybot';
-import { Logger } from '@utils';
+import { Collection, ApplicationCommandOptionType, ChannelType, ChatInputCommandInteraction } from 'discord.js';
+import { Script, CustomCommand, Command, User, BaseConfigSection, BaseConfig, Config, Variable, Service, Utils, Cooldown, Logger, CommandBuilder } from '@itsmybot';
 import MetaHandler from './meta/metaHandler.js';
 
 import ScriptConfig from '../../resources/scripting/script.js';
 import CustomCommandConfig from '../../resources/scripting/customCommand.js';
-import { CommandBuilder } from '@builders';
 import EngineEventEmitter from './eventEmitter.js';
 
 /**
@@ -40,7 +36,7 @@ export default class EngineService extends Service {
     }
   }
 
-  async handleCustomCommand(id: string, interaction: CommandInteraction, user: User) {
+  async handleCustomCommand(id: string, interaction: ChatInputCommandInteraction<'cached'>, user: User) {
     const customCommand = this.customCommands.get(id);
     if (!customCommand) return this.manager.logger.error(`Custom command ${id} not found`);
 
@@ -106,8 +102,8 @@ export default class EngineService extends Service {
       build() {
         const options = customCommand.getSubsectionsOrNull("options") || []
         const data = new CommandBuilder()
-          .setName(customCommandClass.data.getString("name"))
-          .using(customCommandClass.data)
+          .setName(customCommand.getString("name"))
+          .using(customCommand)
 
         for (const optionConfig of options) {
           const option: CommandApplicationOption = {
@@ -157,12 +153,12 @@ export default class EngineService extends Service {
         return data
       }
 
-      async execute(interaction: CommandInteraction, user: User) {
+      async execute(interaction: ChatInputCommandInteraction<'cached'>, user: User) {
         this.manager.services.engine.handleCustomCommand(id, interaction, user);
       }
     }
 
-    this.manager.services.command.registerCommand(new CustomCommandBase(this.manager));
+    this.manager.services.interaction.registerCommand(new CustomCommandBase(this.manager));
     this.customCommands.set(id, customCommandClass);
   }
 }

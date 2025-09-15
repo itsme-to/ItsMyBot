@@ -1,6 +1,5 @@
 import { StringSelectMenuBuilder, StringSelectMenuOptionBuilder } from 'discord.js';
-import Utils from '@utils';
-import manager, { Config, Context, Variable } from '@itsmybot';
+import { manager, Config, Context, Variable, Utils } from '@itsmybot';
 
 interface SelectMenuSettings {
   config: Config,

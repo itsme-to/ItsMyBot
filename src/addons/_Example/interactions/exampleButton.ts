@@ -1,9 +1,8 @@
-import { ComponentBuilder } from '@builders';
 import TicketsAddon from '..';
-import { User, Component } from '@itsmybot';
+import { User, Button, ComponentBuilder } from '@itsmybot';
 import { ButtonInteraction } from 'discord.js';
 
-export default class ExampleButton extends Component<TicketsAddon> {
+export default class ExampleButton extends Button<TicketsAddon> {
   customId = 'example_id';
 
   build() {

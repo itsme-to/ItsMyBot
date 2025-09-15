@@ -1,6 +1,5 @@
-import Utils from '@utils';
 import { MessageComponentInteraction, StringSelectMenuInteraction, RepliableInteraction, InteractionResponse } from 'discord.js';
-import manager, { Config, Context, TopLevelComponentBuilder, Variable } from '@itsmybot'
+import { manager, Config, Context, TopLevelComponentBuilder, Variable, Utils } from '@itsmybot'
 
 interface Item {
   label?: string;
@@ -26,7 +25,6 @@ export class Pagination {
   filters: Filter[] = []
   variables: Variable[] = []
   config: Config
-  lang: Config
   placeholderText: string
 
   defaultItems: Item[]
@@ -46,8 +44,6 @@ export class Pagination {
     this.defaultItems = items;
 
     this.placeholderText = manager.configs.lang.getString("pagination.placeholder");
-    this.lang = manager.configs.lang.getSubsection("pagination");
-
     return this;
   }
 
@@ -120,7 +116,7 @@ export class Pagination {
   async send() {
     if (!this.filteredItems.length) {
       return this.interaction.reply(await Utils.setupMessage({
-        config: this.lang.getSubsection("no-data"),
+        config: manager.configs.lang.getSubsection("pagination.no-data"),
         variables: this.variables,
         context: this.context
       }));
@@ -184,7 +180,7 @@ export class Pagination {
   }
 
   private getConfig() {
-    return this.filteredItems.length ? this.config : this.lang.getSubsection("no-data");
+    return this.filteredItems.length ? this.config : manager.configs.lang.getSubsection("pagination.no-data");
   }
 
   private getContext() {

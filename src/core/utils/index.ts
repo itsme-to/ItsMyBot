@@ -18,13 +18,13 @@ export { Logger } from './logger.js';
 export { Cooldown } from './cooldown.js';
 export { Pagination } from './pagination.js';
 
-import manager, { Context, Variable, MessageOutput }from '@itsmybot';
+import { manager, Context, Variable }from '@itsmybot';
 import { GuildMember } from 'discord.js';
 import { Parser } from 'expr-eval';
 
 const discordEpoch = 1420070400000;
 
-export default class Utils {
+export class Utils {
   /** Try to return the closest permission flag to the given string */
   static getPermissionFlags = getPermissionFlags;
   /** Try to return the closest button style to the given string */
@@ -291,21 +291,6 @@ export default class Utils {
     }
 
     return result * 1000;
-  }
-
-  /**
-   * Log a message to a discord channel
-   * @deprecated
-   * @param id The channel id to log the message to or 'none' to disable logging
-   * @param message The message to log
-   */
-  static logToDiscord(id: string, message: MessageOutput) {
-    if (id === 'none') return;
-
-    const channel = findTextChannel(id);
-    if (!channel) return;
-
-    channel.send(message)
   }
 
   static capitalizeFirst(string: string) {

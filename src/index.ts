@@ -4,7 +4,7 @@ import { GatewayIntentBits, Partials } from 'discord.js';
 import { join } from 'path';
 import { readFileSync } from 'fs';
 import { Manager } from './core/manager.js';
-import { Logger } from '@utils';
+import { Logger } from './core/utils/index.js';
 
 export { Action } from './core/services/actions/action.js';
 export { ConditionData } from './core/services/conditions/conditionData.js';
@@ -18,12 +18,13 @@ export { User } from './core/services/users/user.model.js';
 export { MetaData } from './core/services/engine/meta/metadata.model.js';
 export { Event } from './core/services/events/event.js';
 export { Config } from './core/contracts/config/config.js'
-export { Command } from './core/services/commands/command.js';
-export { Component } from './core/services/components/component.js';
+export { Command, Button, SelectMenu, Modal, ContextMenu } from './core/services/interactions/interaction.js';
 export { Leaderboard } from './core/services/leaderboards/leaderboard.js';
 export { CustomCommand } from './core/services/engine/customCommand.js';
 export { MetaMode, MetaType } from './core/services/engine/meta/metaHandler.js';
 export * from './core/contracts/index.js';
+export * from './core/builders/index.js';
+export * from './core/utils/index.js';
 export { Manager };
 
 const logger = new Logger();
@@ -75,4 +76,4 @@ process.on("unhandledRejection", async (reason: any, promise) => {
   logger.error(reason);
 });
 
-export default manager;
+export { manager };

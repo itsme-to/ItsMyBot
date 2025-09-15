@@ -1,5 +1,4 @@
-import { Action, ActionData, Context, FollowUpActionArgumentsValidator, Variable } from '@itsmybot';
-import Utils from '@utils';
+import { Action, ActionData, Context, FollowUpActionArgumentsValidator, Variable, Utils } from '@itsmybot';
 
 export default class RandomAction extends Action {
   id = "randomAction";

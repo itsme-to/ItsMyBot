@@ -31,9 +31,10 @@ export class User extends Model<InferAttributes<User>, InferCreationAttributes<U
   declare createdAt: number
 
   @Column({
-    type: DataTypes.INTEGER
+    type: DataTypes.INTEGER,
+    allowNull: true
   })
-  declare joinedAt: number
+  declare joinedAt?: number
 
   @Column({
     type: DataTypes.JSON

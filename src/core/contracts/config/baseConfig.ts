@@ -1,5 +1,4 @@
-import { Logger } from '@utils';
-import Utils from '@utils';
+import { Logger, Utils } from '@itsmybot';
 import { Config } from './config.js';
 import * as fs from 'fs/promises';
 import { join, resolve } from 'path';
@@ -87,7 +86,7 @@ export class BaseConfig extends Config {
       const [path, errorMessage] = error.split(': ', 2);
       if (!errorMessage) continue;
       if (errorMessage.includes('should not be null or undefined')) {
-        const pathArray = path.split('.');
+        const pathArray = path.replace('-', '').trim().split('.');
         const defaultValue: unknown = defaultContent.getIn(pathArray, true);
         if (defaultValue !== null && defaultValue !== undefined) {
           this.logger.warn(`Using default value for '${path}': ${defaultValue}`);

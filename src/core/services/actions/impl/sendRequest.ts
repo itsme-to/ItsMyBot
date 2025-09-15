@@ -1,5 +1,4 @@
-import { Action, ActionData, FollowUpActionArgumentsValidator, Context, Variable } from '@itsmybot';
-import Utils from '@utils';
+import { Action, ActionData, FollowUpActionArgumentsValidator, Context, Variable, Utils } from '@itsmybot';
 import { IsDefined, IsOptional, IsString } from 'class-validator';
 
 class ArgumentsValidator extends FollowUpActionArgumentsValidator {

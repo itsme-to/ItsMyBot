@@ -13,7 +13,7 @@ export default class ExpansionService extends Service{
 
   constructor(manager: Manager) {
     super(manager);
-    this.expansions = manager.expansions;
+    this.expansions = new Collection();
   }
 
   async initialize() {

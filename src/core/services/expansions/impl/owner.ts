@@ -1,5 +1,4 @@
-import { Expansion, Context } from '@itsmybot';
-import Utils from '@utils';
+import { Expansion, Context, Utils } from '@itsmybot';
 
 export default class OwnerExpansion extends Expansion {
   name = 'owner';

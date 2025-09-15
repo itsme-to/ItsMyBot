@@ -1,10 +1,9 @@
-import { Action, ActionData, Context, ActionArgumentsValidator,  Variable } from '@itsmybot';
-import Utils from '@utils';
+import { Action, ActionData, Context, ActionArgumentsValidator, Variable, Utils } from '@itsmybot';
 import { IsDefined, IsString } from 'class-validator';
 
 class ArgumentsValidator extends ActionArgumentsValidator {
   @IsDefined()
-  @IsString({ each: true})
+  @IsString({ each: true })
   value: string | string[]
 }
 

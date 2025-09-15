@@ -1,5 +1,4 @@
-import { Action, ActionArgumentsValidator, ActionData, Context, Variable } from '@itsmybot';
-import Utils from '@utils';
+import { Action, ActionArgumentsValidator, ActionData, Context, Variable, Utils } from '@itsmybot';
 import { IsDefined, IsInt, IsOptional, IsPositive, IsString } from 'class-validator';
 
 

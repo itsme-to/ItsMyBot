@@ -1,13 +1,11 @@
-import { ContextMenuCommandBuilder, SlashCommandBuilder, SlashCommandSubcommandBuilder, SlashCommandStringOption, SlashCommandAttachmentOption, SlashCommandChannelOption, SlashCommandBooleanOption, SlashCommandIntegerOption, SlashCommandMentionableOption, SlashCommandNumberOption, SlashCommandRoleOption, SlashCommandUserOption } from 'discord.js';
-import { ComponentBuilder } from '@builders';
-import Utils from '@utils';
-import { Config, User, CommandInteraction } from '@itsmybot';
+import { ContextMenuCommandBuilder, SlashCommandBuilder, SlashCommandSubcommandBuilder, SlashCommandStringOption, SlashCommandAttachmentOption, SlashCommandChannelOption, SlashCommandBooleanOption, SlashCommandIntegerOption, SlashCommandMentionableOption, SlashCommandNumberOption, SlashCommandRoleOption, SlashCommandUserOption, SlashCommandSubcommandGroupBuilder, ChatInputCommandInteraction } from 'discord.js';
+import { Config, User, Utils, ComponentBuilder } from '@itsmybot';
 import { Mixin } from 'ts-mixer';
 
 export class CommandSubcommandBuilder extends SlashCommandSubcommandBuilder {
-  execute?: (interaction: CommandInteraction, user: User) => Promise<void | any>;
-  
-  public setExecute(execute: (interaction: CommandInteraction, user: User) => Promise<void | any>): this {
+  execute?: (interaction: ChatInputCommandInteraction<'cached'>, user: User) => Promise<void | any>;
+
+  public setExecute(execute: (interaction: ChatInputCommandInteraction<'cached'>, user: User) => Promise<void | any>): this {
     this.execute = execute
     return this;
   }
@@ -58,10 +56,34 @@ export class CommandSubcommandBuilder extends SlashCommandSubcommandBuilder {
   }
 }
 
+export class CommandSubcommandGroupBuilder extends SlashCommandSubcommandGroupBuilder {
+  subcommands: CommandSubcommandBuilder[] = [];
+
+  execute?: (interaction: ChatInputCommandInteraction<'cached'>, user: User) => Promise<void | any>;
+  
+  public setExecute(execute: (interaction: ChatInputCommandInteraction<'cached'>, user: User) => Promise<void | any>): this {
+    this.execute = execute
+    return this;
+  }
+
+  addSubcommand(input: CommandSubcommandBuilder): this;
+  addSubcommand(input: (builder: CommandSubcommandBuilder) => CommandSubcommandBuilder): this;
+  public override addSubcommand(input: CommandSubcommandBuilder | ((subcommand: CommandSubcommandBuilder) => CommandSubcommandBuilder)): this {
+    const builder = typeof input === "function"
+      ? input(new CommandSubcommandBuilder())
+      : input;
+
+    this.subcommands.push(builder);
+    super.addSubcommand(builder);
+    return this;
+  }
+}
+
 export class CommandBuilder extends Mixin(SlashCommandBuilder, ComponentBuilder) {
   aliases: string[] = [];
   enabled: boolean = true;
-  subcommands: CommandSubcommandBuilder[] = [];
+  subcommands: (CommandSubcommandBuilder | CommandSubcommandGroupBuilder)[] = [];
+  config?: Config;
 
   public using(config: Config) {
     super.using(config);
@@ -70,6 +92,8 @@ export class CommandBuilder extends Mixin(SlashCommandBuilder, ComponentBuilder)
     if (config.has("permission")) this.setDefaultMemberPermissions(Utils.getPermissionFlags(config.getString("permission")));
     if (config.has("aliases")) this.setAliases(config.getStrings("aliases"));
     if (config.getBoolOrNull("enabled") === false) this.setEnabled(false);
+
+    this.config = config;
 
     return this;
   }
@@ -82,9 +106,55 @@ export class CommandBuilder extends Mixin(SlashCommandBuilder, ComponentBuilder)
     const builder = typeof input === "function"
       ? input(new CommandSubcommandBuilder())
       : input;
+
+    if (this.config) {
+      if (!builder.description && this.config) {
+        builder.setDescription(this.config.getString(`subcommands.${builder.name}.description`));
+      }
+
+      for (const option of builder.options) {
+        if (!option.description && this.config) {
+          option.setDescription(this.config.getString(`subcommands.${builder.name}.options.${option.name}`));
+        }
+      }
+    }
   
     this.subcommands.push(builder);
     super.addSubcommand(builder);
+    return this;
+  }
+
+  addSubcommandGroup(input: CommandSubcommandGroupBuilder): this;
+  addSubcommandGroup(input: (builder: CommandSubcommandGroupBuilder) => CommandSubcommandGroupBuilder): this;
+  public addSubcommandGroup(
+    input: CommandSubcommandGroupBuilder | ((subcommandGroup: CommandSubcommandGroupBuilder) => CommandSubcommandGroupBuilder)
+  ): this {
+    const builder = typeof input === "function"
+      ? input(new CommandSubcommandGroupBuilder())
+      : input;
+
+    if (this.config) {
+
+      if (!builder.description) {
+        builder.setDescription(this.config.getString(`subcommands.${builder.name}.description`));
+      }
+
+      for (const subcommand of builder.options) {
+        if (!subcommand.description && this.config) {
+          subcommand.setDescription(this.config.getString(`subcommands.${builder.name}.subcommands.${subcommand.name}.description`));
+        }
+
+        for (const option of subcommand.options) {
+          if (!option.description && this.config) {
+            option.setDescription(this.config.getString(`subcommands.${builder.name}.subcommands.${subcommand.name}.options.${option.name}`));
+          }
+        }
+      }
+    }
+
+
+    this.subcommands.push(builder);
+    super.addSubcommandGroup(builder);
     return this;
   }
 
@@ -95,6 +165,123 @@ export class CommandBuilder extends Mixin(SlashCommandBuilder, ComponentBuilder)
 
   public setAliases(aliases: string[]) {
     this.aliases = aliases;
+    return this;
+  }
+
+  public override addStringOption(input: SlashCommandStringOption | ((builder: SlashCommandStringOption) => SlashCommandStringOption)): this {
+    const builder = typeof input === "function"
+      ? input(new SlashCommandStringOption())
+      : input;
+
+    if (!builder.description && this.config) {
+      builder.setDescription(this.config.getString(`options.${builder.name}`));
+    }
+
+    super.addStringOption(builder);
+    return this;
+  }
+
+  public override addAttachmentOption(input: SlashCommandAttachmentOption | ((builder: SlashCommandAttachmentOption) => SlashCommandAttachmentOption)): this {
+    const builder = typeof input === "function"
+      ? input(new SlashCommandAttachmentOption())
+      : input;
+
+    if (!builder.description && this.config) {
+      builder.setDescription(this.config.getString(`options.${builder.name}`));
+    }
+
+    super.addAttachmentOption(builder);
+    return this;
+  }
+
+  public override addChannelOption(input: SlashCommandChannelOption | ((builder: SlashCommandChannelOption) => SlashCommandChannelOption)): this {
+    const builder = typeof input === "function"
+      ? input(new SlashCommandChannelOption())
+      : input;
+
+    if (!builder.description && this.config) {
+      builder.setDescription(this.config.getString(`options.${builder.name}`));
+    }
+
+    super.addChannelOption(builder);
+    return this;
+  }
+
+  public override addBooleanOption(input: SlashCommandBooleanOption | ((builder: SlashCommandBooleanOption) => SlashCommandBooleanOption)): this {
+    const builder = typeof input === "function"
+      ? input(new SlashCommandBooleanOption())
+      : input;
+
+    if (!builder.description && this.config) {
+      builder.setDescription(this.config.getString(`options.${builder.name}`));
+    }
+
+    super.addBooleanOption(builder);
+    return this;
+  }
+
+  public override addIntegerOption(input: SlashCommandIntegerOption | ((builder: SlashCommandIntegerOption) => SlashCommandIntegerOption)): this {
+    const builder = typeof input === "function"
+      ? input(new SlashCommandIntegerOption())
+      : input;
+
+    if (!builder.description && this.config) {
+      builder.setDescription(this.config.getString(`options.${builder.name}`));
+    }
+
+    super.addIntegerOption(builder);
+    return this;
+  }
+
+  public override addMentionableOption(input: SlashCommandMentionableOption | ((builder: SlashCommandMentionableOption) => SlashCommandMentionableOption)): this {
+    const builder = typeof input === "function"
+      ? input(new SlashCommandMentionableOption())
+      : input;
+
+    if (!builder.description && this.config) {
+      builder.setDescription(this.config.getString(`options.${builder.name}`));
+    }
+
+    super.addMentionableOption(builder);
+    return this;
+  }
+
+  public override addNumberOption(input: SlashCommandNumberOption | ((builder: SlashCommandNumberOption) => SlashCommandNumberOption)): this {
+    const builder = typeof input === "function"
+      ? input(new SlashCommandNumberOption())
+      : input;
+
+    if (!builder.description && this.config) {
+      builder.setDescription(this.config.getString(`options.${builder.name}`));
+    }
+
+    super.addNumberOption(builder);
+    return this;
+  }
+
+  public override addRoleOption(input: SlashCommandRoleOption | ((builder: SlashCommandRoleOption) => SlashCommandRoleOption)): this {
+    const builder = typeof input === "function"
+      ? input(new SlashCommandRoleOption())
+      : input;
+
+    if (!builder.description && this.config) {
+      builder.setDescription(this.config.getString(`options.${builder.name}`));
+    }
+
+    super.addRoleOption(builder);
+    return this;
+  }
+
+  public override addUserOption(input: SlashCommandUserOption | ((builder: SlashCommandUserOption) => SlashCommandUserOption)): this {
+    let builder = typeof input === "function"
+      ? input(new SlashCommandUserOption())
+      : input;
+
+    if (!builder.description && this.config) {
+      builder.setDescription(this.config.getString(`options.${builder.name}`));
+    }
+
+    super.addUserOption(builder);
     return this;
   }
 }
@@ -108,13 +295,8 @@ export class ContextMenuBuilder extends Mixin(ContextMenuCommandBuilder, Compone
     if (config.has("permission")) {
       this.setDefaultMemberPermissions(Utils.getPermissionFlags(config.getString("permission")));
     }
-    if (config.getBoolOrNull("enabled") === false) this.setEnabled(false);
+    if (config.getBoolOrNull("enabled") === false) this.enabled = false;
 
-    return this;
-  }
-
-  public setEnabled(enabled: boolean) {
-    this.enabled = enabled;
     return this;
   }
 }

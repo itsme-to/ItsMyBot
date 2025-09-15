@@ -1,5 +1,4 @@
-import { Action, ActionArgumentsValidator, ActionData, Context, Variable } from '@itsmybot';
-import { Cooldown } from '@utils';
+import { Action, ActionArgumentsValidator, ActionData, Context, Variable, Cooldown } from '@itsmybot';
 import { IsDefined, IsNumber, IsString } from 'class-validator';
 
 class ArgumentsValidator extends ActionArgumentsValidator {

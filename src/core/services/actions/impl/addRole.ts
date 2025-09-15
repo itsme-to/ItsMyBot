@@ -1,5 +1,4 @@
-import { Action, ActionData, Context, ActionArgumentsValidator, Variable } from '@itsmybot';
-import Utils from '@utils';
+import { Action, ActionData, Context, ActionArgumentsValidator, Variable, Utils } from '@itsmybot';
 import { IsDefined, IsString } from 'class-validator';
 import { Role } from 'discord.js';
 

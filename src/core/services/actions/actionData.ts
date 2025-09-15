@@ -1,7 +1,4 @@
-import { Logger } from '@utils';
-import { Config, BaseScript, Manager, Context, Variable } from '@itsmybot';
-import Utils from '@utils';
-import manager from '@itsmybot';
+import { manager, Config, BaseScript, Manager, Context, Variable, Utils, Logger } from '@itsmybot';
 
 export class ActionData extends BaseScript {
   public id?: string;
@@ -23,7 +20,7 @@ export class ActionData extends BaseScript {
     this.followUpActions = data.has("args.follow-up-actions") ? data.getSubsections("args.follow-up-actions").map((actionData: Config) => new ActionData(manager, actionData, logger)) : [];
 
     if (data.has('args.actions')) {
-      this.logger.warn(`args.actions is deprecated, use args.follow-up-actions instead. in ${this.filePath}`);
+      this.logger.warn(`args.actions is deprecated, please rename to args.follow-up-actions instead. in ${this.filePath}`);
       this.followUpActions = data.getSubsections('args.actions').map((actionData: Config) => new ActionData(manager, actionData, logger));
     }
   }
