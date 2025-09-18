@@ -1,5 +1,5 @@
 import { Command, Event, User, Events, Context, ResolvableInteraction, Utils, CommandSubcommandGroupBuilder } from '@itsmybot';
-import { ChatInputCommandInteraction, ContextMenuCommandInteraction, Interaction, MessageComponentInteraction } from 'discord.js';
+import { ChatInputCommandInteraction, ContextMenuCommandInteraction, Interaction, MessageComponentInteraction, ModalSubmitInteraction } from 'discord.js';
 
 export default class InteractionCreateEvent extends Event {
   name = Events.InteractionCreate;
@@ -10,7 +10,7 @@ export default class InteractionCreateEvent extends Event {
       ? await this.manager.services.user.findOrCreate(interaction.member)
       : await this.manager.services.user.findOrNull(interaction.user.id) as User;
 
-    if (interaction.isChatInputCommand() || interaction.isAutocomplete() || interaction.isContextMenuCommand() || interaction.isMessageComponent()) {
+    if (interaction.isChatInputCommand() || interaction.isAutocomplete() || interaction.isModalSubmit() || interaction.isContextMenuCommand() || interaction.isMessageComponent()) {
       const interactionComponent = this.manager.services.interaction.resolveInteraction(interaction);
       if (!interactionComponent) {
         if (interaction.isButton()) {
@@ -39,7 +39,7 @@ export default class InteractionCreateEvent extends Event {
   }
 
   private async handleInteraction(
-    interaction: ChatInputCommandInteraction<'cached'> | ContextMenuCommandInteraction<'cached'> | MessageComponentInteraction<'cached'>,
+    interaction: ChatInputCommandInteraction<'cached'> | ContextMenuCommandInteraction<'cached'> | MessageComponentInteraction<'cached'> | ModalSubmitInteraction<'cached'>,
     component: ResolvableInteraction,
     user: User
   ) {
@@ -89,7 +89,7 @@ export default class InteractionCreateEvent extends Event {
     component.data.cooldown.setCooldown(interaction.user.id);
   }
 
-  async checkRequirements(interaction: ChatInputCommandInteraction<'cached'> | ContextMenuCommandInteraction<'cached'> | MessageComponentInteraction<'cached'>, component: ResolvableInteraction, user: User) {
+  async checkRequirements(interaction: ChatInputCommandInteraction<'cached'> | ContextMenuCommandInteraction<'cached'> | MessageComponentInteraction<'cached'> | ModalSubmitInteraction<'cached'>, component: ResolvableInteraction, user: User) {
     const context: Context = {
       user: user,
       member: interaction.member,
