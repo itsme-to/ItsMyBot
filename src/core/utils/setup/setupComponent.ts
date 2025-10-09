@@ -1,5 +1,5 @@
-import { manager, Config, Context, Variable, Utils } from '@itsmybot';
-import { ActionRowComponent, MessageComponentBuilder, ContainerComponentBuilder, ActionRowBuilder, MessageActionRowComponentBuilder, SeparatorBuilder, SectionBuilder, MediaGalleryBuilder, FileBuilder, MediaGalleryItemBuilder } from 'discord.js';
+import { manager, Config, Context, Variable, Utils, LabelComponentBuilder } from '@itsmybot';
+import { ActionRowComponent, MessageComponentBuilder, ContainerComponentBuilder, ActionRowBuilder, MessageActionRowComponentBuilder, SeparatorBuilder, SectionBuilder, MediaGalleryBuilder, FileBuilder, MediaGalleryItemBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
 
 interface ComponentSettings {
   config: Config,
@@ -7,7 +7,7 @@ interface ComponentSettings {
   context: Context,
 }
 
-export type SetupComponentType = MessageComponentBuilder | ContainerComponentBuilder | ActionRowComponent | undefined;
+export type SetupComponentType = MessageComponentBuilder | ContainerComponentBuilder | ActionRowComponent | LabelComponentBuilder | undefined;
 
 export async function setupComponent<T extends SetupComponentType = SetupComponentType>(settings: ComponentSettings): Promise<T[] | undefined> {
   const config = settings.config;
@@ -140,6 +140,39 @@ export async function setupComponent<T extends SetupComponentType = SetupCompone
 
     case 'container': {
       return [await Utils.setupContainer({ config, variables, context }) as T];
+    }
+
+    case 'text-input': {
+      let cCustomId = config.getString("custom-id");
+      let cPlaceholder = config.getStringOrNull("placeholder", true) || '';
+      const cRequired = config.getBoolOrNull("required") || false;
+      let cMaxLength = config.getStringOrNull("max-length") || "1000";
+      let cMinLength = config.getStringOrNull("min-length") || "0";
+      let cValue = config.getStringOrNull("value", true) || '';
+      const cStyle = config.getStringOrNull("style");
+
+      cCustomId = await Utils.applyVariables(cCustomId, variables, context);
+      cPlaceholder = await Utils.applyVariables(cPlaceholder, variables, context);
+      cMaxLength = await Utils.applyVariables(cMaxLength, variables, context);
+      cMinLength = await Utils.applyVariables(cMinLength, variables, context);
+      cValue = await Utils.applyVariables(cValue, variables, context);
+
+      const textInput = new TextInputBuilder()
+        .setCustomId(cCustomId)
+        .setStyle((cStyle ? Utils.getTextInputStyle(cStyle) || TextInputStyle.Short : TextInputStyle.Short))
+        .setRequired(cRequired)
+        .setMaxLength(parseInt(cMaxLength) || 1000)
+        .setMinLength(parseInt(cMinLength) || 0)
+
+      if (cPlaceholder && cPlaceholder !== 'undefined') {
+        textInput.setPlaceholder(cPlaceholder);
+      }
+
+      if (cValue && cValue !== 'undefined') {
+        textInput.setValue(cValue);
+      }
+
+      return [textInput as T]
     }
   }
 }

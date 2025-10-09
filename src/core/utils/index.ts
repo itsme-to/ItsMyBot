@@ -8,6 +8,7 @@ import { setupButton } from './setup/setupButton.js';
 import { setupSelectMenu } from './setup/setupSelectMenu.js';
 import { setupContainer } from './setup/setupContainer.js';
 import { setupModal } from './setup/setupModal.js';
+import { setupLabel } from './setup/setupLabel.js';
 import { setupThumbnail } from './setup/setupThumbnail.js';
 import { setupTextDisplay } from './setup/setupTextDisplay.js';
 import { userVariables, channelVariables, roleVariables, timeVariables } from './variables.js';
@@ -69,7 +70,8 @@ export class Utils {
   static setupContainer = setupContainer;
   static setupModal = setupModal;
   static setupThumbnail = setupThumbnail;
-  static setupTextDisplay = setupTextDisplay
+  static setupTextDisplay = setupTextDisplay;
+  static setupLabel = setupLabel;
 
   static userVariables = userVariables;
   static channelVariables = channelVariables;

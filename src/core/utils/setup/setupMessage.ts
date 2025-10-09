@@ -100,7 +100,7 @@ export async function setupMessage(settings: MessageSettings): Promise<MessageOu
     if (!row || !Array.isArray(values) || !values.length) continue;
 
     for (const component of values) {
-      if (!component || typeof component !== 'object') continue;
+      if (!component || typeof component !== 'object' || Array.isArray(component)) continue;
       const buildComponent = await Utils.setupComponent<MessageActionRowComponentBuilder>({
         config: component,
         variables: variables,
