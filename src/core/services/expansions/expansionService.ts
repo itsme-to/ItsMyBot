@@ -43,6 +43,14 @@ export default class ExpansionService extends Service{
     this.expansions.delete(identifier);
   }
 
+  unregisterByAddon(addon: Addon) {
+    for (const [name, expansion] of this.expansions) {
+      if (expansion.addon === addon) {
+        this.expansions.delete(name);
+      }
+    }
+  }
+
   async resolvePlaceholders(text: string, context: Context = {}) {
     const matches = [...text.matchAll(/%([^%_]+)_(.*?)%/g)];
 

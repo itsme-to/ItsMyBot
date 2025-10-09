@@ -14,7 +14,7 @@ export class ActionData extends BaseScript {
     super(manager, data, logger);
     this.id = data.getStringOrNull("id");
     this.filePath = data.filePath || "unknown";
-    this.args = data.getSubsectionOrNull("args") || data.empty();
+    this.args = data.getSubsectionOrNull("args") || data.newConfig();
     this.triggers = data.getStringsOrNull("triggers");
     this.mutators = data.getSubsectionOrNull("mutators");
     this.followUpActions = data.has("args.follow-up-actions") ? data.getSubsections("args.follow-up-actions").map((actionData: Config) => new ActionData(manager, actionData, logger)) : [];

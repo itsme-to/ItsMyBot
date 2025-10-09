@@ -51,4 +51,12 @@ export default class ActionService extends Service{
 
     await actionInstance.trigger(script, context, variables);
   }
+
+  unregisterByAddon(addon: Addon) {
+    for (const [id, action] of this.actions) {
+      if (action.addon === addon) {
+        this.actions.delete(id);
+      }
+    }
+  }
 }

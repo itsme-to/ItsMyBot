@@ -136,7 +136,35 @@ export default class InteractionService extends Service {
       selectMenu.logger.error(`Error initializing selectMenu '${selectMenu.customId}'`, error);
     }
   }
-  
+
+  unregisterByAddon(addon: Addon) {
+    for (const [customId, button] of this.registries.buttons) {
+      if (button.addon === addon) {
+        this.registries.buttons.delete(customId);
+      }
+    }
+    for (const [customId, selectMenu] of this.registries.selectMenus) {
+      if (selectMenu.addon === addon) {
+        this.registries.selectMenus.delete(customId);
+      }
+    }
+    for (const [customId, modal] of this.registries.modals) {
+      if (modal.addon === addon) {
+        this.registries.modals.delete(customId);
+      }
+    }
+    for (const [name, command] of this.registries.commands) {
+      if (command.addon === addon) {
+        this.registries.commands.delete(name);
+      }
+    }
+    for (const [name, contextMenu] of this.registries.contextMenus) {
+      if (contextMenu.addon === addon) {
+        this.registries.contextMenus.delete(name);
+      }
+    }
+  }
+
   resolveInteraction(interaction: RepliableInteraction | AutocompleteInteraction): ResolvableInteraction | undefined {
     if (interaction.isButton()) {
       return this.getButton(interaction.customId) || undefined;

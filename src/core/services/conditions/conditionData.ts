@@ -36,7 +36,7 @@ export class ConditionData {
     }
 
     this.manager = manager;
-    this.args = condition.getSubsectionOrNull("args") || condition.empty()
+    this.args = condition.getSubsectionOrNull("args") || condition.newConfig()
     this.notMetActions = notMetAction && condition.has("not-met-actions") ? condition.getSubsections("not-met-actions").map((actionData: Config) => new ActionData(this.manager, actionData, condition.logger)) : [];
   }
 

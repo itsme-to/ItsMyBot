@@ -73,6 +73,14 @@ export abstract class Addon {
     }
   }
 
+  public unregisterModules() {
+    this.manager.services.event.unregisterByAddon(this);
+    this.manager.services.expansion.unregisterByAddon(this);
+    this.manager.services.leaderboard.unregisterByAddon(this);
+    this.manager.services.action.unregisterByAddon(this);
+    this.manager.services.condition.unregisterByAddon(this);
+  }
+
   public async registerInteractions() {
     const interactionDir = join(this.path, 'interactions');
     if (!sync(`${interactionDir}/*`).length) return;

@@ -42,6 +42,14 @@ export default class LeaderboardService extends Service{
     this.leaderboards.delete(identifier);
   }
 
+  unregisterByAddon(addon: Addon) {
+    for (const [name, leaderboard] of this.leaderboards) {
+      if (leaderboard.addon === addon) {
+        this.leaderboards.delete(name);
+      }
+    }
+  }
+
   async registerLeaderboards() {
     class LeaderboardCommands extends Command {
 

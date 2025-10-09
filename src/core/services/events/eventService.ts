@@ -28,11 +28,11 @@ export default class EventService extends Service {
       const eventPath = new URL('file://' + filePath.replace(/\\/g, '/')).href;
       const { default: event } = await import(eventPath);
 
-      await this.registerEvent(new event(this.manager, addon));
+      this.registerEvent(new event(this.manager, addon));
     };
   }
 
-  async registerEvent(event: Event<Addon | undefined>) {
+  registerEvent(event: Event<Addon | undefined>) {
     try {
       if (!this.events.has(event.name)) {
         this.events.set(event.name, new EventExecutor(event.once || false));
@@ -40,6 +40,15 @@ export default class EventService extends Service {
       this.events.get(event.name)?.addEvent(event);
     } catch (error: any) {
       event.logger.error(`Error initializing event '${Event.name}'`, error);
+    }
+  }
+
+  unregisterByAddon(addon: Addon) {
+    for (const [name, executor] of this.events) {
+      executor.events = executor.events.filter(e => e.addon !== addon);
+      if (executor.events.length === 0) {
+        this.events.delete(name);
+      }
     }
   }
 
