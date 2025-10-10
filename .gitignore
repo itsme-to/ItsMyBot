@@ -9,6 +9,12 @@
 
 !src/addons/_Example/
 !src/addons/_Example/**
+!src/addons/Presets/
+!src/addons/Presets/**
+!src/addons/MCStatus/
+!src/addons/MCStatus/**
+!src/addons/StatsChannel/
+!src/addons/StatsChannel/**
 
 .vagrant/
 .vscode

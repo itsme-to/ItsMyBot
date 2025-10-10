@@ -1,0 +1,15 @@
+preset:
+  permission: "MANAGE_MESSAGES"
+  description: "Send a preset"
+  context-menu: "Edit the message"
+  subcommands:
+    send:
+      description: "Send a message"
+      options:
+        preset: "Preset to send"
+        channel: "Channel to send the message"
+    edit:
+      description: "Edit a message"
+      options:
+        message-link: "Message link to edit"
+        preset: "Preset to send"

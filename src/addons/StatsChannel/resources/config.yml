@@ -1,0 +1,3 @@
+channels:
+  - id: "_example"
+    name: "Members: %guild_members%"

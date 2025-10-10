@@ -1,0 +1,10 @@
+channel-created:
+  components:
+    - type: text-display
+      content: "Stats channel created. %channel_name%"
+  ephemeral: true
+channel-renamed:
+  components:
+    - type: text-display
+      content: "Stats channel renamed. %new_name%"
+  ephemeral: true

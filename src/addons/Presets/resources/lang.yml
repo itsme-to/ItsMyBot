@@ -1,0 +1,23 @@
+sent:
+  components:
+    - type: text-display
+      content: "Message sent to %channel_mention%"
+  ephemeral: true
+
+unknown-message:
+  components:
+    - type: text-display
+      content: "Message not found"
+  ephemeral: true
+
+unknown-preset:
+  components:
+    - type: text-display
+      content: "Preset not found"
+  ephemeral: true
+
+edited:
+  components:
+    - type: text-display
+      content: "Message update"
+  ephemeral: true
