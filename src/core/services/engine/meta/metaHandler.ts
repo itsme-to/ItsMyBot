@@ -1,4 +1,4 @@
-import { Manager, MetaData, Service, BaseConfigSection, Context } from '@itsmybot';
+import { Manager, MetaData, Service, ConfigFolder, Context } from '@itsmybot';
 import MetaConfig from '../../../resources/scripting/meta.js';
 
 interface Meta {
@@ -37,7 +37,7 @@ export default class MetaHandler extends Service {
   }
 
   async loadMetas() {
-    const metas = await new BaseConfigSection(this.manager.logger, 'scripting/metas', 'build/core/resources/scripting/metas').initialize(MetaConfig);
+    const metas = await new ConfigFolder(this.manager.logger, 'scripting/metas', 'build/core/resources/scripting/metas').initialize(MetaConfig);
     for (const filePath of metas) {
       for (const config of filePath[1].getSubsections('metas')) {
         this.registerMeta(

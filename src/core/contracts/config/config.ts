@@ -2,13 +2,21 @@ import { Logger, Utils } from '@itsmybot';
 import * as fs from 'fs/promises';
 import { parseDocument } from 'yaml';
 
+/** Primitive types allowed in the config */
 type ConfigPrimitive = string | number | boolean | Config | ConfigPrimitive[];
 
+/**
+ * Base class for configuration management.
+ * Provides methods to get, set, and manage configuration values with type safety.
+ */
 export class Config {
-  public values: Map<string, ConfigPrimitive>;
   public logger: Logger;
-  public currentPath: string | undefined; // Current path within the config, if any.
-  public filePath: string | undefined; // Path to the file where this config was loaded from, if any.
+  /** Map to hold the config values */
+  public values: Map<string, ConfigPrimitive>;
+  /** Current path within the config, if any. */
+  public currentPath: string | undefined;
+  /** Path to the file where this config was loaded from, if any. */
+  public filePath: string | undefined;
 
   constructor(logger: Logger, filePath: string | undefined = undefined, currentPath: string | undefined  = undefined) {
     this.values = new Map();

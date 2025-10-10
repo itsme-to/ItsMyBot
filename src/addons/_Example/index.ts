@@ -1,4 +1,4 @@
-import { Addon, BaseConfig } from '@itsmybot';
+import { Addon, ConfigFile } from '@itsmybot';
 
 import AddonConfig from './resources/config.js'; // Import configuration validators
 import LangConfig from './resources/lang.js';
@@ -8,10 +8,10 @@ import { Collection } from 'discord.js';
 
 // This is an example of how to define a configurations object, used for typing and tab completion
 interface Configs {
-  config: BaseConfig;
-  lang: BaseConfig;
-  commands: BaseConfig;
-  categories: Collection<string, BaseConfig>
+  config: ConfigFile;
+  lang: ConfigFile;
+  commands: ConfigFile;
+  categories: Collection<string, ConfigFile>
 }
 
 // This is an example addon, you can use this as a template for your own addons, since it's start with an underscore, it won't be loaded.

@@ -1,4 +1,4 @@
-import { Manager, BaseConfig, BaseConfigSection, Logger } from '@itsmybot';
+import { Manager, ConfigFile, ConfigFolder, Logger } from '@itsmybot';
 import { join } from 'path';
 import { sync } from 'glob';
 import { Collection } from 'discord.js';
@@ -99,24 +99,22 @@ export abstract class Addon {
     }
   }
 
-  async createConfig(configFilePath: string, config?: unknown, update: boolean = false): Promise<BaseConfig> {
+  async createConfig(configFilePath: string, config?: unknown): Promise<ConfigFile> {
     const addonFolder = join(this.manager.managerOptions.dir.configs, this.name);
     if (!existsSync(addonFolder)) mkdirSync(addonFolder);
 
-    return new BaseConfig({
-      logger: this.logger,
-      configFilePath: join('configs', this.name, configFilePath),
-      defaultFilePath: join("build", "addons", this.name, "resources", configFilePath),
-      update: update,
-      id: configFilePath.slice(0, -4)
-    }).initialize(config);
+    return new ConfigFile(
+      this.logger, 
+      join('configs', this.name, configFilePath),
+      join("build", "addons", this.name, "resources", configFilePath)
+    ).initialize(config);
   }
 
-  async createConfigSection(configFolderPath: string, config: unknown): Promise<Collection<string, BaseConfig>> {
+  async createConfigSection(configFolderPath: string, config: unknown): Promise<Collection<string, ConfigFile>> {
     const addonFolder = join(this.manager.managerOptions.dir.configs, this.name);
     if (!existsSync(addonFolder)) mkdirSync(addonFolder);
 
-    return new BaseConfigSection(
+    return new ConfigFolder(
       this.logger,
       join('configs', this.name, configFolderPath),
       join("build", "addons", this.name, "resources", configFolderPath)

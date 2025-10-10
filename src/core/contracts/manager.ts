@@ -8,7 +8,7 @@ import UserService from '../services/users/userService.js'
 import LeaderboardService from '../services/leaderboards/leaderboardService.js'
 import ConditionService from 'core/services/conditions/conditionService.js'
 import ActionService from 'core/services/actions/actionService.js'
-import { BaseConfig } from './config/baseConfig.js'
+import { ConfigFile } from './config/configFile.js'
 
 export interface ClientOptions {
   intents: GatewayIntentBits[],
@@ -57,7 +57,7 @@ export interface Services {
 }
 
 export interface ManagerConfigs {
-  config: BaseConfig,
-  lang: BaseConfig,
-  commands: BaseConfig
+  config: ConfigFile,
+  lang: ConfigFile,
+  commands: ConfigFile
 }

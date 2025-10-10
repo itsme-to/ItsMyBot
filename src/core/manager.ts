@@ -1,6 +1,6 @@
 import { Client, Collection } from 'discord.js';
 import { existsSync, mkdirSync } from 'fs';
-import { ClientOptions, ManagerOptions, Services, ManagerConfigs, BaseConfig, Addon, Logger } from '@itsmybot'
+import { ClientOptions, ManagerOptions, Services, ManagerConfigs, ConfigFile, Addon, Logger } from '@itsmybot'
 import { Sequelize } from 'sequelize-typescript';
 
 import EventService from './services/events/eventService.js';
@@ -39,9 +39,9 @@ export class Manager {
 
   public async initialize(): Promise<void> {
     try {
-      this.configs.config = await this.initializeConfig(DefaultConfig, 'config.yml');
-      this.configs.commands = await this.initializeConfig(CommandConfig, 'commands.yml');
-      this.configs.lang = await this.initializeConfig(LangConfig, 'lang.yml');
+      this.configs.config = await this.createConfig(DefaultConfig, 'config.yml');
+      this.configs.commands = await this.createConfig(CommandConfig, 'commands.yml');
+      this.configs.lang = await this.createConfig(LangConfig, 'lang.yml');
     } catch (e) {
       this.logger.error(e)
       process.exit(1)
@@ -86,34 +86,33 @@ export class Manager {
     });
   }
 
-  private async initializeConfig(ConfigClass: unknown, filePath: string) {
-    return await new BaseConfig({
-      logger: this.logger,
-      configFilePath: `configs/${filePath}`,
-      defaultFilePath: `build/core/resources/${filePath}`,
-      id: filePath.slice(0, -4)
-    }).initialize(ConfigClass);
+  private async createConfig(ConfigClass: unknown, filePath: string) {
+    return await new ConfigFile(
+      this.logger,
+      `configs/${filePath}`,
+      `build/core/resources/${filePath}`
+    ).initialize(ConfigClass);
   }
 
   private async initializeDatabase() {
     this.logger.info('Initializing database...');
-    const databaseConfig = this.configs.config.getSubsection('database');
+    const dataConfigFile = this.configs.config.getSubsection('database');
 
-    if (['mysql', 'mariadb'].includes(databaseConfig.getString('type'))) {
+    if (['mysql', 'mariadb'].includes(dataConfigFile.getString('type'))) {
       this.database = new Sequelize(
-        databaseConfig.getString('database'),
-        databaseConfig.getString('username'),
-        databaseConfig.getString('password'),
+        dataConfigFile.getString('database'),
+        dataConfigFile.getString('username'),
+        dataConfigFile.getString('password'),
         {
-          host: databaseConfig.getString('host'),
-          dialect: databaseConfig.getString('type') as 'mysql' | 'mariadb',
-          logging: databaseConfig.getBoolOrNull('debug') || false
+          host: dataConfigFile.getString('host'),
+          dialect: dataConfigFile.getString('type') as 'mysql' | 'mariadb',
+          logging: dataConfigFile.getBoolOrNull('debug') || false
         });
     } else {
         this.database = new Sequelize({
           dialect: 'sqlite',
           storage: 'database.sqlite',
-          logging: databaseConfig.getBoolOrNull('debug') || false
+          logging: dataConfigFile.getBoolOrNull('debug') || false
         });
     }
 
