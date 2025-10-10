@@ -12,16 +12,16 @@ import { getActionArgsChildErrors, getConditionArgsChildErrors } from '../decora
  */
 export class ConfigFile extends Config {
   /** Relative path without the extension */
-  public fileId: string;
+  public id: string;
   /** Absolute path to the config file */
   private absoluteFilePath: string;
   /** Absolute path to the default config file */
   private defaultFilePath?: string;
 
-  constructor(logger: Logger, filePath: string, defaultFilePath?: string) {
+  constructor(logger: Logger, filePath: string, id: string, defaultFilePath?: string) {
     super(logger, filePath);
-    this.fileId = filePath.slice(0, -4);
-    this.filePath = join(resolve(), filePath);
+    this.id = id
+    this.absoluteFilePath = join(resolve(), filePath);
     this.defaultFilePath = defaultFilePath ? join(resolve(), defaultFilePath) : undefined;
   }
 

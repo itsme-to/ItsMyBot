@@ -12,14 +12,17 @@ export class ConfigFolder {
   public logger: Logger;
   /** Collection of configuration files */
   public configs: Collection<string, ConfigFile> = new Collection();
-  /** Absolute path to the config folder */
+  /** Relative path to the config folder */
   private folderPath: string;
+  /** Absolute path to the config folder */
+  private absoluteFolderPath: string;
   /** Absolute path to the default config folder */
   private defaultFolderPath: string;
 
   constructor(logger: Logger, folderPath: string, defaultFolderPath: string) {
     this.logger = logger;
-    this.folderPath = join(resolve(), folderPath);
+    this.folderPath = folderPath;
+    this.absoluteFolderPath = join(resolve(), folderPath);
     this.defaultFolderPath = join(resolve(), defaultFolderPath);
   }
 
@@ -35,10 +38,10 @@ export class ConfigFolder {
     }
 
     // Create config folder if it doesn't exist and copy default files
-    if (!await Utils.fileExists(this.folderPath)) {
+    if (!await Utils.fileExists(this.absoluteFolderPath)) {
       this.logger.warn(`Config folder not found at ${this.folderPath}, creating one`);
-      await fs.mkdir(this.folderPath, { recursive: true });
-      await fs.cp(this.defaultFolderPath, this.folderPath, { recursive: true, force: true, filter: (src) => src.endsWith('.yml') });
+      await fs.mkdir(this.absoluteFolderPath, { recursive: true });
+      await fs.cp(this.defaultFolderPath, this.absoluteFolderPath, { recursive: true, force: true, filter: (src) => src.endsWith('.yml') });
     }
 
     await this.loadFiles(configClass);
@@ -50,13 +53,14 @@ export class ConfigFolder {
    */
   private async loadFiles(configClass?: unknown) {
     // Find all .yml files in the config folder, ignoring those starting with '_'
-    const files = await glob('**/!(_)*.yml', { cwd: this.folderPath, dot: true });
+    const files = await glob('**/!(_)*.yml', { cwd: this.absoluteFolderPath, dot: true });
 
     // Load each config file
     await Promise.all(files.map(async (file) => {
       const destPath = join(this.folderPath, file);
-      const config = await new ConfigFile(this.logger, destPath).initialize(configClass);
-      this.configs.set(config.fileId, config);
+      const id = file.slice(0, -4);
+      const config = await new ConfigFile(this.logger, destPath, id).initialize(configClass);
+      this.configs.set(config.id, config);
     }));
   }
 }
