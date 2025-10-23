@@ -90,15 +90,6 @@ export default class InteractionService extends Service {
       command.data.config === undefined
       if (this.registries.commands.has(command.data.name)) throw new Error("Command already exists.");
       this.registries.commands.set(command.data.name, command);
-
-      if (command.data.aliases) {
-        for (const alias of command.data.aliases) {
-          const aliasCommandInstance = command;
-          aliasCommandInstance.data.setName(alias).setAliases([]);
-          if (this.registries.commands.has(alias)) throw new Error(`Command alias '${alias}' already exists.`);
-          this.registries.commands.set(alias, aliasCommandInstance);
-        }
-      }
     } catch (error: any) {
       command.logger.error(`Error initializing command '${command.data.name}'`, error);
     }

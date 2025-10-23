@@ -80,7 +80,6 @@ export class CommandSubcommandGroupBuilder extends SlashCommandSubcommandGroupBu
 }
 
 export class CommandBuilder extends Mixin(SlashCommandBuilder, ComponentBuilder) {
-  aliases: string[] = [];
   enabled: boolean = true;
   subcommands: (CommandSubcommandBuilder | CommandSubcommandGroupBuilder)[] = [];
   config?: Config;
@@ -93,7 +92,6 @@ export class CommandBuilder extends Mixin(SlashCommandBuilder, ComponentBuilder)
     
     if (lang) this.setDescription(lang.getString(`commands.${this.name}.description`));
     if (config.has("permission")) this.setDefaultMemberPermissions(Utils.getPermissionFlags(config.getString("permission")));
-    if (config.has("aliases")) this.setAliases(config.getStrings("aliases"));
     if (config.getBoolOrNull("enabled") === false) this.setEnabled(false);
 
     return this;
@@ -160,11 +158,6 @@ export class CommandBuilder extends Mixin(SlashCommandBuilder, ComponentBuilder)
 
   public setEnabled(enabled: boolean) {
     this.enabled = enabled;
-    return this;
-  }
-
-  public setAliases(aliases: string[]) {
-    this.aliases = aliases;
     return this;
   }
 
