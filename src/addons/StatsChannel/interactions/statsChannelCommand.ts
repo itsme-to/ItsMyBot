@@ -6,7 +6,7 @@ export default class StatsChannelCommand extends Command<StatsChannelAddon> {
   build() {
     return new CommandBuilder()
       .setName('stats-channel')
-      .using(this.addon.configs.commands.getSubsection("stats-channel"))
+      .using(this.addon.configs.commands.getSubsection("stats-channel"), this.addon.lang)
       .addSubcommand(subcommand =>
         subcommand
           .setName('create')
@@ -66,8 +66,9 @@ export default class StatsChannelCommand extends Command<StatsChannelAddon> {
 
     this.addon.configs.config.setFileContent("channels", channels);
 
-    await interaction.reply(await Utils.setupMessage({
-      config: this.addon.configs.lang.getSubsection("channel-created"),
+    await interaction.reply(await this.addon.lang.buildMessage({
+      key: "channel-created",
+      ephemeral: true,
       context: {
         user,
         guild: interaction.guild,
@@ -90,8 +91,9 @@ export default class StatsChannelCommand extends Command<StatsChannelAddon> {
 
     await channelConfig.setFileContent("name", rawRename);
 
-    await interaction.reply(await Utils.setupMessage({
-      config: this.addon.configs.lang.getSubsection("channel-renamed"),
+    await interaction.reply(await this.addon.lang.buildMessage({
+      key: "channel-renamed",
+      ephemeral: true,
       variables: [
         { searchFor: "%old_name%", replaceWith: channel.name },
         { searchFor: "%new_name%", replaceWith: rawRename }

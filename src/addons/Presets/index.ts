@@ -1,13 +1,11 @@
-import { Addon, ConfigFile, Utils } from '@itsmybot';
+import { Addon, ConfigFile, LangDirectory, Utils } from '@itsmybot';
 import { GuildTextBasedChannel, TextChannel, Collection } from 'discord.js';
 
-import LangConfig from './resources/lang.js';
 import CommandsConfig from './resources/commands.js';
 import PresetConfig from './resources/preset.js';
 import PresetModel from './models/preset.js';
 
 interface PresetsConfig {
-  lang: ConfigFile
   commands: ConfigFile
   presets: Collection<string, ConfigFile>
 }
@@ -19,12 +17,13 @@ export default class PresetsAddon extends Addon {
   website = "https://builtbybit.com/resources/28488/"
 
   configs: PresetsConfig = {} as PresetsConfig;
+  lang: LangDirectory
   updateCount = 0;
 
   async load() {
-    this.configs.lang = await this.createConfig('lang.yml', LangConfig);
     this.configs.commands = await this.createConfig('commands.yml', CommandsConfig);
     this.configs.presets = await this.createConfigSection('presets', PresetConfig);
+    this.lang = await this.createLang('en-US');
   }
 
   async getMessage(preset: PresetModel) {

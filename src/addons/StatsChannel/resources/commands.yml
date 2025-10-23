@@ -1,13 +1,3 @@
 stats-channel:
+  enabled: true
   permission: "MANAGE_CHANNELS"
-  description: "Manage the stats channel"
-  subcommands:
-    create:
-      description: "Create a stats channel"
-      options:
-        name: "Name of the stats channel"
-    rename:
-      description: "Rename a stats channel"
-      options:
-        channel: "ID of the stats channel"
-        name: "New name of the stats channel"

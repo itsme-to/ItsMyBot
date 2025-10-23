@@ -40,9 +40,9 @@ export default class MCStatusExpansion extends Expansion<MCStatsAddon> {
       case "max_players":
         return stats.players ? `${stats.players.max}` : "0";
       case "motd":
-        return stats.motd ? stats.motd.clean : this.addon.configs.lang.getString("no-motd");
+        return stats.motd ? stats.motd.clean : this.addon.lang.getString("no-motd");
       case "version":
-        return stats.version ? stats.version.name_clean : this.addon.configs.lang.getString("unknown");
+        return stats.version ? stats.version.name_clean : this.addon.lang.getString("unknown");
       case "host":
         return stats.host;
       case "port":
@@ -50,7 +50,7 @@ export default class MCStatusExpansion extends Expansion<MCStatsAddon> {
       case "online":
         return stats.online ? 'true' : 'false';
       case "status":
-        return stats.online ? this.addon.configs.lang.getString("online") : this.addon.configs.lang.getString("offline");
+        return stats.online ? this.addon.lang.getString("online") : this.addon.lang.getString("offline");
       default:
         return "Invalid placeholder";
     }

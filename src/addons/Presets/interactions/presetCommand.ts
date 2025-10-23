@@ -8,7 +8,7 @@ export default class PresetCommand extends Command<PresetsAddon> {
   build() {
     return new CommandBuilder()
       .setName('preset')
-      .using(this.addon.configs.commands.getSubsection("preset"))
+      .using(this.addon.configs.commands.getSubsection("preset"), this.addon.lang)
       .addSubcommand(subcommand =>
         subcommand.setName('send')
           .setExecute(this.send.bind(this))
@@ -44,8 +44,6 @@ export default class PresetCommand extends Command<PresetsAddon> {
   }
 
   async send(interaction: ChatInputCommandInteraction<'cached'>, user: User) {
-    const lang = this.addon.configs.lang;
-
     if (!interaction.channel) return;
 
     const context = { user, guild: interaction.guild, channel: interaction.channel };
@@ -53,16 +51,13 @@ export default class PresetCommand extends Command<PresetsAddon> {
     const preset = Utils.blockPlaceholders(interaction.options.getString('preset', true));
     const channel = interaction.options.getChannel('channel', false, [ChannelType.GuildText, ChannelType.AnnouncementThread, ChannelType.GuildAnnouncement, ChannelType.PrivateThread, ChannelType.PublicThread]) || interaction.channel;
     const presetMessage = await this.addon.setupPreset(preset, channel);
-    if (!presetMessage) return interaction.reply(await Utils.setupMessage({
-      config: lang.getSubsection("unknown-preset"),
+    const presetConfig = this.addon.configs.presets.get(preset);
+    if (!presetConfig || !presetMessage) return interaction.reply(await this.addon.lang.buildMessage({
+      key: "unknown-preset",
+      ephemeral: true,
       context: context
     }));
 
-    const presetConfig = this.addon.configs.presets.get(preset);
-    if (!presetConfig) return interaction.reply(await Utils.setupMessage({
-      config: lang.getSubsection("unknown-preset"),
-      context: context
-    }));
     const message = await channel.send(presetMessage);
 
     await Preset.create({
@@ -72,14 +67,14 @@ export default class PresetCommand extends Command<PresetsAddon> {
       needsUpdate: presetConfig.has('update-time')
     });
 
-    await interaction.reply(await Utils.setupMessage({
-      config: lang.getSubsection("sent"),
+    await interaction.reply(await this.addon.lang.buildMessage({
+      key: "sent",
+      ephemeral: true,
       context: context
     }));
   }
 
   async edit(interaction: ChatInputCommandInteraction<'cached'>, user: User) {
-    const lang = this.addon.configs.lang;
     if (!interaction.channel) return;
 
     const [messageId, channelId] = Utils.blockPlaceholders(interaction.options.getString('message-link', true)).split('/').slice(-2);
@@ -90,8 +85,9 @@ export default class PresetCommand extends Command<PresetsAddon> {
     let preset = await Preset.findOne({ where: { id: messageId } });
     if (!preset) {
       if (!selectedPreset) {
-        return interaction.reply(await Utils.setupMessage({
-          config: lang.getSubsection("unknown-message"),
+        return interaction.reply(await this.addon.lang.buildMessage({
+          key: "unknown-message",
+          ephemeral: true,
           context: context
        }));
       } else {
@@ -101,30 +97,34 @@ export default class PresetCommand extends Command<PresetsAddon> {
     }
 
     const presetConfig = this.addon.configs.presets.get(preset.presetPath);
-    if (!presetConfig) return interaction.reply(await Utils.setupMessage({
-      config: lang.getSubsection("unknown-preset"),
+    if (!presetConfig) return interaction.reply(await this.addon.lang.buildMessage({
+      key: "unknown-preset",
+      ephemeral: true,
       context: context
     }));
 
     const message = await this.addon.getMessage(preset);
     if (!message) {
       Preset.destroy({ where: { id: messageId } });
-      return interaction.reply(await Utils.setupMessage({
-        config: lang.getSubsection("unknown-message"),
+      return interaction.reply(await this.addon.lang.buildMessage({
+        key: "unknown-message",
+        ephemeral: true,
         context: context
       }))
     };
 
     await preset.updateData(preset.presetPath, presetConfig?.getBoolOrNull('update-time') || false);
     const presetMessage = await this.addon.setupPreset(preset.presetPath, message.channel);
-    if (!presetMessage) return interaction.reply(await Utils.setupMessage({
-      config: lang.getSubsection("unknown-preset"),
+    if (!presetMessage) return interaction.reply(await this.addon.lang.buildMessage({
+      key: "unknown-preset",
+      ephemeral: true,
       context: context
     }));
 
     message.edit(presetMessage)
-    interaction.reply(await Utils.setupMessage({
-      config: lang.getSubsection("edited"),
+    interaction.reply(await this.addon.lang.buildMessage({
+      key: "edited",
+      ephemeral: true,
       context: context
     }));
   }
