@@ -155,7 +155,7 @@ export default class MetaCommand extends Command {
       }));
     }
 
-    const scopeId = meta.mode === "global" ? "global" : scope;
+    const scopeId = meta.mode === "global" ? "global" : scope || 'global';
 
     if ((meta.mode === 'user' || meta.mode === 'channel') && !scopeId) {
       return interaction.reply(await Utils.setupMessage({

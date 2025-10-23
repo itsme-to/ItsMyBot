@@ -70,19 +70,17 @@ export default class MetaHandler extends Service {
     this.metas.set(key, { key, type, mode, default: defaultValue });
   }
 
-  async findOrCreate(key: string, value?: string, scopeId: string = 'global'): Promise<MetaData> {
+  async findOrCreate(key: string, value: string, scopeId: string): Promise<MetaData> {
     const metaConfig = this.metas.get(key);
     if (!metaConfig) {
       throw new Error(`Meta with key ${key} is not registered.`);
     }
 
-    const meta = await MetaData.findOne({ where: { key } });
-    if (meta) return meta;
-
-    return MetaData.create({ key, mode: metaConfig.mode, type: metaConfig.type, value: value || metaConfig.default, scopeId });
+    const meta = await MetaData.findOrCreate({ where: { key, scopeId }, defaults: { key, mode: metaConfig.mode, type: metaConfig.type, value: value, scopeId } })
+    return meta[0];
   }
 
-  async findOrNull(key: string, scopeId: string = 'global'): Promise<MetaData | null> {
+  async findOrNull(key: string, scopeId: string): Promise<MetaData | null> {
     const metaConfig = this.metas.get(key);
     if (!metaConfig) {
       throw new Error(`Meta with key ${key} is not registered.`);

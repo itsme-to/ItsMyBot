@@ -41,7 +41,7 @@ export default class MetaListAddAction extends Action {
         await messageMeta.listAdd(value);
         break;
       case 'global':
-        const globalMeta = await this.manager.services.engine.metaHandler.findOrCreate(key, '[]');
+        const globalMeta = await this.manager.services.engine.metaHandler.findOrCreate(key, '[]', 'global');
         await globalMeta.listAdd(value);
         break;
     }

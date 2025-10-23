@@ -41,7 +41,7 @@ export default class MetaToggleAction extends Action {
         await messageMeta.toggle(parsedValue);
         break;
       case 'global':
-        const globalMeta = await this.manager.services.engine.metaHandler.findOrCreate(key, parsedValue.toString());
+        const globalMeta = await this.manager.services.engine.metaHandler.findOrCreate(key, parsedValue.toString(), 'global');
         await globalMeta.toggle(parsedValue);
         break;
     }
