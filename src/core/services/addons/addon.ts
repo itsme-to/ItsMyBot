@@ -1,4 +1,4 @@
-import { Manager, ConfigFile, ConfigFolder, Logger } from '@itsmybot';
+import { Manager, ConfigFile, ConfigFolder, Logger, LangDirectory } from '@itsmybot';
 import { join } from 'path';
 import { sync } from 'glob';
 import { Collection } from 'discord.js';
@@ -108,6 +108,17 @@ export abstract class Addon {
       join('configs', this.name, configFilePath),
       join("build", "addons", this.name, "resources", configFilePath)
     ).initialize(config);
+  }
+
+  /**
+   * Creates a language directory for the addon.
+   * @param referenceLanguage The reference language to use. This is the main language the addon is written in.
+   * @returns The initialized LangDirectory.
+   */
+  async createLang(referenceLanguage: string) {
+    const lang = new LangDirectory(this.logger, `lang/${this.name}`, `build/addons/${this.name}/resources/lang`, referenceLanguage)
+    await lang.initialize();
+    return lang;
   }
 
   async createConfigSection(configFolderPath: string, config: unknown): Promise<Collection<string, ConfigFile>> {

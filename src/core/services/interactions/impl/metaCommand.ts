@@ -8,7 +8,7 @@ export default class MetaCommand extends Command {
 
     return new CommandBuilder()
       .setName('meta')
-      .using(command)
+      .using(command, this.manager.lang)
       .addSubcommand(subcommand =>
         subcommand.setName("set")
           .addStringOption(option =>

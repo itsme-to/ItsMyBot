@@ -6,7 +6,7 @@ export default class AddonCommand extends Command {
   build() {
     return new CommandBuilder()
       .setName('addons')
-      .using(this.manager.configs.commands.getSubsection("addons"))
+      .using(this.manager.configs.commands.getSubsection("addons"), this.manager.lang)
       .setPublic()
       .addSubcommand(subcommand =>
         subcommand

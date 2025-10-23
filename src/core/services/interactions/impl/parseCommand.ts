@@ -5,7 +5,7 @@ export default class ParseCommand extends Command {
   build() {
     return new CommandBuilder()
       .setName('parse')
-      .using(this.manager.configs.commands.getSubsection("parse"))
+      .using(this.manager.configs.commands.getSubsection("parse"), this.manager.lang)
       .addStringOption(option =>
         option.setName("text")
           .setRequired(true))
