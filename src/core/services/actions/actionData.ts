@@ -1,4 +1,4 @@
-import { manager, Config, BaseScript, Manager, Context, Variable, Utils, Logger } from '@itsmybot';
+import { Config, BaseScript, Manager, Context, Variable, Utils, Logger } from '@itsmybot';
 
 export class ActionData extends BaseScript {
   public id?: string;
@@ -134,8 +134,9 @@ export class ActionData extends BaseScript {
   public async missingArg(missing: string, context: Context) {
     this.logError(`Missing required argument: "${missing}"`);
 
-    const message = await Utils.setupMessage({
-      config: manager.configs.lang.getSubsection("engine.missing-context"),
+    const message = await this.manager.lang.buildMessage({
+      key: "engine.missing-context",
+      ephemeral: true,
       context,
       variables: [
         { searchFor: "%missing%", replaceWith: missing },
@@ -153,8 +154,9 @@ export class ActionData extends BaseScript {
   public async missingContext(missing: string, context: Context) {
     this.logError(`Missing context: "${missing}"`);
 
-    const message = await Utils.setupMessage({
-      config: manager.configs.lang.getSubsection("engine.missing-argument"),
+    const message = await this.manager.lang.buildMessage({
+      key: "engine.missing-argument",
+      ephemeral: true,
       context,
       variables: [
         { searchFor: "%missing%", replaceWith: missing },

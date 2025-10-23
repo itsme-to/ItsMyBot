@@ -19,9 +19,10 @@ export { Logger } from './logger.js';
 export { Cooldown } from './cooldown.js';
 export { Pagination } from './pagination.js';
 
-import { manager, Context, Variable }from '@itsmybot';
+import { manager, Context, Variable } from '@itsmybot';
 import { GuildMember } from 'discord.js';
 import { Parser } from 'expr-eval';
+import { parseDocument } from 'yaml';
 
 const discordEpoch = 1420070400000;
 
@@ -297,5 +298,40 @@ export class Utils {
 
   static capitalizeFirst(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  /**
+   * Edit a configuration file at the specified path and save it
+   * @param filePath The path to the configuration file
+   * @param path The path within the configuration file to edit
+   * @param obj The object to set at the specified path
+   */
+  static async editConfigurationFile(filePath: string, path: string, obj: unknown) {
+    const file = parseDocument(await fs.readFile(filePath, 'utf8'));
+
+    // Split the path into segments, handling array indices
+    const pathSegments = path.split('.').flatMap(segment => {
+      return segment
+        .split(/[\[\]]/) // split by [ or ]
+        .filter(Boolean) // remove empty strings
+        .map(s => ( /^\d+$/.test(s) ? Number(s) : s )); // transform to number if it's an index
+    });
+
+    file.setIn(pathSegments, obj);
+
+    await fs.writeFile(filePath, file.toString(), 'utf8');
+  }
+
+  /**
+   * Convert a color string to a number
+   * @param color The color string to convert
+   * @returns The color as a number, or undefined if the color is "none" or invalid
+   */
+  static getColorFromString(color: string | undefined) {
+    if (!color || color === "none") return undefined;
+    if (/^#?[0-9a-fA-F]{6}$/.test(color)) {
+      return parseInt(color.replace(/^#/, ''), 16);
+    }
+    return parseInt(color, 10);
   }
 };

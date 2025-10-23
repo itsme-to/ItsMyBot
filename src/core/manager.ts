@@ -1,6 +1,6 @@
 import { Client, Collection } from 'discord.js';
 import { existsSync, mkdirSync } from 'fs';
-import { ClientOptions, ManagerOptions, Services, ManagerConfigs, ConfigFile, Addon, Logger } from '@itsmybot'
+import { ClientOptions, ManagerOptions, Services, ManagerConfigs, ConfigFile, Addon, Logger, LangDirectory } from '@itsmybot'
 import { Sequelize } from 'sequelize-typescript';
 
 import EventService from './services/events/eventService.js';
@@ -14,12 +14,12 @@ import ConditionService from './services/conditions/conditionService.js';
 import ActionService from './services/actions/actionService.js';
 import DefaultConfig from 'core/resources/config.js';
 import CommandConfig from 'core/resources/commands.js';
-import LangConfig from 'core/resources/lang.js';
 
 export class Manager {
   public client: Client<true>;
   public services: Services = {} as Services;
   public configs: ManagerConfigs = {} as ManagerConfigs;
+  public lang: LangDirectory;
   public database: Sequelize;
 
   public managerOptions: ManagerOptions;
@@ -41,13 +41,15 @@ export class Manager {
     try {
       this.configs.config = await this.createConfig(DefaultConfig, 'config.yml');
       this.configs.commands = await this.createConfig(CommandConfig, 'commands.yml');
-      this.configs.lang = await this.createConfig(LangConfig, 'lang.yml');
     } catch (e) {
       this.logger.error(e)
       process.exit(1)
     }
 
     this.primaryGuildId = this.configs.config.getString("primary-guild");
+
+    this.lang = new LangDirectory(this.logger, 'lang/core', 'build/core/resources/lang', 'en-US');
+    await this.lang.initialize();
 
     await this.initializeDatabase();
 
@@ -90,6 +92,7 @@ export class Manager {
     return await new ConfigFile(
       this.logger,
       `configs/${filePath}`,
+      filePath.replace('.yml', ''),
       `build/core/resources/${filePath}`
     ).initialize(ConfigClass);
   }

@@ -16,7 +16,7 @@ export default class MessagesLeaderboard extends Leaderboard {
       }
     });
 
-    const messageFormat = this.manager.configs.lang.getString("leaderboard.messages-format")
+    const messageFormat = this.manager.lang.getString("leaderboard.messages-format")
 
     const formattedData = data.map((user, index) => {
       return Utils.applyVariables(messageFormat, [

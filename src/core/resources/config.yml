@@ -35,6 +35,12 @@ primary-guild: "GUILD_ID"
 # Debug mode (currently does nothing)
 debug: true
 
+# Default language for the bot
+default-language: "en-US" 
+
+# Default accent color for embeds and components. Use 'none' for no color.
+default-color: "#3498db"
+
 # Bot presence settings
 presence:
   interval: 30 # Interval in seconds between each status change

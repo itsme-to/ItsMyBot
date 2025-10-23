@@ -58,6 +58,5 @@ export interface Services {
 
 export interface ManagerConfigs {
   config: ConfigFile,
-  lang: ConfigFile,
   commands: ConfigFile
 }

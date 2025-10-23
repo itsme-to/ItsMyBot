@@ -76,8 +76,16 @@ export default class DefaultConfig {
   'primary-guild': string
 
   @IsDefined()
+  @IsString()
+  'default-language': string
+
+  @IsDefined()
+  @IsString()
+  'default-color': string;
+
+  @IsDefined()
   @IsBoolean()
-  debug: boolean
+  debug: boolean;
 
   @IsDefined()
   @ValidateNested()

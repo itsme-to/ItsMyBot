@@ -1,4 +1,4 @@
-import { Command, User, CommandBuilder, Utils } from '@itsmybot';
+import { Command, User, CommandBuilder } from '@itsmybot';
 import { ChatInputCommandInteraction } from 'discord.js';
 
 export default class ReloadCommand extends Command {
@@ -42,8 +42,9 @@ export default class ReloadCommand extends Command {
     this.manager.services.interaction.deployCommands();
 
     if (error) {
-      return interaction.reply(await Utils.setupMessage({
-        config: this.manager.configs.lang.getSubsection(`error-reloading`),
+      return interaction.reply(await this.manager.lang.buildMessage({
+        key: 'messages.error-reloading',
+        ephemeral: true,
         variables: [
           { searchFor: "%error_message%", replaceWith: error.toString() }
         ],
@@ -55,8 +56,9 @@ export default class ReloadCommand extends Command {
       }));
     }
 
-    interaction.reply(await Utils.setupMessage({
-      config: this.manager.configs.lang.getSubsection(`reloaded`),
+    interaction.reply(await this.manager.lang.buildMessage({
+      key: 'messages.reloaded',
+      ephemeral: true,
       context: {
         user: user,
         guild: interaction.guild,

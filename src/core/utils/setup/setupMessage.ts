@@ -57,16 +57,14 @@ export async function setupMessage(settings: MessageSettings): Promise<MessageOu
       });
       if (component?.length) components.push(...component);
     }
+  }
 
+  if (settings.components && settings.components[0]) components.push(...settings.components);
+  if (components.length) {
+    message.components.push(...components);
+    message.flags |= MessageFlags.IsComponentsV2;
 
-    if (settings.components && settings.components[0]) components.push(...settings.components);
-
-    if (components.length) {
-      message.components.push(...components);
-      message.flags |= MessageFlags.IsComponentsV2;
-
-      return message;
-    }
+    return message;
   }
 
   let content = config.getStringOrNull("content", true)

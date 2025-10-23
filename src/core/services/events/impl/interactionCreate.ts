@@ -1,4 +1,4 @@
-import { Command, Event, User, Events, Context, ResolvableInteraction, Utils, CommandSubcommandGroupBuilder } from '@itsmybot';
+import { Command, Event, User, Events, Context, ResolvableInteraction, CommandSubcommandGroupBuilder } from '@itsmybot';
 import { ChatInputCommandInteraction, ContextMenuCommandInteraction, Interaction, MessageComponentInteraction, ModalSubmitInteraction } from 'discord.js';
 
 export default class InteractionCreateEvent extends Event {
@@ -44,8 +44,9 @@ export default class InteractionCreateEvent extends Event {
     user: User
   ) {
     if (!component.data.public && interaction.guildId && interaction.guildId !== this.manager.primaryGuildId) {
-      return interaction.reply(await Utils.setupMessage({
-        config: this.manager.configs.lang.getSubsection("only-in-primary-guild"),
+      return interaction.reply(await this.manager.lang.buildMessage({
+        key: "only-in-primary-guild",
+        ephemeral: true,
         context: { user }
       }));
     }
@@ -98,8 +99,9 @@ export default class InteractionCreateEvent extends Event {
     }
 
     if (component.data.cooldown.isOnCooldown(interaction.user.id)) {
-      await interaction.reply(await Utils.setupMessage({
-        config: this.manager.configs.lang.getSubsection("in-cooldown"),
+      await interaction.reply(await this.manager.lang.buildMessage({
+        key: "in-cooldown",
+        ephemeral: true,
         variables: [
           { searchFor: "%cooldown%", replaceWith: component.data.cooldown.endsAtFormatted(interaction.user.id) },
         ],
@@ -111,8 +113,9 @@ export default class InteractionCreateEvent extends Event {
     const isMet = await this.manager.services.condition.meetsConditions(component.conditions, context, []);
 
     if (!isMet) {
-      await interaction.reply(await Utils.setupMessage({
-        config: this.manager.configs.lang.getSubsection("no-permission"),
+      await interaction.reply(await this.manager.lang.buildMessage({
+        key: "no-permission",
+        ephemeral: true,
         context
       }));
       return false;
