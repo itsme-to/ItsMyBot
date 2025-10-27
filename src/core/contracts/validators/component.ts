@@ -48,8 +48,8 @@ class WithCondition {
 export abstract class ComponentValidator extends WithCondition {
   @IsDefined()
   @IsString()
-  @IsIn(['button', 'select-menu', 'text-display', 'action-row', 'separator', 'section', 'media-gallery', 'file', 'container', 'repeat', 'thumbnail', 'text-input', 'modal', 'label'])
-  type: 'button' | 'select-menu' | 'text-display' | 'action-row' | 'separator' | 'section' | 'media-gallery' | 'file' | 'container' | 'repeat' | 'thumbnail' | 'text-input' | 'label';
+  @IsIn(['button', 'select-menu', 'text-display', 'action-row', 'separator', 'section', 'media-gallery', 'file', 'container', 'repeat', 'thumbnail', 'text-input', 'modal', 'label', 'file-upload'])
+  type: 'button' | 'select-menu' | 'text-display' | 'action-row' | 'separator' | 'section' | 'media-gallery' | 'file' | 'container' | 'repeat' | 'thumbnail' | 'text-input' | 'label' | 'file-upload';
 }
 
 class TextInputValidator extends ComponentValidator {
@@ -82,6 +82,24 @@ class TextInputValidator extends ComponentValidator {
   @IsString()
   @Validate(IsTextInputStyle)
   style: string
+}
+
+class FileUploadValidator extends ComponentValidator {
+  @IsDefined()
+  @IsString({ each: true })
+  'custom-id': string | string[]
+
+  @IsOptional()
+  @IsBoolean()
+  required: boolean
+
+  @IsOptional()
+  @IsNumber()
+  'max-length': number
+
+  @IsOptional()
+  @IsNumber()
+  'min-length': number
 }
 
 export class ButtonValidator extends ComponentValidator {
@@ -197,12 +215,13 @@ class LabelValidator extends ComponentValidator {
       property: 'type',
       subTypes: [
         { value: TextInputValidator, name: 'text-input' },
-        { value: SelectMenuValidator, name: 'select-menu' }
+        { value: SelectMenuValidator, name: 'select-menu' },
+        { value: FileUploadValidator, name: 'file-upload' }
       ],
     },
     keepDiscriminatorProperty: true
   })
-  component: TextInputValidator | SelectMenuValidator
+  component: TextInputValidator | SelectMenuValidator | FileUploadValidator
 }
 
 export class ModalValidator {

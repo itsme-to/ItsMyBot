@@ -1,4 +1,4 @@
-import { ActionRowData, APIMessageTopLevelComponent, BitFieldResolvable, APIEmbed, Attachment, AttachmentBuilder, BufferResolvable, MessageMentionOptions, PollData, MessageActionRowComponentBuilder, MessageActionRowComponentData, TopLevelComponentData, JSONEncodable, ActionRowBuilder, ContainerBuilder, FileBuilder, MediaGalleryBuilder, SectionBuilder, SeparatorBuilder, TextDisplayBuilder, TextInputBuilder, StringSelectMenuBuilder, MentionableSelectMenuBuilder, ChannelSelectMenuBuilder, RoleSelectMenuBuilder, UserSelectMenuBuilder,  } from 'discord.js';
+import { ActionRowData, APIMessageTopLevelComponent, BitFieldResolvable, APIEmbed, Attachment, AttachmentBuilder, BufferResolvable, MessageMentionOptions, PollData, MessageActionRowComponentBuilder, MessageActionRowComponentData, TopLevelComponentData, JSONEncodable, ActionRowBuilder, ContainerBuilder, FileBuilder, MediaGalleryBuilder, SectionBuilder, SeparatorBuilder, TextDisplayBuilder, TextInputBuilder, StringSelectMenuBuilder, MentionableSelectMenuBuilder, ChannelSelectMenuBuilder, RoleSelectMenuBuilder, UserSelectMenuBuilder, FileUploadBuilder,  } from 'discord.js';
 import { Manager, Addon, Button, SelectMenu, Command, ContextMenu, Modal, Logger } from '@itsmybot';
 import { Stream } from 'stream';
 
@@ -70,4 +70,4 @@ export type ResolvableInteraction =
   | ContextMenu<Addon | undefined>
   | Modal<Addon | undefined>;
 
-export type LabelComponentBuilder = TextInputBuilder | StringSelectMenuBuilder | MentionableSelectMenuBuilder | ChannelSelectMenuBuilder | RoleSelectMenuBuilder | UserSelectMenuBuilder
+export type LabelComponentBuilder = TextInputBuilder | StringSelectMenuBuilder | MentionableSelectMenuBuilder | ChannelSelectMenuBuilder | RoleSelectMenuBuilder | UserSelectMenuBuilder | FileUploadBuilder;

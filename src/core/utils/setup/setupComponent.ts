@@ -1,5 +1,5 @@
 import { manager, Config, Context, Variable, Utils, LabelComponentBuilder } from '@itsmybot';
-import { ActionRowComponent, MessageComponentBuilder, ContainerComponentBuilder, ActionRowBuilder, MessageActionRowComponentBuilder, SeparatorBuilder, SectionBuilder, MediaGalleryBuilder, FileBuilder, MediaGalleryItemBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
+import { ActionRowComponent, MessageComponentBuilder, ContainerComponentBuilder, ActionRowBuilder, MessageActionRowComponentBuilder, SeparatorBuilder, SectionBuilder, MediaGalleryBuilder, FileBuilder, MediaGalleryItemBuilder, TextInputBuilder, TextInputStyle, FileUploadBuilder } from 'discord.js';
 
 interface ComponentSettings {
   config: Config,
@@ -173,6 +173,24 @@ export async function setupComponent<T extends SetupComponentType = SetupCompone
       }
 
       return [textInput as T]
+    }
+
+    case 'file-upload': {
+      let cCustomId = config.getString("custom-id");
+      const minSelect = config.getNumberOrNull("min-values")
+      const maxSelect = config.getNumberOrNull("max-values") || 1;
+      const cRequired = config.getBoolOrNull("required") || false;
+
+      cCustomId = await Utils.applyVariables(cCustomId, variables, context);
+
+      const fileUpload = new FileUploadBuilder()
+        .setMaxValues(maxSelect)
+        .setCustomId(cCustomId)
+        .setRequired(cRequired)
+        
+      if (minSelect) fileUpload.setMinValues(minSelect);
+
+      return [fileUpload as T];
     }
   }
 }
