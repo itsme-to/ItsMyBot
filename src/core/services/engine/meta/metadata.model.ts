@@ -2,15 +2,7 @@ import { DataTypes, InferAttributes, InferCreationAttributes } from 'sequelize';
 import { Table, Model, Column, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
 import { MetaMode, MetaType } from './metaHandler.js';
 
-@Table({
-  indexes: [
-    {
-      name: 'meta_unique_scope',
-      unique: true,
-      fields: ['key', 'scopeId'],
-    },
-  ],
-})
+@Table
 export class MetaData extends Model<InferAttributes<MetaData>, InferCreationAttributes<MetaData>> {
   @PrimaryKey
   @AutoIncrement
