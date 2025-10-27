@@ -56,7 +56,7 @@ export default class LeaderboardService extends Service{
       build() {
         const data = new CommandBuilder()
           .setName('leaderboard')
-          .using(this.manager.configs.commands.getSubsection('leaderboard'))
+          .using(this.manager.configs.commands.getSubsection('leaderboard'), this.manager.lang)
 
         for (const [key, leaderboard] of this.manager.services.leaderboard.leaderboards) {
           data.addSubcommand(subcommand =>

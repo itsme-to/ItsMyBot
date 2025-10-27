@@ -1,8 +1,6 @@
 addons:
   enabled: true
   permission: "ADMINISTRATOR"
-  aliases: []
-  cooldown: 0
   conditions: [] # https://docs.itsmy.studio/itsmybot/scripting/conditions
   
 reload:
@@ -15,7 +13,6 @@ parse:
 
 leaderboard:
   enabled: true
-  description: "Show the leaderboard."
 
 meta:
   enabled: true

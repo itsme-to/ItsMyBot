@@ -14,6 +14,10 @@ export abstract class Command<T extends Addon | undefined = undefined>  extends 
 
   public abstract build(): CommandBuilder;
 
+  public commandBuilder(): CommandBuilder {
+    return new CommandBuilder();
+  }
+
   public async autocomplete(interaction: AutocompleteInteraction<'cached'>): Promise<void | any> {
     throw new Error('Method not implemented.');
   }

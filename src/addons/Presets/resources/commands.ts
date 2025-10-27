@@ -1,16 +1,10 @@
 import { CommandValidator } from '@itsmybot';
 import { Type } from 'class-transformer';
-import { IsDefined, IsString, ValidateNested } from 'class-validator';
-
-class Preset extends CommandValidator {
-  @IsDefined()
-  @IsString()
-  'context-menu': string
-}
+import { IsDefined, ValidateNested } from 'class-validator';
 
 export default class DefaultConfig {
   @IsDefined()
   @ValidateNested()
-  @Type(() => Preset)
-  preset: Preset
+  @Type(() => CommandValidator)
+  preset: CommandValidator
 }

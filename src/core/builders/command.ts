@@ -93,6 +93,9 @@ export class CommandBuilder extends Mixin(SlashCommandBuilder, ComponentBuilder)
     if (lang) this.setDescription(lang.getString(`commands.${this.name}.description`));
     if (config.has("permission")) this.setDefaultMemberPermissions(Utils.getPermissionFlags(config.getString("permission")));
     if (config.getBoolOrNull("enabled") === false) this.setEnabled(false);
+    if (!this.description && this.config && this.config.has('description')) {
+      this.setDescription(this.config.getString('description'));
+    }
 
     return this;
   }
@@ -170,6 +173,10 @@ export class CommandBuilder extends Mixin(SlashCommandBuilder, ComponentBuilder)
       builder.setDescription(this.lang.getString(`commands.${this.name}.options.${builder.name}`));
     }
 
+    if (!builder.description && this.config && this.config.has(`options.${builder.name}`)) {
+      builder.setDescription(this.config.getString(`options.${builder.name}`));
+    }
+
     super.addStringOption(builder);
     return this;
   }
@@ -181,6 +188,10 @@ export class CommandBuilder extends Mixin(SlashCommandBuilder, ComponentBuilder)
 
     if (!builder.description && this.lang) {
       builder.setDescription(this.lang.getString(`commands.${this.name}.options.${builder.name}`));
+    }
+
+    if (!builder.description && this.config && this.config.has(`options.${builder.name}`)) {
+      builder.setDescription(this.config.getString(`options.${builder.name}`));
     }
 
     super.addAttachmentOption(builder);
@@ -196,6 +207,10 @@ export class CommandBuilder extends Mixin(SlashCommandBuilder, ComponentBuilder)
       builder.setDescription(this.lang.getString(`commands.${this.name}.options.${builder.name}`));
     }
 
+    if (!builder.description && this.config && this.config.has(`options.${builder.name}`)) {
+      builder.setDescription(this.config.getString(`options.${builder.name}`));
+    }
+
     super.addChannelOption(builder);
     return this;
   }
@@ -207,6 +222,10 @@ export class CommandBuilder extends Mixin(SlashCommandBuilder, ComponentBuilder)
 
     if (!builder.description && this.lang) {
       builder.setDescription(this.lang.getString(`commands.${this.name}.options.${builder.name}`));
+    }
+
+    if (!builder.description && this.config && this.config.has(`options.${builder.name}`)) {
+      builder.setDescription(this.config.getString(`options.${builder.name}`));
     }
 
     super.addBooleanOption(builder);
@@ -222,6 +241,10 @@ export class CommandBuilder extends Mixin(SlashCommandBuilder, ComponentBuilder)
       builder.setDescription(this.lang.getString(`commands.${this.name}.options.${builder.name}`));
     }
 
+    if (!builder.description && this.config && this.config.has(`options.${builder.name}`)) {
+      builder.setDescription(this.config.getString(`options.${builder.name}`));
+    }
+
     super.addIntegerOption(builder);
     return this;
   }
@@ -233,6 +256,10 @@ export class CommandBuilder extends Mixin(SlashCommandBuilder, ComponentBuilder)
 
     if (!builder.description && this.lang) {
       builder.setDescription(this.lang.getString(`commands.${this.name}.options.${builder.name}`));
+    }
+
+    if (!builder.description && this.config && this.config.has(`options.${builder.name}`)) {
+      builder.setDescription(this.config.getString(`options.${builder.name}`));
     }
 
     super.addMentionableOption(builder);
@@ -248,6 +275,10 @@ export class CommandBuilder extends Mixin(SlashCommandBuilder, ComponentBuilder)
       builder.setDescription(this.lang.getString(`commands.${this.name}.options.${builder.name}`));
     }
 
+    if (!builder.description && this.config && this.config.has(`options.${builder.name}`)) {
+      builder.setDescription(this.config.getString(`options.${builder.name}`));
+    }
+
     super.addNumberOption(builder);
     return this;
   }
@@ -261,6 +292,10 @@ export class CommandBuilder extends Mixin(SlashCommandBuilder, ComponentBuilder)
       builder.setDescription(this.lang.getString(`commands.${this.name}.options.${builder.name}`));
     }
 
+    if (!builder.description && this.config && this.config.has(`options.${builder.name}`)) {
+      builder.setDescription(this.config.getString(`options.${builder.name}`));
+    }
+
     super.addRoleOption(builder);
     return this;
   }
@@ -272,6 +307,10 @@ export class CommandBuilder extends Mixin(SlashCommandBuilder, ComponentBuilder)
 
     if (!builder.description && this.lang) {
       builder.setDescription(this.lang.getString(`commands.${this.name}.options.${builder.name}`));
+    }
+
+    if (!builder.description && this.config && this.config.has(`options.${builder.name}`)) {
+      builder.setDescription(this.config.getString(`options.${builder.name}`));
     }
 
     super.addUserOption(builder);

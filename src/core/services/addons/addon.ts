@@ -106,6 +106,7 @@ export abstract class Addon {
     return new ConfigFile(
       this.logger, 
       join('configs', this.name, configFilePath),
+      'commands',
       join("build", "addons", this.name, "resources", configFilePath)
     ).initialize(config);
   }

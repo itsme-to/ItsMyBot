@@ -1,114 +1,112 @@
-import { Command, User, CommandBuilder, Utils, MetaData } from '@itsmybot';
+import { Command, User, Utils, MetaData } from '@itsmybot';
 import { AutocompleteInteraction, ChatInputCommandInteraction } from 'discord.js';
 export default class MetaCommand extends Command {
 
   build() {
     const command = this.manager.configs.commands.getSubsection("meta");
-    const lang = this.manager.lang;
-
-    return new CommandBuilder()
+    return this.commandBuilder()
       .setName('meta')
       .using(command, this.manager.lang)
       .addSubcommand(subcommand =>
         subcommand.setName("set")
           .addStringOption(option =>
             option.setName("key")
-              .setDescription(lang.getString('commands.meta.options.key'))
+              .setDescription(this.manager.lang.getString('commands.meta.options.key'))
               .setAutocomplete(true)
               .setRequired(true))
           .addStringOption(option =>
             option.setName("value")
-              .setDescription(lang.getString('commands.meta.options.value'))
+              .setDescription(this.manager.lang.getString('commands.meta.options.value'))
               .setRequired(true))
           .addStringOption(option =>
             option.setName("scope")
-              .setDescription(lang.getString('commands.meta.options.scope'))
+              .setDescription(this.manager.lang.getString('commands.meta.options.scope'))
               .setRequired(false)))
       .addSubcommand(subcommand =>
         subcommand.setName("add")
           .addStringOption(option =>
             option.setName("key")
-              .setDescription(lang.getString('commands.meta.options.key'))
+              .setDescription(this.manager.lang.getString('commands.meta.options.key'))
               .setAutocomplete(true)
               .setRequired(true))
           .addIntegerOption(option =>
             option.setName("value")
-              .setDescription(lang.getString('commands.meta.options.value'))
+              .setDescription(this.manager.lang.getString('commands.meta.options.value'))
               .setRequired(true))
           .addStringOption(option =>
             option.setName("scope")
-              .setDescription(lang.getString('commands.meta.options.scope'))
+              .setDescription(this.manager.lang.getString('commands.meta.options.scope'))
               .setRequired(false)))
       .addSubcommand(subcommand =>
         subcommand.setName("subtract")
           .addStringOption(option =>
             option.setName("key")
-              .setDescription(lang.getString('commands.meta.options.key'))
+              .setDescription(this.manager.lang.getString('commands.meta.options.key'))
               .setAutocomplete(true)
               .setRequired(true))
           .addIntegerOption(option =>
             option.setName("value")
-              .setDescription(lang.getString('commands.meta.options.value'))
+              .setDescription(this.manager.lang.getString('commands.meta.options.value'))
               .setRequired(true))
           .addStringOption(option =>
             option.setName("scope")
-              .setDescription(lang.getString('commands.meta.options.scope'))
+              .setDescription(this.manager.lang.getString('commands.meta.options.scope'))
               .setRequired(false)))
       .addSubcommand(subcommand =>
         subcommand.setName("toggle")
           .addStringOption(option =>
             option.setName("key")
-              .setDescription(lang.getString('commands.meta.options.key'))
+              .setDescription(this.manager.lang.getString('commands.meta.options.key'))
               .setAutocomplete(true)
               .setRequired(true))
           .addBooleanOption(option =>
             option.setName("value")
-              .setDescription(lang.getString('commands.meta.options.value'))
+              .setDescription(this.manager.lang.getString('commands.meta.options.value'))
               .setRequired(true))
           .addStringOption(option =>
             option.setName("scope")
-              .setDescription(lang.getString('commands.meta.options.scope'))
+              .setDescription(this.manager.lang.getString('commands.meta.options.scope'))
               .setRequired(false)))
       .addSubcommand(subcommand =>
         subcommand.setName("list-add")
           .addStringOption(option =>
             option.setName("key")
-              .setDescription(lang.getString('commands.meta.options.key'))
+              .setDescription(this.manager.lang.getString('commands.meta.options.key'))
               .setAutocomplete(true)
               .setRequired(true))
           .addStringOption(option =>
             option.setName("value")
-              .setDescription(lang.getString('commands.meta.options.value'))
+              .setDescription(this.manager.lang.getString('commands.meta.options.value'))
               .setRequired(true))
           .addStringOption(option =>
             option.setName("scope")
-              .setDescription(lang.getString('commands.meta.options.scope'))
+              .setDescription(this.manager.lang.getString('commands.meta.options.scope'))
               .setRequired(false)))
       .addSubcommand(subcommand =>
         subcommand.setName("list-remove")
           .addStringOption(option =>
             option.setName("key")
-              .setDescription(lang.getString('commands.meta.options.key'))
+              .setDescription(this.manager.lang.getString('commands.meta.options.key'))
               .setAutocomplete(true)
               .setRequired(true))
           .addStringOption(option =>
             option.setName("value")
-              .setDescription(lang.getString('commands.meta.options.value'))
+              .setDescription(this.manager.lang.getString('commands.meta.options.value'))
               .setRequired(true))
           .addStringOption(option =>
             option.setName("scope")
-              .setDescription(lang.getString('commands.meta.options.scope'))
+              .setDescription(this.manager.lang.getString('commands.meta.options.scope'))
               .setRequired(false)))
       .addSubcommand(subcommand =>
         subcommand.setName("remove")
           .addStringOption(option =>
             option.setName("key")
-              .setDescription(lang.getString('commands.meta.options.key'))
+              .setDescription(this.manager.lang.getString('commands.meta.options.key'))
               .setAutocomplete(true)
               .setRequired(true))
           .addStringOption(option =>
             option.setName("scope")
-              .setDescription(lang.getString('commands.meta.options.scope'))
+              .setDescription(this.manager.lang.getString('commands.meta.options.scope'))
               .setRequired(false)));
   }
 
