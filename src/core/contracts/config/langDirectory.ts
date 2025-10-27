@@ -83,8 +83,6 @@ export class LangDirectory {
       }
       this.langs.set(langCode, mergedLangData);
     }));
-
-    this.logger.info(`Loaded ${this.langs.size} language(s).`);
   }
 
   private async loadLangFile(filePath: string): Promise<LanguageData> {
