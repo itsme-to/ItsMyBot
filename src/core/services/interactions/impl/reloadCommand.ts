@@ -6,7 +6,7 @@ export default class ReloadCommand extends Command {
     return new CommandBuilder()
       .setName('reload')
       .setPublic()
-      .using(this.manager.configs.commands.getSubsection("reload"), this.manager.lang)
+      .using(this.manager.configs.commands.getSubsection("reload"))
   }
 
   async execute(interaction: ChatInputCommandInteraction<'cached'>, user: User) {

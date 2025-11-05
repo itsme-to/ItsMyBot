@@ -1,12 +1,12 @@
 import { ActionRowBuilder, AutocompleteInteraction, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, ContainerBuilder, MessageActionRowComponentBuilder, TextDisplayBuilder } from 'discord.js';
-import { Command, User, Utils, Pagination, MessageComponentBuilder } from '@itsmybot';
+import { Command, User, Utils, Pagination, MessageComponentBuilder, CommandBuilder } from '@itsmybot';
 import AddonModel from '../../addons/addon.model.js';
 
 export default class AddonCommand extends Command {
   build() {
-    return this.commandBuilder()
+    return new CommandBuilder()
       .setName('addons')
-      .using(this.manager.configs.commands.getSubsection("addons"), this.manager.lang)
+      .using(this.manager.configs.commands.getSubsection("addons"))
       .setPublic()
       .addSubcommand(subcommand =>
         subcommand

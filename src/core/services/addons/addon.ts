@@ -7,6 +7,7 @@ import { existsSync, mkdirSync, readdirSync, statSync } from 'fs';
 export abstract class Addon {
   manager: Manager
   logger: Logger
+  lang: LangDirectory
 
   name: string
   abstract version: string
@@ -22,6 +23,7 @@ export abstract class Addon {
     this.name = this.sanitizeName(name);
     this.logger = new Logger(this.name);
     this.path = join(manager.managerOptions.dir.addons, name);
+    this.lang = new LangDirectory(this.logger, `lang/${this.name}`, `build/addons/${this.name}/resources/lang`, 'en-US');
   }
 
   private sanitizeName(name: string): string {
@@ -36,11 +38,15 @@ export abstract class Addon {
 
   async reload() {
     await this.unload()
+    await this.lang.initialize();
     await this.load()
   }
 
+
+
   async init() {
     await this.loadDatabaseModels();
+    await this.lang.initialize();
     await this.load();
     await this.initialize();
     await this.registerInteractions();
@@ -109,17 +115,6 @@ export abstract class Addon {
       'commands',
       join("build", "addons", this.name, "resources", configFilePath)
     ).initialize(config);
-  }
-
-  /**
-   * Creates a language directory for the addon.
-   * @param referenceLanguage The reference language to use. This is the main language the addon is written in.
-   * @returns The initialized LangDirectory.
-   */
-  async createLang(referenceLanguage: string) {
-    const lang = new LangDirectory(this.logger, `lang/${this.name}`, `build/addons/${this.name}/resources/lang`, referenceLanguage)
-    await lang.initialize();
-    return lang;
   }
 
   async createConfigSection(configFolderPath: string, config: unknown): Promise<Collection<string, ConfigFile>> {

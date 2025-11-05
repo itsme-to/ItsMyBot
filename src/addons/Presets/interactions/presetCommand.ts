@@ -8,7 +8,7 @@ export default class PresetCommand extends Command<PresetsAddon> {
   build() {
     return new CommandBuilder()
       .setName('preset')
-      .using(this.addon.configs.commands.getSubsection("preset"), this.addon.lang)
+      .using(this.addon.configs.commands.getSubsection("preset"))
       .addSubcommand(subcommand =>
         subcommand.setName('send')
           .setExecute(this.send.bind(this))

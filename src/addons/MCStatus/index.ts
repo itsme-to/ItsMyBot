@@ -1,4 +1,4 @@
-import { Addon, ConfigFile, LangDirectory } from '@itsmybot';
+import { Addon, ConfigFile } from '@itsmybot';
 import DefaultConfig from './resources/config.js';
 
 interface MCStatsConfig {
@@ -47,11 +47,8 @@ export default class MCStatsAddon extends Addon {
   website = "https://builtbybit.com/resources/31222/"
 
   configs: MCStatsConfig = {} as MCStatsConfig;
-  lang: LangDirectory
-
   async load() {
     this.configs.config = await this.createConfig('config.yml', DefaultConfig);
-    this.lang = await this.createLang('en-US');
   }
 
   async fetchStatus(address: string, port: number = 25565) {

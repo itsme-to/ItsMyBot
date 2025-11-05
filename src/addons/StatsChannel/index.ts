@@ -1,4 +1,4 @@
-import { Addon, ConfigFile, LangDirectory, Utils } from '@itsmybot';
+import { Addon, ConfigFile, Utils } from '@itsmybot';
 import { Guild } from 'discord.js';
 import CommandsConfig from './resources/commands.js';
 import DefaultConfig from './resources/config.js';
@@ -15,12 +15,10 @@ export default class StatsChannelAddon extends Addon {
   website = "https://builtbybit.com/resources/29520/"
 
   configs: StatsChannelConfig = {} as StatsChannelConfig;
-  lang: LangDirectory
 
   async load() {
     this.configs.commands = await this.createConfig('commands.yml', CommandsConfig);
     this.configs.config = await this.createConfig('config.yml', DefaultConfig);
-    this.lang = await this.createLang('en-US');
   }
 
   async updateChannels(guild: Guild) {

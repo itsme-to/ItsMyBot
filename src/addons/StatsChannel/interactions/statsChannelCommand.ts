@@ -6,7 +6,7 @@ export default class StatsChannelCommand extends Command<StatsChannelAddon> {
   build() {
     return new CommandBuilder()
       .setName('stats-channel')
-      .using(this.addon.configs.commands.getSubsection("stats-channel"), this.addon.lang)
+      .using(this.addon.configs.commands.getSubsection("stats-channel"))
       .addSubcommand(subcommand =>
         subcommand
           .setName('create')
