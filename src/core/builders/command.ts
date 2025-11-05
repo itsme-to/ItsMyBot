@@ -90,9 +90,6 @@ export class CommandBuilder extends Mixin(SlashCommandBuilder, ComponentBuilder)
     
     if (config.has("permission")) this.setDefaultMemberPermissions(Utils.getPermissionFlags(config.getString("permission")));
     if (config.getBoolOrNull("enabled") === false) this.setEnabled(false);
-    if (!this.description && this.config && this.config.has('description')) {
-      this.setDescription(this.config.getString('description'));
-    }
 
     return this;
   }
@@ -131,119 +128,47 @@ export class CommandBuilder extends Mixin(SlashCommandBuilder, ComponentBuilder)
   }
 
   public override addStringOption(input: SlashCommandStringOption | ((builder: SlashCommandStringOption) => SlashCommandStringOption)): this {
-    const builder = typeof input === "function"
-      ? input(new SlashCommandStringOption())
-      : input;
-
-    if (!builder.description && this.config && this.config.has(`options.${builder.name}`)) {
-      builder.setDescription(this.config.getString(`options.${builder.name}`));
-    }
-
-    super.addStringOption(builder);
+    super.addStringOption(input);
     return this;
   }
 
   public override addAttachmentOption(input: SlashCommandAttachmentOption | ((builder: SlashCommandAttachmentOption) => SlashCommandAttachmentOption)): this {
-    const builder = typeof input === "function"
-      ? input(new SlashCommandAttachmentOption())
-      : input;
-
-    if (!builder.description && this.config && this.config.has(`options.${builder.name}`)) {
-      builder.setDescription(this.config.getString(`options.${builder.name}`));
-    }
-
-    super.addAttachmentOption(builder);
+    super.addAttachmentOption(input);
     return this;
   }
 
   public override addChannelOption(input: SlashCommandChannelOption | ((builder: SlashCommandChannelOption) => SlashCommandChannelOption)): this {
-    const builder = typeof input === "function"
-      ? input(new SlashCommandChannelOption())
-      : input;
-
-    if (!builder.description && this.config && this.config.has(`options.${builder.name}`)) {
-      builder.setDescription(this.config.getString(`options.${builder.name}`));
-    }
-
-    super.addChannelOption(builder);
+    super.addChannelOption(input);
     return this;
   }
 
   public override addBooleanOption(input: SlashCommandBooleanOption | ((builder: SlashCommandBooleanOption) => SlashCommandBooleanOption)): this {
-    const builder = typeof input === "function"
-      ? input(new SlashCommandBooleanOption())
-      : input;
-
-    if (!builder.description && this.config && this.config.has(`options.${builder.name}`)) {
-      builder.setDescription(this.config.getString(`options.${builder.name}`));
-    }
-
-    super.addBooleanOption(builder);
+    super.addBooleanOption(input);
     return this;
   }
 
   public override addIntegerOption(input: SlashCommandIntegerOption | ((builder: SlashCommandIntegerOption) => SlashCommandIntegerOption)): this {
-    const builder = typeof input === "function"
-      ? input(new SlashCommandIntegerOption())
-      : input;
-
-    if (!builder.description && this.config && this.config.has(`options.${builder.name}`)) {
-      builder.setDescription(this.config.getString(`options.${builder.name}`));
-    }
-
-    super.addIntegerOption(builder);
+    super.addIntegerOption(input);
     return this;
   }
 
   public override addMentionableOption(input: SlashCommandMentionableOption | ((builder: SlashCommandMentionableOption) => SlashCommandMentionableOption)): this {
-    const builder = typeof input === "function"
-      ? input(new SlashCommandMentionableOption())
-      : input;
-
-    if (!builder.description && this.config && this.config.has(`options.${builder.name}`)) {
-      builder.setDescription(this.config.getString(`options.${builder.name}`));
-    }
-
-    super.addMentionableOption(builder);
+    super.addMentionableOption(input);
     return this;
   }
 
   public override addNumberOption(input: SlashCommandNumberOption | ((builder: SlashCommandNumberOption) => SlashCommandNumberOption)): this {
-    const builder = typeof input === "function"
-      ? input(new SlashCommandNumberOption())
-      : input;
-
-    if (!builder.description && this.config && this.config.has(`options.${builder.name}`)) {
-      builder.setDescription(this.config.getString(`options.${builder.name}`));
-    }
-
-    super.addNumberOption(builder);
+    super.addNumberOption(input);
     return this;
   }
 
   public override addRoleOption(input: SlashCommandRoleOption | ((builder: SlashCommandRoleOption) => SlashCommandRoleOption)): this {
-    const builder = typeof input === "function"
-      ? input(new SlashCommandRoleOption())
-      : input;
-
-    if (!builder.description && this.config && this.config.has(`options.${builder.name}`)) {
-      builder.setDescription(this.config.getString(`options.${builder.name}`));
-    }
-
-    super.addRoleOption(builder);
+    super.addRoleOption(input);
     return this;
   }
 
   public override addUserOption(input: SlashCommandUserOption | ((builder: SlashCommandUserOption) => SlashCommandUserOption)): this {
-    let builder = typeof input === "function"
-      ? input(new SlashCommandUserOption())
-      : input;
-
-    if (!builder.description && this.config && this.config.has(`options.${builder.name}`)) {
-      builder.setDescription(this.config.getString(`options.${builder.name}`));
-    }
-
-    super.addUserOption(builder);
+    super.addUserOption(input);
     return this;
   }
 }
