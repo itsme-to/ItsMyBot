@@ -197,7 +197,9 @@ export class Pagination<T> {
     });
 
     collector.on('end', async () => {
-      this.message!.edit(await this.buildMessage('end'));
+      try {
+        this.message!.edit(await this.buildMessage('end'));
+      } catch (e) {/* Ignore */ }
     });
   }
 
