@@ -112,7 +112,10 @@ export default class EngineService extends Service {
         const data = new CommandBuilder()
           .setName(customCommand.getString("name"))
           .setDescription(customCommand.getString("description"))
-          .using(customCommand)
+
+        if (customCommand.has("permission")) {
+          data.setDefaultMemberPermissions(Utils.getPermissionFlags(customCommand.getString("permission")))
+        }
 
         for (const optionConfig of options) {
           const option: CommandApplicationOption = {

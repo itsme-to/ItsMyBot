@@ -1,11 +1,11 @@
 import { Command, User, CommandBuilder } from '@itsmybot';
-import { ChatInputCommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction, PermissionFlagsBits } from 'discord.js';
 export default class ParseCommand extends Command {
 
   build() {
     return new CommandBuilder()
       .setName('parse')
-      .using(this.manager.configs.commands.getSubsection("parse"))
+      .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
       .addStringOption(option =>
         option.setName("text")
           .setRequired(true))

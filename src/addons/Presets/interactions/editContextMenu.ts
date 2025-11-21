@@ -1,5 +1,5 @@
-import { MessageContextMenuCommandInteraction } from 'discord.js';
-import { User, ContextMenu, ContextMenuBuilder, } from '@itsmybot';
+import { LabelBuilder, MessageContextMenuCommandInteraction, ModalBuilder, PermissionFlagsBits, StringSelectMenuBuilder, TextInputBuilder } from 'discord.js';
+import { User, ContextMenu, ContextMenuBuilder } from '@itsmybot';
 import PresetsAddon from '..';
 import Preset from '../models/preset.js';
 
@@ -8,7 +8,7 @@ export default class EditContextMenuCommand extends ContextMenu<PresetsAddon> {
     return new ContextMenuBuilder()
       .setName(this.addon.lang.getString("commands.preset.context-menu"))
       .setType(3)
-      .using(this.addon.configs.commands.getSubsection("preset"))
+      .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
   }
 
   async execute(interaction: MessageContextMenuCommandInteraction<'cached'>, user: User) {
@@ -16,42 +16,65 @@ export default class EditContextMenuCommand extends ContextMenu<PresetsAddon> {
 
     const message = interaction.targetMessage;
     const preset = await Preset.findOne({ where: { id: message.id } });
-    if (!preset) return interaction.reply(await this.addon.lang.buildMessage({
-      key: "unknown-message",
-      ephemeral: true,
-      context: {
-        user: user,
-        guild: interaction.guild,
-        channel: interaction.channel
-      }
-    }));
 
-    const presetMessage = await this.addon.setupPreset(preset.presetPath, message.channel);
-    if (!presetMessage) return interaction.reply(await this.addon.lang.buildMessage({
-      key: "unknown-preset",
-      ephemeral: true,
-      context: {
-        user: user,
-        guild: interaction.guild,
-        channel: interaction.channel
-      }
-    }));
+    const context = { user, guild: interaction.guild, channel: interaction.channel };
 
-    const presetConfig = this.addon.configs.presets.get(preset.presetPath);
-    if (presetConfig && presetConfig.has('update-time')) {
-      await preset.updateData(preset.presetPath, true);
+    if (message.author.id !== this.manager.client.user.id) {
+      return interaction.reply(await this.addon.lang.buildMessage({
+        key: "not-bot-message",
+        ephemeral: true,
+        context: context
+      }));
     }
 
-    message.edit(presetMessage)
-    interaction.reply(await this.addon.lang.buildMessage({
-      key: "edited",
-      ephemeral: true,
-      context: {
-        guild: interaction.guild,
-        user: user,
-        message: message,
-        channel: interaction.channel
+    if (this.addon.configs.presets.size === 0) {
+      return interaction.reply(await this.addon.lang.buildMessage({
+        key: "unknown-preset",
+        ephemeral: true,
+        context: context
+      }));
+    }
+
+    const label = new LabelBuilder()
+      .setLabel(this.addon.lang.getString("modals.edit.label"))
+      .setDescription(this.addon.lang.getString("modals.edit.description"))
+
+    if (this.addon.configs.presets.size > 25) {
+      const textInput = new TextInputBuilder()
+        .setCustomId('preset')
+        .setPlaceholder(this.addon.lang.getString("modals.edit.text-input.placeholder"))
+        .setRequired(true)
+      
+      if (preset) {
+        textInput.setValue(preset.presetPath);
       }
-    }));
+      
+      label.setTextInputComponent(textInput);
+    } else {
+      const selectMenu = new StringSelectMenuBuilder()
+        .setCustomId('preset')
+        .setPlaceholder(this.addon.lang.getString("modals.edit.select-menu.placeholder"))
+        .setMaxValues(1)
+        .setOptions(
+          this.addon.configs.presets.map((presetConfig, key) => {
+            return {
+              label: key,
+              value: key,
+              default: preset ? preset.presetPath === key : false
+            }
+          })
+        )
+        .setRequired(true);
+      
+      label.setStringSelectMenuComponent(selectMenu);
+    }
+
+
+    const editModal = new ModalBuilder()
+      .setCustomId(`presets-edit_${message.channel.id}_${message.id}`)
+      .setTitle(this.addon.lang.getString("modals.edit.title"))
+      .addLabelComponents(label);
+
+    await interaction.showModal(editModal);
   }
 }

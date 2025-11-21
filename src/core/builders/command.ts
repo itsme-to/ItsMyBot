@@ -1,6 +1,5 @@
-import { ContextMenuCommandBuilder, SlashCommandBuilder, SlashCommandSubcommandBuilder, SlashCommandStringOption, SlashCommandAttachmentOption, SlashCommandChannelOption, SlashCommandBooleanOption, SlashCommandIntegerOption, SlashCommandMentionableOption, SlashCommandNumberOption, SlashCommandRoleOption, SlashCommandUserOption, SlashCommandSubcommandGroupBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { Config, User, Utils, ComponentBuilder } from '@itsmybot';
-import { Mixin } from 'ts-mixer';
+import { ContextMenuCommandBuilder, SlashCommandBuilder, SlashCommandSubcommandBuilder, SlashCommandStringOption, SlashCommandAttachmentOption, SlashCommandChannelOption, SlashCommandBooleanOption, SlashCommandIntegerOption, SlashCommandMentionableOption, SlashCommandNumberOption, SlashCommandRoleOption, SlashCommandUserOption, SlashCommandSubcommandGroupBuilder, ChatInputCommandInteraction, Collection } from 'discord.js';
+import { User } from '@itsmybot';
 
 export class CommandSubcommandBuilder extends SlashCommandSubcommandBuilder {
   execute?: (interaction: ChatInputCommandInteraction<'cached'>, user: User) => Promise<void | any>;
@@ -57,12 +56,13 @@ export class CommandSubcommandBuilder extends SlashCommandSubcommandBuilder {
 }
 
 export class CommandSubcommandGroupBuilder extends SlashCommandSubcommandGroupBuilder {
-  subcommands: CommandSubcommandBuilder[] = [];
+  executes: Collection<string, (interaction: ChatInputCommandInteraction<'cached'>, user: User) => Promise<void | any>> = new Collection();
 
   execute?: (interaction: ChatInputCommandInteraction<'cached'>, user: User) => Promise<void | any>;
   
   public setExecute(execute: (interaction: ChatInputCommandInteraction<'cached'>, user: User) => Promise<void | any>): this {
     this.execute = execute
+
     return this;
   }
 
@@ -73,26 +73,19 @@ export class CommandSubcommandGroupBuilder extends SlashCommandSubcommandGroupBu
       ? input(new CommandSubcommandBuilder())
       : input;
 
-    this.subcommands.push(builder);
+    if (builder.execute) {
+      this.executes.set(`${this.name}.${builder.name}`, builder.execute);
+      builder.execute = undefined;
+    }
+
     super.addSubcommand(builder);
     return this;
   }
 }
 
-export class CommandBuilder extends Mixin(SlashCommandBuilder, ComponentBuilder) {
-  enabled: boolean = true;
-  subcommands: (CommandSubcommandBuilder | CommandSubcommandGroupBuilder)[] = [];
-  config?: Config;
-
-  public using(config: Config) {
-    super.using(config);
-    this.config = config;
-    
-    if (config.has("permission")) this.setDefaultMemberPermissions(Utils.getPermissionFlags(config.getString("permission")));
-    if (config.getBoolOrNull("enabled") === false) this.setEnabled(false);
-
-    return this;
-  }
+export class CommandBuilder extends SlashCommandBuilder {
+  public: boolean = false;
+  executes: Collection<string, (interaction: ChatInputCommandInteraction<'cached'>, user: User) => Promise<void | any>> = new Collection();
 
   addSubcommand(input: CommandSubcommandBuilder): this;
   addSubcommand(input: (builder: CommandSubcommandBuilder) => CommandSubcommandBuilder): this;
@@ -102,8 +95,12 @@ export class CommandBuilder extends Mixin(SlashCommandBuilder, ComponentBuilder)
     const builder = typeof input === "function"
       ? input(new CommandSubcommandBuilder())
       : input;
-  
-    this.subcommands.push(builder);
+
+    if (builder.execute) {
+      this.executes.set(builder.name, builder.execute);
+      builder.execute = undefined;
+    }
+
     super.addSubcommand(builder);
     return this;
   }
@@ -117,13 +114,23 @@ export class CommandBuilder extends Mixin(SlashCommandBuilder, ComponentBuilder)
       ? input(new CommandSubcommandGroupBuilder())
       : input;
 
-    this.subcommands.push(builder);
+    if (builder.execute) {
+      this.executes.set(builder.name, builder.execute);
+      builder.execute = undefined;
+    }
+
+    for (const [key, subcommand] of builder.executes) {
+      this.executes.set(key, subcommand);
+    }
+
+    builder.executes.clear();
+
     super.addSubcommandGroup(builder);
     return this;
   }
 
-  public setEnabled(enabled: boolean) {
-    this.enabled = enabled;
+  setPublic() {
+    this.public = true;
     return this;
   }
 
@@ -173,17 +180,11 @@ export class CommandBuilder extends Mixin(SlashCommandBuilder, ComponentBuilder)
   }
 }
 
-export class ContextMenuBuilder extends Mixin(ContextMenuCommandBuilder, ComponentBuilder) {
-  enabled: boolean = true;
+export class ContextMenuBuilder extends ContextMenuCommandBuilder {
+  public: boolean = false;
 
-  public using(config: Config) {
-    super.using(config);
-
-    if (config.has("permission")) {
-      this.setDefaultMemberPermissions(Utils.getPermissionFlags(config.getString("permission")));
-    }
-    if (config.getBoolOrNull("enabled") === false) this.enabled = false;
-
+  setPublic() {
+    this.public = true;
     return this;
   }
 }

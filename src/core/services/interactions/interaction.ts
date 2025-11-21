@@ -1,16 +1,14 @@
-import { Manager, Addon, User, ConditionData, Base, CommandBuilder, ContextMenuBuilder, ComponentBuilder, CommandSubcommandBuilder, CommandSubcommandGroupBuilder } from '@itsmybot';
+import { Manager, Addon, User, Base, CommandBuilder, ContextMenuBuilder, CommandSubcommandBuilder, CommandSubcommandGroupBuilder } from '@itsmybot';
 import { AutocompleteInteraction, ChatInputCommandInteraction, ContextMenuCommandInteraction, ButtonInteraction, ModalSubmitInteraction, AnySelectMenuInteraction, ApplicationCommandOptionBase, SlashCommandSubcommandBuilder } from 'discord.js';
 
 export abstract class Command<T extends Addon | undefined = undefined>  extends Base<T> {
   public data: CommandBuilder;
-  public conditions: ConditionData[]
+  public enabled = true;
 
   constructor(manager: Manager, addon?: T) {
     super(manager, addon);
-
     this.data = this.build();
     this.addLanguagesString();
-    this.conditions = this.manager.services.condition.buildConditions(this.data.conditions, false)
   }
 
   public abstract build(): CommandBuilder;
@@ -38,7 +36,6 @@ export abstract class Command<T extends Addon | undefined = undefined>  extends 
   private addLanguagesStringOption(path: string, option: CommandSubcommandBuilder | CommandSubcommandGroupBuilder | ApplicationCommandOptionBase | SlashCommandSubcommandBuilder) {
     const lang = this.addon?.lang || this.manager.lang;
 
-    
     switch (true) {
       case option instanceof CommandSubcommandBuilder:
       case option instanceof CommandSubcommandGroupBuilder:
@@ -60,13 +57,12 @@ export abstract class Command<T extends Addon | undefined = undefined>  extends 
 
 export abstract class ContextMenu<T extends Addon | undefined = undefined>  extends Base<T> {
   public data: ContextMenuBuilder;
-  public conditions: ConditionData[]
+  public enabled = true;
 
   constructor(manager: Manager, addon?: T) {
     super(manager, addon);
 
     this.data = this.build();
-    this.conditions = this.manager.services.condition.buildConditions(this.data.conditions, false)
   }
 
   public abstract build(): ContextMenuBuilder;
@@ -78,20 +74,8 @@ export abstract class ContextMenu<T extends Addon | undefined = undefined>  exte
 
 abstract class BaseComponent<T extends Addon | undefined = undefined> extends Base<T> {
   public abstract customId: string;
-  public data: ComponentBuilder;
-  public conditions: ConditionData[]
-
-  constructor(manager: Manager, addon?: T) {
-    super(manager, addon);
-
-    this.data = this.build();
-    this.conditions = this.manager.services.condition.buildConditions(this.data.conditions, false)
-  }
-
-  public build(): ComponentBuilder {
-    return new ComponentBuilder();
-  }
-
+  public usingPermissionFrom?: string;
+ 
   public abstract execute(interaction: AnySelectMenuInteraction<'cached'> | ButtonInteraction<'cached'> | ModalSubmitInteraction<'cached'>, user: User): Promise<void | any>
 }
 

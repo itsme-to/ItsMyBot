@@ -15,13 +15,4 @@ export default class Preset extends Model<InferAttributes<Preset>, InferCreation
 
   @Column(DataType.STRING)
   declare presetPath: string;
-
-  @Column(DataType.BOOLEAN)
-  declare needsUpdate: boolean;
-
-  async updateData(presetPath: string, needsUpdate: boolean = true) {
-    this.presetPath = presetPath;
-    this.needsUpdate = needsUpdate;
-    await this.save();
-  }
 }

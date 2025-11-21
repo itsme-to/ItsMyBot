@@ -1,18 +1,17 @@
 import { Command, User, CommandBuilder } from '@itsmybot';
-import { ChatInputCommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction, PermissionFlagsBits } from 'discord.js';
 
 export default class ReloadCommand extends Command {
   build() {
     return new CommandBuilder()
       .setName('reload')
       .setPublic()
-      .using(this.manager.configs.commands.getSubsection("reload"))
+      .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
   }
 
   async execute(interaction: ChatInputCommandInteraction<'cached'>, user: User) {
     this.manager.logger.info(`Reloading the bot...`);
     this.manager.services.interaction.registries.commands.clear()
-    this.manager.services.interaction.registries.contextMenus.clear()
     this.manager.services.interaction.registries.buttons.clear()
     this.manager.services.interaction.registries.selectMenus.clear()
     this.manager.services.interaction.registries.modals.clear()

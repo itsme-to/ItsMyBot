@@ -1,5 +1,5 @@
 import { Expansion, Context } from '@itsmybot';
-import { Parser } from 'expr-eval'
+import { Parser } from 'expr-eval-fork'
 
 export default class MathExpansion extends Expansion {
   name = 'math';

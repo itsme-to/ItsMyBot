@@ -1,41 +1,33 @@
 import { Command, User, CommandBuilder } from '@itsmybot';
 import ExampleAddon from '..';
-import { AutocompleteInteraction, ChatInputCommandInteraction } from 'discord.js';
+import { AutocompleteInteraction, ChatInputCommandInteraction, PermissionFlagsBits } from 'discord.js';
 
 export default class HelloWorldCommand extends Command<ExampleAddon> {
 
-
   build() {
-    const command = this.addon.configs.commands.getSubsection("hello-world");
-
     return new CommandBuilder()
       .setName('commission')
-      .using(command)
+      .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
       .setPublic()
       .addSubcommand(subcommand =>
         subcommand
           .setName('create')
-          .setDescription(command.getString("subcommands.create.description"))
           .addStringOption(option =>
             option
               .setName('name')
-              .setDescription(command.getString("subcommands.create.options.name"))
               .setRequired(true))
           .addNumberOption(option =>
             option
               .setName('price')
-              .setDescription(command.getString("subcommands.create.options.price"))
               .setRequired(true))
           .addStringOption(option =>
             option
               .setName('deadline')
-              .setDescription(command.getString("subcommands.create.options.deadline"))
               .setAutocomplete(true)
               .setRequired(true))
           .addStringOption(option =>
             option
               .setName('type')
-              .setDescription(command.getString("subcommands.create.options.type"))
               .setRequired(true)
               .addChoices(
                 { name: 'Survival', value: 'survival' },
@@ -50,7 +42,6 @@ export default class HelloWorldCommand extends Command<ExampleAddon> {
           .addStringOption(option =>
             option
               .setName('version')
-              .setDescription(command.getString("subcommands.create.options.version"))
               .setRequired(true)
               .addChoices(
                 { name: '1.7', value: '1.7' },

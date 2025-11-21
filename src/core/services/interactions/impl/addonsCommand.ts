@@ -1,4 +1,4 @@
-import { ActionRowBuilder, AutocompleteInteraction, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, ContainerBuilder, MessageActionRowComponentBuilder, TextDisplayBuilder } from 'discord.js';
+import { ActionRowBuilder, AutocompleteInteraction, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, ContainerBuilder, MessageActionRowComponentBuilder, PermissionFlagsBits, TextDisplayBuilder } from 'discord.js';
 import { Command, User, Utils, Pagination, MessageComponentBuilder, CommandBuilder } from '@itsmybot';
 import AddonModel from '../../addons/addon.model.js';
 
@@ -6,8 +6,8 @@ export default class AddonCommand extends Command {
   build() {
     return new CommandBuilder()
       .setName('addons')
-      .using(this.manager.configs.commands.getSubsection("addons"))
       .setPublic()
+      .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
       .addSubcommand(subcommand =>
         subcommand
           .setName('list')

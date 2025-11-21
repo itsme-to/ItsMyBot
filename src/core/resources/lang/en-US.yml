@@ -42,6 +42,31 @@ commands:
       key: "The key of the meta data."
       value: "The value of the meta data."
       scope: "The id of the channel or user to set the meta data for"
+  commands:
+    description: "Manage bot commands."
+    subcommands:
+      list:
+        description: "Show the list of commands."
+      enable:
+        description: "Enable a command."
+        options:
+          command: "The command to enable."
+      disable:
+        description: "Disable a command."
+        options:
+          command: "The command to disable."
+      permission:
+        description: "Manage command permissions."
+        subcommands:
+          set:
+            description: "Set command permission."
+            options:
+              command: "The command to set the permission for."
+              permission: "The permission to set."
+          remove:
+            description: "Remove command permission."
+            options:
+              command: "The command to remove the permission from."
 
 no-permission: "You don't have the permission to use that."
 in-cooldown: "You're currently in cooldown. You can perform this action again %cooldown%."
@@ -97,3 +122,12 @@ meta:
   add: "The meta data `%meta_key%` has been added with the value `%meta_value%`."
   subtract: "The meta data `%meta_key%` has been subtracted with the value `%meta_value%`."
   toggle: "The meta data `%meta_key%` has been set to `%meta_value%`."
+
+command:
+  not-found: "The command `%command%` was not found."
+  enabled: "The command `%command%` has been enabled."
+  disabled: "The command `%command%` has been disabled."
+  permission:
+    set: "The permission for the command `%command%` has been updated."
+    remove: "The permission for the command `%command%` has been removed."
+    unknown: "Invalid permission value"

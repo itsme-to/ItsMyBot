@@ -7,10 +7,9 @@ export default class MessageDeleteEvent extends Event<PresetsAddon> {
   name = Events.MessageDelete;
 
   async execute(message: Message) {
-    if (!message.guild || message.guild.id !== this.manager.primaryGuildId) return;
     const preset = await Preset.findOne({ where: { id: message.id } });
     if (!preset) return;
 
-    await Preset.destroy({ where: { id: message.id } });
+    await preset.destroy();
   }
 };

@@ -1,12 +1,11 @@
 import { Command, User, Utils, MetaData, CommandBuilder } from '@itsmybot';
-import { AutocompleteInteraction, ChatInputCommandInteraction } from 'discord.js';
+import { AutocompleteInteraction, ChatInputCommandInteraction, PermissionFlagsBits } from 'discord.js';
 export default class MetaCommand extends Command {
 
   build() {
-    const command = this.manager.configs.commands.getSubsection("meta");
     return new CommandBuilder()
       .setName('meta')
-      .using(command)
+      .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
       .addSubcommand(subcommand =>
         subcommand.setName("set")
           .addStringOption(option =>

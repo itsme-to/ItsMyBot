@@ -11,8 +11,8 @@ export default class BotReadyEvent extends Event<PresetsAddon> {
     const presets = await Preset.findAll();
 
     await Promise.all(presets.map(async preset => {
-      const message = await this.addon.getMessage(preset);
-      if (!message) return Preset.destroy({ where: { id: preset.id } });
+      const message = await this.addon.fetchMessage(preset.channelId, preset.id);
+      if (!message) return preset.destroy();
     }));
   }
 };

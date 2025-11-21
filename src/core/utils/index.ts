@@ -21,7 +21,7 @@ export { Pagination } from './pagination.js';
 
 import { manager, Context, Variable } from '@itsmybot';
 import { GuildMember } from 'discord.js';
-import { Parser } from 'expr-eval';
+import { Parser } from 'expr-eval-fork';
 import { parseDocument } from 'yaml';
 
 const discordEpoch = 1420070400000;

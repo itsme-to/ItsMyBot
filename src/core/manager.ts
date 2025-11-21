@@ -1,6 +1,6 @@
 import { Client, Collection } from 'discord.js';
 import { existsSync, mkdirSync } from 'fs';
-import { ClientOptions, ManagerOptions, Services, ManagerConfigs, ConfigFile, Addon, Logger, LangDirectory } from '@itsmybot'
+import { ClientOptions, ManagerOptions, Services, ConfigFile, Addon, Logger, LangDirectory } from '@itsmybot'
 import { Sequelize } from 'sequelize-typescript';
 
 import EventService from './services/events/eventService.js';
@@ -13,7 +13,10 @@ import LeaderboardService from './services/leaderboards/leaderboardService.js';
 import ConditionService from './services/conditions/conditionService.js';
 import ActionService from './services/actions/actionService.js';
 import DefaultConfig from 'core/resources/config.js';
-import CommandConfig from 'core/resources/commands.js';
+
+interface ManagerConfigs {
+  config: ConfigFile
+}
 
 export class Manager {
   public client: Client<true>;
@@ -40,7 +43,6 @@ export class Manager {
   public async initialize(): Promise<void> {
     try {
       this.configs.config = await this.createConfig(DefaultConfig, 'config.yml');
-      this.configs.commands = await this.createConfig(CommandConfig, 'commands.yml');
     } catch (e) {
       this.logger.error(e)
       process.exit(1)
