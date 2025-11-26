@@ -41,6 +41,15 @@ default-language: "en-US"
 # Default accent color for embeds and components. Use 'none' for no color.
 default-color: "#3498db"
 
+# Structure for default messages
+default-message:
+  components: 
+    - type: 'container'
+      color: '%default_color%'
+      components:
+        - type: 'text-display'
+          content: '%message%'
+
 # Bot presence settings
 presence:
   interval: 30 # Interval in seconds between each status change

@@ -3,7 +3,6 @@ import { join, resolve } from 'path';
 import * as fs from 'fs/promises';
 import { glob } from 'glob';
 import { parse } from 'yaml';
-import { ContainerBuilder, MessageFlags, TextDisplayBuilder } from "discord.js";
 
 type LanguageData = Map<string, string>;
 type Languages = Map<string, LanguageData>;
@@ -112,32 +111,15 @@ export class LangDirectory {
   async buildMessage({ key, ephemeral, variables = [], context, lang }: { key: string, ephemeral: boolean, variables?: Variable[], context: Context, lang?: string }): Promise<MessageOutput> {
     const parsedMessage = await this.getParsedString(key, variables, context, lang);
 
-    const message: MessageOutput = {
-      content: undefined,
-      embeds: [],
-      files: [],
-      components: [],
-      allowedMentions: { parse: [] },
-    };
+    variables.push({ searchFor: '%message%', replaceWith: parsedMessage });
+    variables.push({ searchFor: '%default_color%', replaceWith: manager.configs.config.getString('default-color') });
 
-    const flags = [MessageFlags.IsComponentsV2];
-    if (ephemeral) {
-      flags.push(MessageFlags.Ephemeral);
-    }
-
-    message.flags = flags.reduce((acc: number, flag: number) => acc | flag, 0);
-
-    const defaultColor = Utils.getColorFromString(manager.configs.config.getString('default-color'));
-
-    const container = new ContainerBuilder()
-      .addTextDisplayComponents(
-        new TextDisplayBuilder()
-          .setContent(parsedMessage)
-      )
-      .setAccentColor(defaultColor);
-
-    message.components.push(container);
-    return message;
+    return Utils.setupMessage({
+      config: manager.configs.config.getSubsection('default-message'),
+      variables,
+      context,
+      ephemeral
+    })
   }
 }
 

@@ -1,4 +1,4 @@
-import { IsActivityType } from '@itsmybot';
+import { IsActivityType, MessageValidator } from '@itsmybot';
 import { Type } from 'class-transformer';
 import { IsString, IsInt, ValidateNested, IsBoolean, Validate, IsDefined, NotEquals, IsIn, IsPositive } from 'class-validator';
 
@@ -82,6 +82,11 @@ export default class DefaultConfig {
   @IsDefined()
   @IsString()
   'default-color': string;
+
+  @IsDefined()
+  @ValidateNested()
+  @Type(() => MessageValidator)
+  'default-message': MessageValidator;
 
   @IsDefined()
   @IsBoolean()
