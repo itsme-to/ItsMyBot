@@ -12,7 +12,7 @@ export async function setupContainer(settings: ContainerSettings)  {
   const variables = settings.variables || [];
   const context = settings.context;
 
-  const colorString = config.getStringOrNull("color", true);
+  const colorString = await Utils.applyVariables(config.getStringOrNull("color", true), variables, context);
   const color = Utils.getColorFromString(colorString);
 
   const container = new ContainerBuilder()

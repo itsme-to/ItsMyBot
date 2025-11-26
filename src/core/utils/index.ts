@@ -110,11 +110,8 @@ export class Utils {
    * @param context The context to apply variables and placeholders from 
    */
   static async applyVariables(value: string | undefined, variables: Variable[], context?: Context) {
-    if (!value) return ""
-
-    if (context?.user) variables.push(...this.userVariables(context.user));
-    if (context?.channel) variables.push(...this.channelVariables(context.channel));
-    if (context?.role) variables.push(...this.roleVariables(context.role));
+    if (!value) return "";
+    
     if (context?.content) variables.push({ searchFor: "%content%", replaceWith: context.content })
     if (context?.message) variables.push(
       { searchFor: "%message_content%", replaceWith: Utils.blockPlaceholders(context.message.content) },
@@ -242,7 +239,8 @@ export class Utils {
       month: 30 * 24 * 60 * 60,
       day: 24 * 60 * 60,
       hour: 60 * 60,
-      minute: 60
+      minute: 60,
+      second: 1
     };
 
     let remainingSeconds = seconds;
@@ -256,15 +254,11 @@ export class Utils {
       }
     }
 
-    if (remainingSeconds > 0) {
-      result.push({ value: remainingSeconds, unit: 'second' });
-    }
-
     return result.slice(0, 3).map(({ value, unit }) => {
       if (result.length === 1) {
-        return value === 1 ? `${value} ${unit}` : `${value} ${unit}s`;
+        return value === 1 ? `${value} ${manager.lang.getString(`time.long.${unit}`)}` : `${value} ${manager.lang.getString(`time.long.${unit}s`)}`;
       }
-      return `${value}${unit.charAt(0)}`;
+      return value + manager.lang.getString(`time.short.${unit}`);
     }).join(' ');
   }
 
@@ -277,6 +271,7 @@ export class Utils {
    */
   static parseTime(time: string): number {
     const timeUnits: { [key: string]: number } = {
+      w: 7 * 24 * 60 * 60,
       d: 24 * 60 * 60,
       h: 60 * 60,
       m: 60,

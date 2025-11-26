@@ -40,7 +40,7 @@ export const userVariables = (user: User, prefix = "user") => {
     searchFor: `%${prefix}_mention%`,
     replaceWith: user.mention,
   }, {
-    searchFor: `%${prefix}_pfp%`,
+    searchFor: `%${prefix}_avatar%`,
     replaceWith: user.avatar,
   }, {
     searchFor: `%${prefix}_bot%`,
