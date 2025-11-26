@@ -1,0 +1,26 @@
+commands:
+  preset:
+    description: "Siųsti šabloną"
+    context-menu: "Redaguoti pranešimą"
+    subcommands:
+      send:
+        description: "Siųsti pranešimą"
+        options:
+          preset: "Siunčiamas šablonas"
+          channel: "Kanalas, į kurį siųsti pranešimą"
+
+sent: "Pranešimas išsiųstas į %channel_mention%"
+unknown-message: "Pranešimas nerastas"
+unknown-preset: "Šablonas nerastas"
+edited: "Pranešimas atnaujintas naudojant šabloną %preset_path%"
+not-bot-message: 'Galiu redaguoti tik mano išsiųstus pranešimus!'
+
+modals:
+  edit:
+    title: 'Redaguoti pranešimą su šablonais'
+    label: 'Naudojamo šablono kelias'
+    description: 'Įveskite šablono kelią, kurį norite naudoti šiam pranešimui'
+    text-input:
+      placeholder: 'Kelias be .yml, pvz. welcome-message'
+    select-menu:
+      placeholder: 'Pasirinkite naudojamą šabloną'

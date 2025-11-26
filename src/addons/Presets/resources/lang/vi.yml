@@ -1,0 +1,26 @@
+commands:
+  preset:
+    description: "Gửi preset"
+    context-menu: "Chỉnh sửa tin nhắn"
+    subcommands:
+      send:
+        description: "Gửi một tin nhắn"
+        options:
+          preset: "Preset để gửi"
+          channel: "Kênh để gửi tin nhắn"
+
+sent: "Tin nhắn đã được gửi đến %channel_mention%"
+unknown-message: "Không tìm thấy tin nhắn"
+unknown-preset: "Không tìm thấy preset"
+edited: "Tin nhắn đã được cập nhật bằng preset %preset_path%"
+not-bot-message: 'Tôi chỉ có thể chỉnh sửa các tin nhắn do tôi gửi!'
+
+modals:
+  edit:
+    title: 'Chỉnh sửa tin nhắn bằng preset'
+    label: 'Đường dẫn preset để sử dụng'
+    description: 'Nhập đường dẫn của preset mà bạn muốn sử dụng cho tin nhắn này'
+    text-input:
+      placeholder: 'Đường dẫn không có .yml, ví dụ welcome-message'
+    select-menu:
+      placeholder: 'Chọn một preset để sử dụng'

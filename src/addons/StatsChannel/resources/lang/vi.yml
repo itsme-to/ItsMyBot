@@ -1,0 +1,16 @@
+commands:
+  stats-channel:
+    description: "Quản lý kênh thống kê"
+    subcommands:
+      create:
+        description: "Tạo kênh thống kê"
+        options:
+          name: "Tên của kênh thống kê"
+      rename:
+        description: "Đổi tên kênh thống kê"
+        options:
+          channel: "ID của kênh thống kê"
+          name: "Tên mới của kênh thống kê"
+
+channel-created: "Kênh thống kê đã được tạo. %channel_name%"
+channel-renamed: "Kênh thống kê đã được đổi tên. %new_name%"

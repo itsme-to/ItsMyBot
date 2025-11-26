@@ -1,0 +1,16 @@
+commands:
+  stats-channel:
+    description: "Beheer het stats-kanaal"
+    subcommands:
+      create:
+        description: "Maak een stats-kanaal aan"
+        options:
+          name: "Naam van het stats-kanaal"
+      rename:
+        description: "Hernoem een stats-kanaal"
+        options:
+          channel: "ID van het stats-kanaal"
+          name: "Nieuwe naam van het stats-kanaal"
+
+channel-created: "Stats-kanaal aangemaakt. %channel_name%"
+channel-renamed: "Stats-kanaal hernoemd. %new_name%"

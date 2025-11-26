@@ -1,0 +1,4 @@
+unknown: 'Неизвестно'
+offline: 'Не в сети'
+online: 'В сети'
+no-motd: 'Нет MOTD'

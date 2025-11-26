@@ -1,0 +1,152 @@
+commands:
+  addons:
+    description: "Gestionar complementos."
+    subcommands:
+      list:
+        description: "Mostrar la lista de complementos."
+      enable:
+        description: "Habilitar un complemento."
+        options:
+          addon: "El complemento a habilitar."
+      disable:
+        description: "Deshabilitar un complemento."
+        options:
+          addon: "El complemento a deshabilitar."
+  reload:
+    description: "Recargar el bot"
+  parse:
+    description: "Analizar un texto."
+    options:
+      text: "El texto a analizar."
+      user: "El usuario para el que se va a analizar el texto."
+  leaderboard:
+    description: "Mostrar la clasificación."
+  meta:
+    description: "Gestionar metadatos."
+    subcommands:
+      set:
+        description: "Establecer un metadato."
+      remove:
+        description: "Eliminar un metadato."
+      add:
+        description: "Agregar un metadato."
+      subtract:
+        description: "Restar un valor a un metadato."
+      toggle:
+        description: "Alternar un metadato booleano."
+      list-add:
+        description: "Agregar un valor a un metadato de lista."
+      list-remove:
+        description: "Eliminar un valor de un metadato de lista."
+    options:
+      key: "La clave del metadato."
+      value: "El valor del metadato."
+      scope: "El id del canal o usuario para el que establecer el metadato."
+  commands:
+    description: "Gestionar los comandos del bot."
+    subcommands:
+      list:
+        description: "Mostrar la lista de comandos."
+      enable:
+        description: "Habilitar un comando."
+        options:
+          command: "El comando a habilitar."
+      disable:
+        description: "Deshabilitar un comando."
+        options:
+          command: "El comando a deshabilitar."
+      permission:
+        description: "Gestionar permisos de comando."
+        subcommands:
+          set:
+            description: "Establecer permiso de comando."
+            options:
+              command: "El comando para el que establecer el permiso."
+              permission: "El permiso a establecer."
+          remove:
+            description: "Eliminar permiso de comando."
+            options:
+              command: "El comando del que eliminar el permiso."
+
+no-permission: "No tienes permiso para usar eso."
+in-cooldown: "Estás actualmente en periodo de espera. Puedes realizar esta acción de nuevo en %cooldown%."
+only-in-primary-guild: "Esta acción solo puede usarse en el servidor principal."
+invalid-time: "Formato de tiempo inválido. Por favor usa un formato de tiempo válido. Ejemplo: 1d, 1h, 1m, 1s."
+
+pagination:
+  select-placeholder: "Página %current_page%/%total_pages%"
+  placeholder: "Selecciona una opción"
+  no-items: "No hay valores para mostrar."
+  filter-placeholder: "Selecciona un filtro"
+  next-page: 'Siguiente'
+  previous-page: 'Anterior'
+
+leaderboard:
+  messages-format: '`%position%.` %user_mention% • **%user_messages%** mensajes enviados'
+  title: "### 🏆︎ Clasificación - %leaderboard_name%"
+  footer: "Página %pagination_current_page%/%pagination_total_pages%"
+
+addons:
+  title: 'A continuación encontrarás la lista de complementos disponibles'
+  info: |
+    ### %addon_status% %addon_name% v%addon_version%
+    Autores: %addon_authors%
+  website: 'Sitio web'
+  enabled: "El complemento `%addon_name%` ha sido habilitado. Reinicia el bot para aplicar los cambios."
+  disabled: "El complemento `%addon_name%` ha sido deshabilitado. Reinicia el bot para aplicar los cambios."
+  already-enabled: "El complemento `%addon_name%` ya está habilitado."
+  already-disabled: "El complemento `%addon_name%` ya está deshabilitado."
+  not-found: "El complemento `%addon_name%` no existe."
+
+reloaded: "El bot ha sido recargado. Puede tardar unos segundos en desplegar los comandos."
+error-reloading: |
+  ### Error al recargar el bot
+  Ocurrió un error al recargar el bot.
+  ```
+  %error_message%
+  ```  
+parsed: |
+  Analizando el texto para %user_mention%:
+
+  ```
+  %parsed_text%
+  ```
+engine:
+  missing-argument: "El motor `%engine%` carece del argumento `%missing%`."
+  missing-context: "El script %script% carece del contexto `%missing%`."
+
+meta:
+  scope-required: "El ámbito es obligatorio para esta acción."
+  set: "El metadato `%meta_key%` se ha establecido en `%meta_value%`."
+  remove: "El metadato `%meta_key%` ha sido eliminado."
+  add: "El metadato `%meta_key%` ha sido añadido con el valor `%meta_value%`."
+  subtract: "Al metadato `%meta_key%` se le ha restado el valor `%meta_value%`."
+  toggle: "El metadato `%meta_key%` se ha establecido en `%meta_value%`."
+
+command:
+  not-found: "El comando `%command%` no se encontró."
+  enabled: "El comando `%command%` ha sido habilitado."
+  disabled: "El comando `%command%` ha sido deshabilitado."
+  permission:
+    set: "El permiso para el comando `%command%` ha sido actualizado."
+    remove: "El permiso para el comando `%command%` ha sido eliminado."
+    unknown: "Valor de permiso inválido"
+
+time:
+  short:
+    second: "s"
+    minute: "m"
+    hour: "h"
+    day: "d"
+    month: "m"
+  long:
+    second: "segundo"
+    seconds: "segundos"
+    minute: "minuto"
+    minutes: "minutos"
+    hour: "hora"
+    hours: "horas"
+    day: "día"
+    days: "días"
+    month: "mes"
+    months: "meses"

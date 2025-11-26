@@ -26,6 +26,8 @@ node_modules/
 
 package-lock.json
 
+.env
+
 *.zip
 *.sqlite
 /.idea

@@ -1,0 +1,152 @@
+commands:
+  addons:
+    description: "Kiegészítők kezelése."
+    subcommands:
+      list:
+        description: "A kiegészítők listájának megjelenítése."
+      enable:
+        description: "Egy kiegészítő engedélyezése."
+        options:
+          addon: "Az engedélyezendő kiegészítő."
+      disable:
+        description: "Egy kiegészítő letiltása."
+        options:
+          addon: "A letiltandó kiegészítő."
+  reload:
+    description: "A bot újratöltése"
+  parse:
+    description: "Szöveg elemzése."
+    options:
+      text: "Az elemezendő szöveg."
+      user: "Az a felhasználó, akinek a szövegét elemezze."
+  leaderboard:
+    description: "Ranglista megjelenítése."
+  meta:
+    description: "Metaadatok kezelése."
+    subcommands:
+      set:
+        description: "Egy metaadat beállítása."
+      remove:
+        description: "Egy metaadat törlése."
+      add:
+        description: "Egy metaadat hozzáadása."
+      subtract:
+        description: "Érték kivonása egy metaadatból."
+      toggle:
+        description: "Egy boole metaadat kapcsolása."
+      list-add:
+        description: "Érték hozzáadása egy lista típusú metaadathoz."
+      list-remove:
+        description: "Érték eltávolítása egy lista típusú metaadatból."
+    options:
+      key: "A metaadat kulcsa."
+      value: "A metaadat értéke."
+      scope: "A csatorna vagy felhasználó azonosítója, amelyre a metaadat beállítandó"
+  commands:
+    description: "Bot parancsok kezelése."
+    subcommands:
+      list:
+        description: "A parancsok listájának megjelenítése."
+      enable:
+        description: "Egy parancs engedélyezése."
+        options:
+          command: "Az engedélyezendő parancs."
+      disable:
+        description: "Egy parancs letiltása."
+        options:
+          command: "A letiltandó parancs."
+      permission:
+        description: "Parancs jogosultságok kezelése."
+        subcommands:
+          set:
+            description: "Parancs jogosultságának beállítása."
+            options:
+              command: "Az a parancs, amelyhez a jogosultságot beállítjuk."
+              permission: "A beállítandó jogosultság."
+          remove:
+            description: "Parancs jogosultságának eltávolítása."
+            options:
+              command: "Az a parancs, amelyről a jogosultságot eltávolítjuk."
+
+no-permission: "Nincs engedélyed ezt használni."
+in-cooldown: "Jelenleg várakozási időben vagy. Ezt a műveletet %cooldown% múlva ismét végrehajthatod."
+only-in-primary-guild: "Ez a művelet csak az elsődleges szerveren használható."
+invalid-time: "Érvénytelen időformátum. Kérjük, használj érvényes időformátumot. Példa: 1d, 1h, 1m, 1s."
+
+pagination:
+  select-placeholder: "Oldal %current_page%/%total_pages%"
+  placeholder: "Válassz egy lehetőséget"
+  no-items: "Nincs megjeleníthető érték."
+  filter-placeholder: "Válassz egy szűrőt"
+  next-page: 'Következő'
+  previous-page: 'Előző'
+
+leaderboard:
+  messages-format: '`%position%.` %user_mention% • **%user_messages%** üzenet elküldve'
+  title: "### 🏆︎ Ranglista - %leaderboard_name%"
+  footer: "Oldal %pagination_current_page%/%pagination_total_pages%"
+
+addons:
+  title: 'Az alábbiakban találhatók az elérhető kiegészítők listája'
+  info: |
+    ### %addon_status% %addon_name% v%addon_version%
+    Szerzők: %addon_authors%
+  website: 'Weboldal'
+  enabled: "A(z) `%addon_name%` kiegészítő engedélyezve lett. Indítsd újra a botot a változtatások érvényesítéséhez."
+  disabled: "A(z) `%addon_name%` kiegészítő letiltva lett. Indítsd újra a botot a változtatások érvényesítéséhez."
+  already-enabled: "A(z) `%addon_name%` kiegészítő már engedélyezve van."
+  already-disabled: "A(z) `%addon_name%` kiegészítő már letiltva van."
+  not-found: "A(z) `%addon_name%` kiegészítő nem létezik."
+
+reloaded: "A bot újratöltődött. A parancsok telepítése néhány másodpercet igénybe vehet."
+error-reloading: |
+  ### Hiba a bot újratöltése közben
+  Hiba történt a bot újratöltése során.
+  ```
+  %error_message%
+  ```  
+parsed: |
+  A szöveg elemzése %user_mention% számára:
+
+  ```
+  %parsed_text%
+  ```
+engine:
+  missing-argument: "A(z) `%engine%`-nek hiányzik a `%missing%` argumentum."
+  missing-context: "A(z) %script% szkript hiányolja a `%missing%` kontextust."
+
+meta:
+  scope-required: "Ehhez a művelethez meg kell adni a hatókört."
+  set: "A(z) `%meta_key%` metaadat értéke `%meta_value%` lett."
+  remove: "A(z) `%meta_key%` metaadat törölve lett."
+  add: "A(z) `%meta_key%` metaadat hozzáadva a(z) `%meta_value%` értékkel."
+  subtract: "A(z) `%meta_key%` metaadat értékéből kivontuk a(z) `%meta_value%` értéket."
+  toggle: "A(z) `%meta_key%` metaadat értéke `%meta_value%` lett."
+
+command:
+  not-found: "A(z) `%command%` parancs nem található."
+  enabled: "A(z) `%command%` parancs engedélyezve lett."
+  disabled: "A(z) `%command%` parancs letiltva lett."
+  permission:
+    set: "A(z) `%command%` parancs jogosultsága frissítve lett."
+    remove: "A(z) `%command%` parancs jogosultsága eltávolítva."
+    unknown: "Érvénytelen jogosultságérték"
+
+time:
+  short:
+    second: "s"
+    minute: "m"
+    hour: "h"
+    day: "d"
+    month: "m"
+  long:
+    second: "másodperc"
+    seconds: "másodpercek"
+    minute: "perc"
+    minutes: "percek"
+    hour: "óra"
+    hours: "órák"
+    day: "nap"
+    days: "napok"
+    month: "hónap"
+    months: "hónapok"

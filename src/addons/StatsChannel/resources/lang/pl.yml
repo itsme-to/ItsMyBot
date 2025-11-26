@@ -1,0 +1,16 @@
+commands:
+  stats-channel:
+    description: "Zarządzaj kanałem statystyk"
+    subcommands:
+      create:
+        description: "Utwórz kanał statystyk"
+        options:
+          name: "Nazwa kanału statystyk"
+      rename:
+        description: "Zmień nazwę kanału statystyk"
+        options:
+          channel: "ID kanału statystyk"
+          name: "Nowa nazwa kanału statystyk"
+
+channel-created: "Kanał statystyk utworzony. %channel_name%"
+channel-renamed: "Zmieniono nazwę kanału statystyk. %new_name%"

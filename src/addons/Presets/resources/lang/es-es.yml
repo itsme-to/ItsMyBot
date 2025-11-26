@@ -1,0 +1,26 @@
+commands:
+  preset:
+    description: "Enviar un preset"
+    context-menu: "Editar el mensaje"
+    subcommands:
+      send:
+        description: "Enviar un mensaje"
+        options:
+          preset: "Preset a enviar"
+          channel: "Canal para enviar el mensaje"
+
+sent: "Mensaje enviado a %channel_mention%"
+unknown-message: "Mensaje no encontrado"
+unknown-preset: "Preset no encontrado"
+edited: "Mensaje actualizado con preset %preset_path%"
+not-bot-message: '¡Solo puedo editar mensajes enviados por mí!'
+
+modals:
+  edit:
+    title: 'Editar mensaje con Presets'
+    label: 'La ruta del preset a usar'
+    description: 'Introduce la ruta del preset que quieres usar para este mensaje'
+    text-input:
+      placeholder: 'Ruta sin .yml, p. ej. welcome-message'
+    select-menu:
+      placeholder: 'Selecciona un preset para usar'

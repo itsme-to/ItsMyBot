@@ -16,13 +16,13 @@ embeds:
     description: "This is just a little tast of what Embeds can do..."
     color: "#2bff88"
     footer: Itsme.to
-    footer-icon: "%bot_pfp%"
+    footer-icon: "%bot_avatar%"
 
   # This is an example of a complex embed
   - title: "Complex Embed"
     url: "https://itsme.to"
     author: "Théo"
-    author-icon: "%bot_pfp%"
+    author-icon: "%bot_avatar%"
     author-url: "https://itsme.to"
     color: "#2bd2ff"
     thumbnail: "%guild_icon%"
@@ -38,7 +38,7 @@ embeds:
           But this one is on 2 line
     image: "https://media.itsme.to/image"
     footer: "Made with %bot_username%"
-    footer-icon: "%bot_pfp%"
+    footer-icon: "%bot_avatar%"
 
 action-rows:
   1: 

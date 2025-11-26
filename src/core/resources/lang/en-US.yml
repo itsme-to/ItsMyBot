@@ -131,3 +131,22 @@ command:
     set: "The permission for the command `%command%` has been updated."
     remove: "The permission for the command `%command%` has been removed."
     unknown: "Invalid permission value"
+
+time:
+  short:
+    second: "s"
+    minute: "m"
+    hour: "h"
+    day: "d"
+    month: "m"
+  long:
+    second: "second"
+    seconds: "seconds"
+    minute: "minute"
+    minutes: "minutes"
+    hour: "hour"
+    hours: "hours"
+    day: "day"
+    days: "days"
+    month: "month"
+    months: "months"

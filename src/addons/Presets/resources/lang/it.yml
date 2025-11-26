@@ -1,0 +1,26 @@
+commands:
+  preset:
+    description: "Invia una preimpostazione"
+    context-menu: "Modifica il messaggio"
+    subcommands:
+      send:
+        description: "Invia un messaggio"
+        options:
+          preset: "Preimpostazione da inviare"
+          channel: "Canale a cui inviare il messaggio"
+
+sent: "Messaggio inviato a %channel_mention%"
+unknown-message: "Messaggio non trovato"
+unknown-preset: "Preimpostazione non trovata"
+edited: "Messaggio aggiornato con la preimpostazione %preset_path%"
+not-bot-message: 'Posso modificare solo i messaggi inviati da me!'
+
+modals:
+  edit:
+    title: 'Modifica messaggio con preimpostazioni'
+    label: 'Il percorso della preimpostazione da usare'
+    description: 'Inserisci il percorso della preimpostazione che vuoi usare per questo messaggio'
+    text-input:
+      placeholder: 'Percorso senza .yml, e.g. welcome-message'
+    select-menu:
+      placeholder: 'Seleziona una preimpostazione da usare'

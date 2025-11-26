@@ -1,0 +1,143 @@
+commands:
+  addons:
+    description: "Quản lý addons."
+    subcommands:
+      list:
+        description: "Hiển thị danh sách addons."
+      enable:
+        description: "Bật một addon."
+        options:
+          addon: "Addon để bật."
+      disable:
+        description: "Tắt một addon."
+        options:
+          addon: "Addon để tắt."
+  reload:
+    description: "Tải lại bot"
+  parse:
+    description: "Phân tích một văn bản."
+    options:
+      text: "Văn bản cần phân tích."
+      user: "Người dùng để phân tích văn bản cho."
+  leaderboard:
+    description: "Hiển thị bảng xếp hạng."
+  meta:
+    description: "Quản lý siêu dữ liệu."
+    subcommands:
+      set:
+        description: "Đặt siêu dữ liệu."
+      remove:
+        description: "Xóa siêu dữ liệu."
+      add:
+        description: "Thêm siêu dữ liệu."
+      subtract:
+        description: "Trừ một giá trị khỏi siêu dữ liệu."
+      toggle:
+        description: "Chuyển đổi siêu dữ liệu boolean."
+      list-add:
+        description: "Thêm giá trị vào siêu dữ liệu dạng danh sách."
+      list-remove:
+        description: "Xóa giá trị khỏi siêu dữ liệu dạng danh sách."
+    options:
+      key: "Khóa của siêu dữ liệu."
+      value: "Giá trị của siêu dữ liệu."
+      scope: "ID của kênh hoặc người dùng để đặt siêu dữ liệu cho"
+  commands:
+    description: "Quản lý lệnh bot."
+    subcommands:
+      list:
+        description: "Hiển thị danh sách lệnh."
+      enable:
+        description: "Bật một lệnh."
+        options:
+          command: "Lệnh để bật."
+      disable:
+        description: "Tắt một lệnh."
+        options:
+          command: "Lệnh để tắt."
+      permission:
+        description: "Quản lý quyền lệnh."
+        subcommands:
+          set:
+            description: "Đặt quyền cho lệnh."
+            options:
+              command: "Lệnh để đặt quyền."
+              permission: "Quyền để đặt."
+          remove:
+            description: "Xóa quyền lệnh."
+            options:
+              command: "Lệnh để xóa quyền."
+
+no-permission: "Bạn không có quyền để sử dụng điều đó."
+in-cooldown: "Bạn đang trong thời gian chờ. Bạn có thể thực hiện hành động này lại %cooldown%."
+only-in-primary-guild: "Hành động này chỉ có thể được sử dụng trong guild chính."
+invalid-time: "Định dạng thời gian không hợp lệ. Vui lòng sử dụng định dạng thời gian hợp lệ. Ví dụ: 1d, 1h, 1m, 1s."
+
+pagination:
+  select-placeholder: "Trang %current_page%/%total_pages%"
+  placeholder: "Chọn một tùy chọn"
+  no-items: "Không có giá trị để hiển thị."
+  filter-placeholder: "Chọn một bộ lọc"
+  next-page: 'Tiếp'
+  previous-page: 'Trước'
+
+leaderboard:
+  messages-format: '`%position%.` %user_mention% • **%user_messages%** tin nhắn đã gửi'
+  title: "### 🏆︎ Bảng xếp hạng - %leaderboard_name%"
+  footer: "Trang %pagination_current_page%/%pagination_total_pages%"
+
+addons:
+  title: 'Dưới đây là danh sách các addon có sẵn'
+  info: |-
+    ### %addon_status% %addon_name% v%addon_version%\nTác giả: %addon_authors%\n
+  website: 'Trang web'
+  enabled: "Addon `%addon_name%` đã được bật. Khởi động lại bot để áp dụng thay đổi."
+  disabled: "Addon `%addon_name%` đã bị tắt. Khởi động lại bot để áp dụng thay đổi."
+  already-enabled: "Addon `%addon_name%` đã được bật."
+  already-disabled: "Addon `%addon_name%` đã bị tắt."
+  not-found: "Addon `%addon_name%` không tồn tại."
+
+reloaded: "Bot đã được tải lại. Có thể sẽ mất vài giây để triển khai lệnh."
+error-reloading: |-
+  ### Lỗi khi tải lại bot\nĐã xảy ra lỗi khi tải lại bot.\n```\n%error_message%\n```  \n
+parsed: |-
+  Đang phân tích văn bản cho %user_mention%:\n\n```\n%parsed_text%\n```\n
+engine:
+  missing-argument: "Engine `%engine%` đang thiếu đối số `%missing%`."
+  missing-context: "Script %script% đang thiếu ngữ cảnh `%missing%`."
+
+meta:
+  scope-required: "Phạm vi là bắt buộc cho hành động này."
+  set: "Siêu dữ liệu `%meta_key%` đã được đặt thành `%meta_value%`."
+  remove: "Siêu dữ liệu `%meta_key%` đã bị xóa."
+  add: "Siêu dữ liệu `%meta_key%` đã được thêm với giá trị `%meta_value%`."
+  subtract: "Siêu dữ liệu `%meta_key%` đã bị trừ đi giá trị `%meta_value%`."
+  toggle: "Siêu dữ liệu `%meta_key%` đã được đặt thành `%meta_value%`."
+
+command:
+  not-found: "Lệnh `%command%` không được tìm thấy."
+  enabled: "Lệnh `%command%` đã được bật."
+  disabled: "Lệnh `%command%` đã bị tắt."
+  permission:
+    set: "Quyền cho lệnh `%command%` đã được cập nhật."
+    remove: "Quyền cho lệnh `%command%` đã được xóa."
+    unknown: "Giá trị quyền không hợp lệ"
+
+time:
+  short:
+    second: "s"
+    minute: "m"
+    hour: "h"
+    day: "d"
+    month: "m"
+  long:
+    second: "giây"
+    seconds: "giây"
+    minute: "phút"
+    minutes: "phút"
+    hour: "giờ"
+    hours: "giờ"
+    day: "ngày"
+    days: "ngày"
+    month: "tháng"
+    months: "tháng"

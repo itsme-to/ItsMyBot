@@ -1,0 +1,143 @@
+commands:
+  addons:
+    description: "Gérer les extensions."
+    subcommands:
+      list:
+        description: "Afficher la liste des extensions."
+      enable:
+        description: "Activer une extension."
+        options:
+          addon: "L'extension à activer."
+      disable:
+        description: "Désactiver une extension."
+        options:
+          addon: "L'extension à désactiver."
+  reload:
+    description: "Recharger le bot"
+  parse:
+    description: "Analyser un texte."
+    options:
+      text: "Le texte à analyser."
+      user: "L'utilisateur pour lequel analyser le texte."
+  leaderboard:
+    description: "Afficher le classement."
+  meta:
+    description: "Gérer les métadonnées."
+    subcommands:
+      set:
+        description: "Définir une métadonnée."
+      remove:
+        description: "Supprimer une métadonnée."
+      add:
+        description: "Ajouter une métadonnée."
+      subtract:
+        description: "Soustraire une valeur d'une métadonnée."
+      toggle:
+        description: "Basculer une métadonnée booléenne."
+      list-add:
+        description: "Ajouter une valeur à une métadonnée de type liste."
+      list-remove:
+        description: "Retirer une valeur d'une métadonnée de type liste."
+    options:
+      key: "La clé de la métadonnée."
+      value: "La valeur de la métadonnée."
+      scope: "L'id du canal ou de l'utilisateur pour lequel définir la métadonnée"
+  commands:
+    description: "Gérer les commandes du bot."
+    subcommands:
+      list:
+        description: "Afficher la liste des commandes."
+      enable:
+        description: "Activer une commande."
+        options:
+          command: "La commande à activer."
+      disable:
+        description: "Désactiver une commande."
+        options:
+          command: "La commande à désactiver."
+      permission:
+        description: "Gérer les permissions des commandes."
+        subcommands:
+          set:
+            description: "Définir la permission d'une commande."
+            options:
+              command: "La commande pour laquelle définir la permission."
+              permission: "La permission à définir."
+          remove:
+            description: "Retirer la permission d'une commande."
+            options:
+              command: "La commande dont retirer la permission."
+
+no-permission: "Vous n'avez pas la permission d'utiliser cela."
+in-cooldown: "Vous êtes actuellement en cooldown. Vous pouvez effectuer cette action à nouveau %cooldown%."
+only-in-primary-guild: "Cette action ne peut être utilisée que dans la guilde principale."
+invalid-time: "Format de temps invalide. Veuillez utiliser un format de temps valide. Exemple : 1d, 1h, 1m, 1s."
+
+pagination:
+  select-placeholder: "Page %current_page%/%total_pages%"
+  placeholder: "Sélectionnez une option"
+  no-items: "Aucune valeur à afficher."
+  filter-placeholder: "Sélectionnez un filtre"
+  next-page: 'Suivant'
+  previous-page: 'Précédent'
+
+leaderboard:
+  messages-format: '`%position%.` %user_mention% • **%user_messages%** messages envoyés'
+  title: "### 🏆︎ Classement - %leaderboard_name%"
+  footer: "Page %pagination_current_page%/%pagination_total_pages%"
+
+addons:
+  title: 'Trouvez ci-dessous la liste des extensions disponibles'
+  info: |-
+    ### %addon_status% %addon_name% v%addon_version%\nAuteurs : %addon_authors%\n
+  website: 'Site web'
+  enabled: "L'extension `%addon_name%` a été activée. Redémarrez le bot pour appliquer les changements."
+  disabled: "L'extension `%addon_name%` a été désactivée. Redémarrez le bot pour appliquer les changements."
+  already-enabled: "L'extension `%addon_name%` est déjà activée."
+  already-disabled: "L'extension `%addon_name%` est déjà désactivée."
+  not-found: "L'extension `%addon_name%` n'existe pas."
+
+reloaded: "Le bot a été rechargé. Cela peut prendre quelques secondes pour déployer la commande."
+error-reloading: |-
+  ### Erreur lors du rechargement du bot\nUne erreur est survenue lors du rechargement du bot.\n```\n%error_message%\n```  \n
+parsed: |-
+  Analyse du texte pour %user_mention%:\n\n```\n%parsed_text%\n```\n
+engine:
+  missing-argument: "Le moteur `%engine%` n'a pas l'argument `%missing%`."
+  missing-context: "Le script %script% n'a pas le contexte `%missing%`."
+
+meta:
+  scope-required: "La portée est requise pour cette action."
+  set: "La métadonnée `%meta_key%` a été définie sur `%meta_value%`."
+  remove: "La métadonnée `%meta_key%` a été supprimée."
+  add: "La métadonnée `%meta_key%` a été ajoutée avec la valeur `%meta_value%`."
+  subtract: "La métadonnée `%meta_key%` a été diminuée de la valeur `%meta_value%`."
+  toggle: "La métadonnée `%meta_key%` a été définie sur `%meta_value%`."
+
+command:
+  not-found: "La commande `%command%` est introuvable."
+  enabled: "La commande `%command%` a été activée."
+  disabled: "La commande `%command%` a été désactivée."
+  permission:
+    set: "La permission pour la commande `%command%` a été mise à jour."
+    remove: "La permission pour la commande `%command%` a été supprimée."
+    unknown: "Valeur de permission invalide"
+
+time:
+  short:
+    second: "s"
+    minute: "m"
+    hour: "h"
+    day: "j"
+    month: "m"
+  long:
+    second: "seconde"
+    seconds: "secondes"
+    minute: "minute"
+    minutes: "minutes"
+    hour: "heure"
+    hours: "heures"
+    day: "jour"
+    days: "jours"
+    month: "mois"
+    months: "mois"

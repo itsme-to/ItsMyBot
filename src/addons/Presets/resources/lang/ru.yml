@@ -1,0 +1,26 @@
+commands:
+  preset:
+    description: "Отправить пресет"
+    context-menu: "Изменить сообщение"
+    subcommands:
+      send:
+        description: "Отправить сообщение"
+        options:
+          preset: "Пресет для отправки"
+          channel: "Канал, в который отправить сообщение"
+
+sent: "Сообщение отправлено в %channel_mention%"
+unknown-message: "Сообщение не найдено"
+unknown-preset: "Пресет не найден"
+edited: "Сообщение обновлено пресетом %preset_path%"
+not-bot-message: 'Я могу редактировать только сообщения, отправленные мной!'
+
+modals:
+  edit:
+    title: 'Редактировать сообщение с пресетами'
+    label: 'Путь пресета для использования'
+    description: 'Введите путь пресета, который вы хотите использовать для этого сообщения'
+    text-input:
+      placeholder: 'Путь без .yml, например welcome-message'
+    select-menu:
+      placeholder: 'Выберите пресет для использования'

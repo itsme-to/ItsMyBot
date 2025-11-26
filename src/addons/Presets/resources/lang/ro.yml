@@ -1,0 +1,26 @@
+commands:
+  preset:
+    description: "Trimite un preset"
+    context-menu: "Editează mesajul"
+    subcommands:
+      send:
+        description: "Trimite un mesaj"
+        options:
+          preset: "Preset de trimis"
+          channel: "Canal pentru trimiterea mesajului"
+
+sent: "Mesaj trimis către %channel_mention%"
+unknown-message: "Mesajul nu a fost găsit"
+unknown-preset: "Presetul nu a fost găsit"
+edited: "Mesajul a fost actualizat cu presetul %preset_path%"
+not-bot-message: 'Pot edita doar mesaje trimise de mine!'
+
+modals:
+  edit:
+    title: 'Editează mesajul cu preseturi'
+    label: 'Calea presetului de utilizat'
+    description: 'Introduceți calea presetului pe care doriți să-l folosiți pentru acest mesaj'
+    text-input:
+      placeholder: 'Cale fără .yml, de ex. welcome-message'
+    select-menu:
+      placeholder: 'Selectați un preset de folosit'

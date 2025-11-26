@@ -1,0 +1,152 @@
+commands:
+  addons:
+    description: "Beheer addons."
+    subcommands:
+      list:
+        description: "Toon de lijst met addons."
+      enable:
+        description: "Schakel een addon in."
+        options:
+          addon: "De addon die ingeschakeld moet worden."
+      disable:
+        description: "Schakel een addon uit."
+        options:
+          addon: "De addon die uitgeschakeld moet worden."
+  reload:
+    description: "Herlaad de bot"
+  parse:
+    description: "Parseer een tekst."
+    options:
+      text: "De tekst om te parsen."
+      user: "De gebruiker om de tekst voor te parsen."
+  leaderboard:
+    description: "Toon de ranglijst."
+  meta:
+    description: "Beheer meta data."
+    subcommands:
+      set:
+        description: "Stel een meta data in."
+      remove:
+        description: "Verwijder een meta data."
+      add:
+        description: "Voeg een meta data toe."
+      subtract:
+        description: "Trek een waarde af van een meta data."
+      toggle:
+        description: "Schakel een boolean meta data."
+      list-add:
+        description: "Voeg een waarde toe aan een lijst meta data."
+      list-remove:
+        description: "Verwijder een waarde uit een lijst meta data."
+    options:
+      key: "De sleutel van de meta data."
+      value: "De waarde van de meta data."
+      scope: "Het id van het kanaal of de gebruiker om de meta data voor in te stellen"
+  commands:
+    description: "Beheer botcommando's."
+    subcommands:
+      list:
+        description: "Toon de lijst met commando's."
+      enable:
+        description: "Schakel een commando in."
+        options:
+          command: "Het commando dat ingeschakeld moet worden."
+      disable:
+        description: "Schakel een commando uit."
+        options:
+          command: "Het commando dat uitgeschakeld moet worden."
+      permission:
+        description: "Beheer commando-permissies."
+        subcommands:
+          set:
+            description: "Stel commando-permissie in."
+            options:
+              command: "Het commando waarvoor de permissie ingesteld moet worden."
+              permission: "De permissie die ingesteld moet worden."
+          remove:
+            description: "Verwijder commando-permissie."
+            options:
+              command: "Het commando waarvan de permissie verwijderd moet worden."
+
+no-permission: "Je hebt niet de permissie om dat te gebruiken."
+in-cooldown: "Je zit momenteel in cooldown. Je kunt deze actie opnieuw uitvoeren over %cooldown%."
+only-in-primary-guild: "Deze actie kan alleen worden gebruikt in de primaire guild."
+invalid-time: "Ongeldig tijdsformaat. Gebruik een geldig tijdsformaat. Voorbeeld: 1d, 1h, 1m, 1s."
+
+pagination:
+  select-placeholder: "Pagina %current_page%/%total_pages%"
+  placeholder: "Selecteer een optie"
+  no-items: "Geen waarden om weer te geven."
+  filter-placeholder: "Selecteer een filter"
+  next-page: 'Volgende'
+  previous-page: 'Vorige'
+
+leaderboard:
+  messages-format: '`%position%.` %user_mention% • **%user_messages%** berichten verzonden'
+  title: "### 🏆︎ Ranglijst - %leaderboard_name%"
+  footer: "Pagina %pagination_current_page%/%pagination_total_pages%"
+
+addons:
+  title: 'Hieronder vindt u de lijst met beschikbare addons'
+  info: |
+    ### %addon_status% %addon_name% v%addon_version%
+    Auteurs: %addon_authors%
+  website: 'Website'
+  enabled: "De addon `%addon_name%` is ingeschakeld. Herstart de bot om de wijzigingen toe te passen."
+  disabled: "De addon `%addon_name%` is uitgeschakeld. Herstart de bot om de wijzigingen toe te passen."
+  already-enabled: "De addon `%addon_name%` is al ingeschakeld."
+  already-disabled: "De addon `%addon_name%` is al uitgeschakeld."
+  not-found: "De addon `%addon_name%` bestaat niet."
+
+reloaded: "De bot is opnieuw geladen. Het kan een paar seconden duren voordat commando's zijn ingezet."
+error-reloading: |
+  ### Fout bij het opnieuw laden van de bot
+  Er is een fout opgetreden tijdens het opnieuw laden van de bot.
+  ```
+  %error_message%
+  ```  
+parsed: |
+  Tekst parsen voor %user_mention%:
+
+  ```
+  %parsed_text%
+  ```
+engine:
+  missing-argument: "De engine `%engine%` mist het `%missing%` argument."
+  missing-context: "Het script %script% mist de `%missing%` context."
+
+meta:
+  scope-required: "De scope is vereist voor deze actie."
+  set: "De meta data `%meta_key%` is ingesteld op `%meta_value%`."
+  remove: "De meta data `%meta_key%` is verwijderd."
+  add: "De meta data `%meta_key%` is toegevoegd met de waarde `%meta_value%`."
+  subtract: "De meta data `%meta_key%` is verminderd met de waarde `%meta_value%`."
+  toggle: "De meta data `%meta_key%` is ingesteld op `%meta_value%`."
+
+command:
+  not-found: "Het commando `%command%` is niet gevonden."
+  enabled: "Het commando `%command%` is ingeschakeld."
+  disabled: "Het commando `%command%` is uitgeschakeld."
+  permission:
+    set: "De permissie voor het commando `%command%` is bijgewerkt."
+    remove: "De permissie voor het commando `%command%` is verwijderd."
+    unknown: "Ongeldige permissiewaarde"
+
+time:
+  short:
+    second: "s"
+    minute: "m"
+    hour: "h"
+    day: "d"
+    month: "m"
+  long:
+    second: "seconde"
+    seconds: "seconden"
+    minute: "minuut"
+    minutes: "minuten"
+    hour: "uur"
+    hours: "uren"
+    day: "dag"
+    days: "dagen"
+    month: "maand"
+    months: "maanden"
