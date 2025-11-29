@@ -23,7 +23,6 @@ export class Manager {
   public services: Services = {} as Services;
   public configs: ManagerConfigs = {} as ManagerConfigs;
   public lang: LangDirectory;
-  public database: Sequelize;
 
   public managerOptions: ManagerOptions;
 
@@ -102,27 +101,38 @@ export class Manager {
   private async initializeDatabase() {
     this.logger.info('Initializing database...');
     const dataConfigFile = this.configs.config.getSubsection('database');
+    let database;
 
     if (['mysql', 'mariadb'].includes(dataConfigFile.getString('type'))) {
-      this.database = new Sequelize(
+      database = new Sequelize(
         dataConfigFile.getString('database'),
         dataConfigFile.getString('username'),
         dataConfigFile.getString('password'),
         {
           host: dataConfigFile.getString('host'),
           dialect: dataConfigFile.getString('type') as 'mysql' | 'mariadb',
-          logging: dataConfigFile.getBoolOrNull('debug') || false
-        });
+          logging: dataConfigFile.getBool('debug'),
+          dialectOptions: {
+            connectTimeout: dataConfigFile.getNumber('connect-timeout'),
+          },
+          pool: {
+            acquire: 30000,
+            idle: 10000,
+            max: 5,
+            min: 0,
+          },
+        }
+      );
     } else {
-        this.database = new Sequelize({
+        database = new Sequelize({
           dialect: 'sqlite',
           storage: 'database.sqlite',
-          logging: dataConfigFile.getBoolOrNull('debug') || false
+          logging: dataConfigFile.getBool('debug'),
         });
     }
 
     try {
-      await this.database.authenticate();
+      await database.authenticate();
       this.logger.info('Connection has been established successfully with database.');
     } catch (error) {
       this.logger.error('Unable to connect to the database:', error);

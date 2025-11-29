@@ -72,3 +72,4 @@ database:
   password: "password" # Database password
   database: "database" # Database name
   debug: false # Debug mode for database
+  connect-timeout: 5000 # Connection timeout in milliseconds

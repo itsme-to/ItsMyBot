@@ -58,6 +58,11 @@ class Database {
   @IsDefined()
   @IsBoolean()
   debug: boolean;
+
+  @IsDefined()
+  @IsInt()
+  @IsPositive()
+  'connect-timeout': number;
 }
 
 export default class DefaultConfig {
