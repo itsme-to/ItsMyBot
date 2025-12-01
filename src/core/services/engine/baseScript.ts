@@ -9,7 +9,7 @@ export class BaseScript {
   constructor(manager: Manager, data: Config, logger: Logger ) {
     this.logger = logger;
     this.manager = manager
-    this.conditions = data.has("conditions") ? manager.services.condition.buildConditions(data.getSubsections("conditions")) : [];
+    this.conditions = data.has("conditions") ? manager.services.condition.parseConditions(data.getSubsections("conditions")) : [];
     this.actions = data.has("actions") ? data.getSubsections("actions").map((actionData: Config) => new ActionData(manager, actionData, logger )) : [];
   }
 

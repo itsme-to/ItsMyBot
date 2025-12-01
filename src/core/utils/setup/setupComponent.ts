@@ -18,7 +18,7 @@ export async function setupComponent<T extends SetupComponentType = SetupCompone
 
   const conditionConfig = config.getSubsectionsOrNull('conditions');
   if (conditionConfig) {
-    const conditions = manager.services.condition.buildConditions(conditionConfig, false);
+    const conditions = manager.services.condition.parseConditions(conditionConfig, false);
     const isMet = await manager.services.condition.meetsConditions(conditions, context, variables);
     if (!isMet) return
   }
@@ -72,7 +72,7 @@ export async function setupComponent<T extends SetupComponentType = SetupCompone
       for (const componentConfig of config.getSubsections('components')) {
         const conditionConfig = componentConfig.getSubsectionsOrNull('conditions');
         if (conditionConfig) {
-          const conditions = manager.services.condition.buildConditions(conditionConfig, false);
+          const conditions = manager.services.condition.parseConditions(conditionConfig, false);
           const isMet = await manager.services.condition.meetsConditions(conditions, context, variables);
           if (!isMet) continue
         }
@@ -103,7 +103,7 @@ export async function setupComponent<T extends SetupComponentType = SetupCompone
       for (const mediaconfig of config.getSubsections('items')) {
         const mediaCondition = mediaconfig.getSubsectionsOrNull('conditions');
         if (mediaCondition) {
-          const conditions = manager.services.condition.buildConditions(mediaCondition, false);
+          const conditions = manager.services.condition.parseConditions(mediaCondition, false);
           const isMet = await manager.services.condition.meetsConditions(conditions, context, variables);
           if (!isMet) continue
         }

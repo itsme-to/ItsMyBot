@@ -82,7 +82,7 @@ async function setupOption(
 
   const conditionConfig = config.getSubsectionsOrNull("conditions");
   if (conditionConfig) {
-    const conditions = manager.services.condition.buildConditions(conditionConfig, false);
+    const conditions = manager.services.condition.parseConditions(conditionConfig, false);
     const isMet = await manager.services.condition.meetsConditions(conditions, context, variables);
     if (!isMet) return null;
   }
