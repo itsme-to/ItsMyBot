@@ -15,20 +15,20 @@ class ArgumentsValidator extends ConditionArgumentValidator {
   'ignore-case': boolean
 }
 
-export default class TextContainsCondition extends Condition {
-  id = "textContains";
+export default class TextStartsWithCondition extends Condition {
+  id = "textStartsWith";
   argumentsValidator = ArgumentsValidator;
 
   isMet(condition: ConditionData, context: Context, variables: Variable[]) {
     const input = condition.args.getString("input")
     const output = condition.args.getStrings("output");
-
+    
     const ignoreCase = condition.args.getBoolOrNull("ignore-case") ?? false;
 
     if (ignoreCase) {
-      return output.some(text => input.toLowerCase().includes(text.toLowerCase()));
+      return output.some(text => input.toLowerCase().startsWith(text.toLowerCase()));
     }
 
-    return output.some(text => input.includes(text));
+    return output.some(text => input.startsWith(text));
   }
 }
