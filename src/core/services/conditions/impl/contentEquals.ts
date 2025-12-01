@@ -17,7 +17,6 @@ export default class ContentEqualsCondition extends Condition {
 
   isMet(condition: ConditionData, context: Context, variables: Variable[]) {
     const arg = condition.args.getStrings("value");
-    if (!arg) return condition.missingArg("value");
     if (!context.content) return false
 
     const ignoreCase = condition.args.getBoolOrNull("ignore-case") ?? false;
