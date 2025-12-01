@@ -1,10 +1,8 @@
 import { Addon, ConfigFile, Utils } from '@itsmybot';
 import { Guild } from 'discord.js';
-import CommandsConfig from './resources/commands.js';
 import DefaultConfig from './resources/config.js';
 
 interface StatsChannelConfig {
-  commands: ConfigFile
   config: ConfigFile
 }
 
@@ -17,7 +15,6 @@ export default class StatsChannelAddon extends Addon {
   configs: StatsChannelConfig = {} as StatsChannelConfig;
 
   async load() {
-    this.configs.commands = await this.createConfig('commands.yml', CommandsConfig);
     this.configs.config = await this.createConfig('config.yml', DefaultConfig);
   }
 
