@@ -31,6 +31,8 @@ export class Manager {
   public logger = new Logger();
   public primaryGuildId: string;
 
+  public database: Sequelize
+
   constructor(clientOptions: ClientOptions, managerOptions: ManagerOptions) {
     this.client = new Client(clientOptions);
     this.managerOptions = managerOptions;
@@ -101,10 +103,8 @@ export class Manager {
   private async initializeDatabase() {
     this.logger.info('Initializing database...');
     const dataConfigFile = this.configs.config.getSubsection('database');
-    let database;
-
     if (['mysql', 'mariadb'].includes(dataConfigFile.getString('type'))) {
-      database = new Sequelize(
+      this.database = new Sequelize(
         dataConfigFile.getString('database'),
         dataConfigFile.getString('username'),
         dataConfigFile.getString('password'),
@@ -124,7 +124,7 @@ export class Manager {
         }
       );
     } else {
-        database = new Sequelize({
+        this.database = new Sequelize({
           dialect: 'sqlite',
           storage: 'database.sqlite',
           logging: dataConfigFile.getBool('debug'),
@@ -132,7 +132,7 @@ export class Manager {
     }
 
     try {
-      await database.authenticate();
+      await this.database.authenticate();
       this.logger.info('Connection has been established successfully with database.');
     } catch (error) {
       this.logger.error('Unable to connect to the database:', error);
