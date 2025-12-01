@@ -38,7 +38,7 @@ export default class ActionService extends Service{
     this.actions.set(action.id, action);
   }
 
-  buildActions(actions: Config[], addon: Addon | undefined = undefined): ActionData[] {
+  parseActions(actions: Config[], addon: Addon | undefined = undefined): ActionData[] {
     if (!actions) return [];
     return actions.map(action => new ActionData(this.manager, action, addon?.logger || this.manager.logger));
   }
