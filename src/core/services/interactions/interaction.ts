@@ -72,13 +72,21 @@ export abstract class ContextMenu<T extends Addon | undefined = undefined>  exte
   }
 }
 
-abstract class BaseComponent<T extends Addon | undefined = undefined> extends Base<T> {
+abstract class BaseInteraction<T extends Addon | undefined = undefined> extends Base<T> {
   public abstract customId: string;
   public usingPermissionFrom?: string;
  
   public abstract execute(interaction: AnySelectMenuInteraction<'cached'> | ButtonInteraction<'cached'> | ModalSubmitInteraction<'cached'>, user: User): Promise<void | any>
 }
 
-export abstract class Button<T extends Addon | undefined = undefined> extends BaseComponent<T> {}
-export abstract class SelectMenu<T extends Addon | undefined = undefined> extends BaseComponent<T> {}
-export abstract class Modal<T extends Addon | undefined = undefined> extends BaseComponent<T> {}
+export abstract class Button<T extends Addon | undefined = undefined> extends BaseInteraction<T> {
+  public abstract override execute(interaction: ButtonInteraction<'cached'>, user: User): Promise<void | any>;
+}
+
+export abstract class SelectMenu<T extends Addon | undefined = undefined> extends BaseInteraction<T> {
+  public abstract override execute(interaction: AnySelectMenuInteraction<'cached'>, user: User): Promise<void | any>;
+}
+
+export abstract class Modal<T extends Addon | undefined = undefined> extends BaseInteraction<T> {
+  public abstract override execute(interaction: ModalSubmitInteraction<'cached'>, user: User): Promise<void | any>;
+}
