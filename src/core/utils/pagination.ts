@@ -1,5 +1,5 @@
 import { MessageComponentInteraction, StringSelectMenuInteraction, RepliableInteraction, InteractionResponse, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle, TextDisplayBuilder, MessageFlags, BitFieldResolvable, MessageActionRowComponentBuilder } from 'discord.js';
-import { manager, Config, Context, Variable, Utils, MessageComponentBuilder } from '@itsmybot'
+import { manager, Context, Variable, Utils, MessageComponentBuilder } from '@itsmybot'
 
 interface Item<T> {
   label?: string;
@@ -16,32 +16,28 @@ interface Filter {
   name: string;
   emoji?: string;
   description?: string;
+  default?: boolean;
 }
 
 export class Pagination<T> {
-  interaction: RepliableInteraction
+  private type: 'select_menu' | 'button' = 'select_menu'
+  private placeholderText: string
+  private itemsPerPage: number = 25
+  private time: number = 100000;
+  private ephemeral: boolean = true;
+  private format: (items: Item<T>[], variables: Variable[], context: Context) => Promise<MessageComponentBuilder[]>
+  private filters: Filter[] = []
+  private context: Context = {}
+  private variables: Variable[] = []
 
-  type: 'select_menu' | 'button' = 'select_menu'
-  context: Context = {}
-  filters: Filter[] = []
-  variables: Variable[] = []
-  config: Config
-  placeholderText: string
+  private defaultItems: Item<T>[]
+  private filteredItems: Item<T>[]
 
-  defaultItems: Item<T>[]
-  currentFilters: string[] = []
-  filteredItems: Item<T>[]
-  currentItem: number = 0
-  currentPage: number = 0
-  itemsPerPage: number = 25
-  time: number = 100000;
-  ephemeral: boolean = true;
+  private currentItem: number = 0
+  private currentFilters: string[] = []
+  private currentPage: number = 0
 
-  format: (items: Item<T>[], variables: Variable[], context: Context) => Promise<MessageComponentBuilder[]>
-  message?: InteractionResponse
-
-  constructor(interaction: RepliableInteraction, items: Item<T>[]) {
-    this.interaction = interaction;
+  constructor(items: Item<T>[]) {
     this.filteredItems = items;
     this.defaultItems = items;
 
@@ -132,10 +128,10 @@ export class Pagination<T> {
   /**
    * Send the pagination message
    */
-  async send() {
-    this.message = await this.interaction.reply(await this.buildMessage('initial'));
-    this.createCollector();
-    return this.message;
+  async reply(interaction: RepliableInteraction) {
+    const message = await interaction.reply(await this.buildMessage('initial'));
+    this.createCollector(message);
+    return message;
   }
 
   async buildMessage(type: 'initial' | 'update' | 'end') {
@@ -164,10 +160,10 @@ export class Pagination<T> {
     return message;
   }
 
-  private createCollector() {
+  private createCollector(message: InteractionResponse) {
     const filter = (interaction: MessageComponentInteraction) => ['pagination_items', 'pagination_previous', 'pagination_next', 'pagination_filters'].includes(interaction.customId);
 
-    const collector = this.message!.createMessageComponentCollector({ filter,  time: this.time });
+    const collector = message.createMessageComponentCollector({ filter,  time: this.time });
 
     collector.on('collect', async (interaction: MessageComponentInteraction) => {
       if (interaction.customId === 'pagination_previous') this.prevPage();
@@ -198,15 +194,13 @@ export class Pagination<T> {
 
     collector.on('end', async () => {
       try {
-        this.message!.edit(await this.buildMessage('end'));
+        message.edit(await this.buildMessage('end'));
       } catch (e) {/* Ignore */ }
     });
   }
 
   private getContext() {
     let context = this.context;
-    const items = this.getCurrentItems();
-    const list = []
 
     if (this.type === 'select_menu') {
       const item = this.filteredItems[this.currentItem];
@@ -214,24 +208,6 @@ export class Pagination<T> {
         context = { ...context, ...item.context };
       }
     }
-    
-    for (const item of items) {
-      const variables = [ ...item.variables || [],
-        { searchFor: "%item_label%", replaceWith: item.label || "" },
-        { searchFor: "%item_value%", replaceWith: `item_${this.filteredItems.indexOf(item)}` },
-        { searchFor: "%item_emoji%", replaceWith: item.emoji || "" },
-        { searchFor: "%item_description%", replaceWith: item.description || "" },
-        { searchFor: "%item_tags%", replaceWith: item.tags?.join(", ") || "" }
-      ];
-
-      list.push({
-        context: item.context || this.context,
-        variables: variables
-      });
-    }
-
-    if (!context.data) context.data = new Map();
-    context.data.set('pagination-items', list);
 
     return context;
   }

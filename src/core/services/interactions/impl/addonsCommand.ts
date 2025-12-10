@@ -72,7 +72,7 @@ export default class AddonCommand extends Command {
       });
     }
 
-    new Pagination(interaction, addons)
+    new Pagination(addons)
       .setContext({
         user: user,
         guild: interaction.guild || undefined,
@@ -113,7 +113,7 @@ export default class AddonCommand extends Command {
 
         return components;
       })
-      .send();
+      .reply(interaction);
   }
 
   async enableOrDisable(interaction: ChatInputCommandInteraction<'cached'>, user: User) {

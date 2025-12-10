@@ -21,7 +21,7 @@ export { Pagination } from './pagination.js';
 
 import { manager, Context, Variable } from '@itsmybot';
 import { GuildMember } from 'discord.js';
-import { Parser } from 'expr-eval-fork';
+import { compileExpression } from "filtrex";
 import { parseDocument } from 'yaml';
 
 const discordEpoch = 1420070400000;
@@ -161,8 +161,8 @@ export class Utils {
   }
 
   static evaluateBoolean(expression: string): boolean | null {
-    const parsedExpression = Parser.parse(expression);
-    const result = parsedExpression.evaluate();
+    const parsedExpression = compileExpression(expression);
+    const result = parsedExpression({});
 
     if (typeof result !== 'boolean' && result !== 0 && result !== 1) {
       return null
@@ -172,11 +172,11 @@ export class Utils {
   }
 
   static evaluateNumber(expression: string) {
-    const parsedExpression = Parser.parse(expression);
-    const result = parsedExpression.evaluate();
+    const parsedExpression = compileExpression(expression);
+    const result = parsedExpression({});
 
     if (typeof result !== 'number') {
-      return null
+      return null;
     }
 
     return result;

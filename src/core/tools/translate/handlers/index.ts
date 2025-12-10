@@ -2,9 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
 import yaml from 'yaml';
-import dotenv from 'dotenv';
 import { TranslationWSClient } from './translationWSClient.js'; 
-dotenv.config();
 
 export const availableLangs = ['id', 'da', 'de', 'en-GB', 'en-US', 'es-ES', 'es-419', 'fr', 'hr', 'it', 'lt', 'hu', 'nl', 'no', 'pl', 'pt-BR', 'ro', 'sv-SE', 'vi', 'tr', 'cs', 'el', 'bg', 'ru', 'uk', 'hi', 'th', 'zh-CN', 'ja', 'zh-TW', 'ko'];
 

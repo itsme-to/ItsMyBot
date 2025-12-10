@@ -5,7 +5,7 @@
   "main": "build/index.js",
   "scripts": {
     "make:addon": "node ./build/core/tools/makeAddon.js",
-    "tools:translate": "node ./build/core/tools/translate/index.js",
+    "tools:translate": "node --env-file=.env ./build/core/tools/translate/index.js",
     "build:clean": "rm -rf ./build",
     "build:itsmybot": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
     "build:copy": "cpy \"src/**/*.yml\" \"build/\" --parents",
@@ -27,33 +27,28 @@
     "@types/inquirer": "^9.0.9",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^22.10.2",
-    "@types/node-cron": "^3.0.11",
-    "@types/validator": "^13.11.10",
     "cpy-cli": "^5.0.0",
     "inquirer": "^9.2.23",
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.10",
     "typescript": "^5.4.5",
-    "dotenv": "^16.5.0"
+    "reflect-metadata": "^0.2.2"
   },
   "dependencies": {
     "chalk": "^5.4.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "discord.js": "^14.24.0",
-    "expr-eval-fork": "^3.0.0",
+    "filtrex": "^3.1.0",
     "glob": "^11.0.1",
     "jsonwebtoken": "^9.0.2",
     "mariadb": "^3.4.0",
     "mysql2": "^3.12.0",
-    "node-cron": "^3.0.3",
     "openai": "^5.12.2",
-    "reflect-metadata": "^0.2.2",
     "selfsigned": "^2.4.1",
     "sequelize": "^6.37.5",
     "sequelize-typescript": "^2.1.6",
     "sqlite3": "^5.1.7",
-    "ts-mixer": "^6.0.4",
     "yaml": "^2.7.0"
   }
 }
