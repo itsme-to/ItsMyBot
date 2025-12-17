@@ -95,7 +95,7 @@ export default class LeaderboardService extends Service{
       });
     }
 
-    new Pagination(interaction, leaders)
+    new Pagination(leaders)
       .setType('button')
       .setFormat(async (items, variables, context) => {
         const components: MessageComponentBuilder[] = [];
@@ -121,6 +121,6 @@ export default class LeaderboardService extends Service{
       })
       .setVariables([{ searchFor: "%leaderboard_name%", replaceWith: Utils.capitalizeFirst(leaderboard.name) }])
       .setItemsPerPage(10)
-      .send();
+      .reply(interaction);
   }
 }
