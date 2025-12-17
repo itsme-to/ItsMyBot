@@ -1,16 +1,16 @@
 commands:
   stats-channel:
-    description: "管理统计频道"
+    description: 管理统计频道
     subcommands:
       create:
-        description: "创建统计频道"
+        description: 创建统计频道
         options:
-          name: "统计频道的名称"
+          name: 统计频道的名称
       rename:
-        description: "重命名统计频道"
+        description: 重命名统计频道
         options:
-          channel: "统计频道的 ID"
-          name: "统计频道的新名称"
+          channel: 统计频道的 ID
+          name: 统计频道的新名称
 
-channel-created: "统计频道已创建. %channel_name%"
-channel-renamed: "统计频道已重命名. %new_name%"
+channel-created: 统计频道已创建。%channel_name%
+channel-renamed: 统计频道已重命名。[[new_name]]

@@ -145,8 +145,8 @@ export class ActionData extends BaseScript {
       ephemeral: true,
       context,
       variables: [
-        { searchFor: "%missing%", replaceWith: missing },
-        { searchFor: "%script%", replaceWith: this.id }
+        { name: "missing", value: missing },
+        { name: "script", value: this.id }
       ]
     });
 
@@ -165,8 +165,8 @@ export class ActionData extends BaseScript {
       ephemeral: true,
       context,
       variables: [
-        { searchFor: "%missing%", replaceWith: missing },
-        { searchFor: "%script%", replaceWith: this.id }
+        { name: "missing", value: missing },
+        { name: "script", value: this.id }
       ]
     });
 

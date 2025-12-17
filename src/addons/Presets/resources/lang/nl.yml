@@ -1,26 +1,40 @@
 commands:
   preset:
-    description: "Verstuur een preset"
-    context-menu: "Bewerk het bericht"
+    description: Verstuur een preset
+    context-menu: Bewerk het bericht
     subcommands:
       send:
-        description: "Verstuur een bericht"
+        description: Verstuur een bericht
         options:
-          preset: "Preset om te versturen"
-          channel: "Kanaal om het bericht naar te versturen"
+          preset: Preset om te versturen
+          channel: Kanaal om het bericht te verzenden
+  sent: Bericht verzonden naar %channel_mention%
+  unknown-message: Bericht niet gevonden
+  unknown-preset: Preset niet gevonden
+  edited: Bericht bijgewerkt met preset %preset_path%
+  not-bot-message: Ik kan alleen berichten bewerken die door mij zijn verzonden!
+  modals:
+    edit:
+      title: Bewerk bericht met presets
+      label: Het pad van de preset om te gebruiken
+      description: Voer het pad in van de preset die je voor dit bericht wilt gebruiken
+      text-input:
+        placeholder: Pad zonder .yml, bijv. welcome-message
+      select-menu:
+        placeholder: Selecteer een preset om te gebruiken
 
-sent: "Bericht verzonden naar %channel_mention%"
-unknown-message: "Bericht niet gevonden"
-unknown-preset: "Preset niet gevonden"
-edited: "Bericht bijgewerkt met preset %preset_path%"
-not-bot-message: 'Ik kan alleen berichten bewerken die door mij zijn verzonden!'
+sent: "Message sent to %channel_mention%"
+unknown-message: "Message not found"
+unknown-preset: "Preset not found"
+edited: "Message updated with preset %preset_path%"
+not-bot-message: 'I can only edit messages sent by me!'
 
 modals:
   edit:
-    title: 'Bewerk bericht met presets'
-    label: 'Het pad van de preset om te gebruiken'
-    description: 'Voer het pad in van de preset die je voor dit bericht wilt gebruiken'
+    title: 'Edit Message with Presets'
+    label: 'The preset path to use'
+    description: 'Enter the path of the preset you want to use for this message'
     text-input:
-      placeholder: 'Pad zonder .yml, bijv. welcome-message'
+      placeholder: 'Path without .yml, e.g. welcome-message'
     select-menu:
-      placeholder: 'Selecteer een preset om te gebruiken'
+      placeholder: 'Select a preset to use'

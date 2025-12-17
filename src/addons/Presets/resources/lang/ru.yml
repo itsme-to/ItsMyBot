@@ -1,26 +1,40 @@
 commands:
   preset:
-    description: "Отправить пресет"
-    context-menu: "Изменить сообщение"
+    description: Отправить пресет
+    context-menu: Редактировать сообщение
     subcommands:
       send:
-        description: "Отправить сообщение"
+        description: Отправить сообщение
         options:
-          preset: "Пресет для отправки"
-          channel: "Канал, в который отправить сообщение"
+          preset: Пресет для отправки
+          channel: Канал для отправки сообщения
+  sent: Сообщение отправлено в %channel_mention%
+  unknown-message: Сообщение не найдено
+  unknown-preset: Пресет не найден
+  edited: Сообщение обновлено пресетом %preset_path%
+  not-bot-message: Я могу редактировать только сообщения, отправленные мной!
+  modals:
+    edit:
+      title: Редактировать сообщение с пресетами
+      label: Путь к пресету для использования
+      description: Введите путь пресета, который вы хотите использовать для этого сообщения
+      text-input:
+        placeholder: Путь без .yml, например welcome-message
+      select-menu:
+        placeholder: Выберите пресет для использования
 
-sent: "Сообщение отправлено в %channel_mention%"
-unknown-message: "Сообщение не найдено"
-unknown-preset: "Пресет не найден"
-edited: "Сообщение обновлено пресетом %preset_path%"
-not-bot-message: 'Я могу редактировать только сообщения, отправленные мной!'
+sent: "Message sent to %channel_mention%"
+unknown-message: "Message not found"
+unknown-preset: "Preset not found"
+edited: "Message updated with preset %preset_path%"
+not-bot-message: 'I can only edit messages sent by me!'
 
 modals:
   edit:
-    title: 'Редактировать сообщение с пресетами'
-    label: 'Путь пресета для использования'
-    description: 'Введите путь пресета, который вы хотите использовать для этого сообщения'
+    title: 'Edit Message with Presets'
+    label: 'The preset path to use'
+    description: 'Enter the path of the preset you want to use for this message'
     text-input:
-      placeholder: 'Путь без .yml, например welcome-message'
+      placeholder: 'Path without .yml, e.g. welcome-message'
     select-menu:
-      placeholder: 'Выберите пресет для использования'
+      placeholder: 'Select a preset to use'

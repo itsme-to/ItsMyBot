@@ -57,7 +57,7 @@ export default class EngineService extends Service {
           if (!targetUserM) break;
           variables.push(
             ...Utils.userVariables(targetUserM, `option_${option.name}`),
-            { searchFor: `%option_${option.name}%`, replaceWith: option.value }
+            { name: `option_${option.name}`, value: option.value }
           )
           break;
         }
@@ -67,7 +67,7 @@ export default class EngineService extends Service {
           if (!targetUser) break;
           variables.push(
             ...Utils.userVariables(targetUser, `option_${option.name}`),
-            { searchFor: `%option_${option.name}%`, replaceWith: option.value }
+            { name: `option_${option.name}`, value: option.value }
           )
           break;
         }
@@ -75,19 +75,19 @@ export default class EngineService extends Service {
         case option.role != null || option.role != undefined:
           variables.push(
             ...Utils.roleVariables(option.role, `option_${option.name}`),
-            { searchFor: `%option_${option.name}%`, replaceWith: option.value }
+            { name: `option_${option.name}`, value: option.value }
           )
           break;
 
         case option.channel != null || option.channel != undefined:
           variables.push(
             ...Utils.channelVariables(option.channel, `option_${option.name}`),
-            { searchFor: `%option_${option.name}%`, replaceWith: option.value }
+            { name: `option_${option.name}`, value: option.value }
           )
           break;
 
         case option.value != null || option.value != undefined:
-          variables.push({ searchFor: `%option_${option.name}%`, replaceWith: option.value })
+          variables.push({ name: `option_${option.name}`, value: option.value })
           break;
       }
     }

@@ -1,26 +1,26 @@
 commands:
   preset:
-    description: "Envoyer un préréglage"
-    context-menu: "Modifier le message"
+    description: Envoyer un préréglage
+    context-menu: Modifier le message
     subcommands:
       send:
-        description: "Envoyer un message"
+        description: Envoyer un message
         options:
-          preset: "Préréglage à envoyer"
-          channel: "Canal pour envoyer le message"
+          preset: Préréglage à envoyer
+          channel: Canal pour envoyer le message
 
-sent: "Message envoyé à %channel_mention%"
-unknown-message: "Message introuvable"
-unknown-preset: "Préréglage introuvable"
-edited: "Message mis à jour avec le préréglage %preset_path%"
-not-bot-message: 'Je ne peux modifier que les messages que j''ai envoyés !'
+sent: Message envoyé à %channel_mention%
+unknown-message: Message introuvable
+unknown-preset: Préréglage introuvable
+edited: Message mis à jour avec le préréglage %preset_path%
+not-bot-message: Je ne peux modifier que les messages que j'ai envoyés !
 
 modals:
   edit:
-    title: 'Modifier le message avec des préréglages'
-    label: 'Le chemin du préréglage à utiliser'
-    description: 'Entrez le chemin du préréglage que vous souhaitez utiliser pour ce message'
+    title: Modifier le message avec des préréglages
+    label: Le chemin du préréglage à utiliser
+    description: Entrez le chemin du préréglage que vous souhaitez utiliser pour ce message
     text-input:
-      placeholder: 'Chemin sans .yml, par ex. welcome-message'
+      placeholder: Chemin sans .yml, ex. welcome-message
     select-menu:
-      placeholder: 'Sélectionnez un préréglage à utiliser'
+      placeholder: Sélectionnez un préréglage à utiliser

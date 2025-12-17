@@ -55,12 +55,12 @@ export default class AddonCommand extends Command {
     for (const [_, addon] of this.manager.services.addon.addons) {
       const status = addon.enabled ? '✅' : '❌';
       const variables = [
-        { searchFor: "%addon_status%", replaceWith: status },
-        { searchFor: "%addon_name%", replaceWith: addon.name },
-        { searchFor: "%addon_version%", replaceWith: addon.version },
-        { searchFor: "%addon_description%", replaceWith: addon.description },
-        { searchFor: "%addon_authors%", replaceWith: addon.authors.join(', ') },
-        { searchFor: "%addon_website%", replaceWith: addon.website || '' }
+        { name: "addon_status", value: status },
+        { name: "addon_name", value: addon.name },
+        { name: "addon_version", value: addon.version },
+        { name: "addon_description", value: addon.description },
+        { name: "addon_authors", value: addon.authors.join(', ') },
+        { name: "addon_website", value: addon.website || '' }
       ];
 
       addons.push({
@@ -122,7 +122,7 @@ export default class AddonCommand extends Command {
     const addon = await AddonModel.findOne({ where: { name: addonName } });
     
     const variables = [
-      { searchFor: "%addon_name%", replaceWith: addonName }
+      { name: "addon_name", value: addonName }
     ];
 
     const context = {

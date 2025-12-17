@@ -1,26 +1,26 @@
 commands:
   preset:
-    description: "Előre beállítás küldése"
-    context-menu: "Üzenet szerkesztése"
+    description: Küldj egy előre beállított sablont
+    context-menu: Üzenet szerkesztése
     subcommands:
       send:
-        description: "Üzenet küldése"
+        description: Üzenet küldése
         options:
-          preset: "Küldendő előre beállítás"
-          channel: "Csatorna, ahová az üzenetet küldeni kell"
+          preset: Küldendő sablon
+          channel: Csatorna, ahová az üzenetet küldjük
 
-sent: "Üzenet elküldve %channel_mention%"
-unknown-message: "Üzenet nem található"
-unknown-preset: "Előre beállítás nem található"
-edited: "Üzenet frissítve a(z) %preset_path% előre beállítással"
-not-bot-message: 'Csak az általam küldött üzeneteket tudom szerkeszteni!'
+sent: "Üzenet elküldve: %channel_mention%"
+unknown-message: Üzenet nem található
+unknown-preset: Sablon nem található
+edited: Üzenet frissítve a %preset_path% sablonnal
+not-bot-message: Csak az általam küldött üzeneteket tudom szerkeszteni!
 
 modals:
   edit:
-    title: 'Üzenet szerkesztése előre beállításokkal'
-    label: 'A használni kívánt előre beállítás elérési útja'
-    description: 'Adja meg annak az előre beállításnak az elérési útját, amelyet ehhez az üzenethez használni szeretne'
+    title: Üzenet szerkesztése sablonokkal
+    label: A használni kívánt sablon elérési útja
+    description: Írd be annak a sablonnak az elérési útját, amelyet ehhez az üzenethez használni szeretnél
     text-input:
-      placeholder: 'Útvonal .yml nélkül, pl. welcome-message'
+      placeholder: Elérési út .yml nélkül, pl. welcome-message
     select-menu:
-      placeholder: 'Válasszon egy használni kívánt előre beállítást'
+      placeholder: Válassz egy használni kívánt sablont

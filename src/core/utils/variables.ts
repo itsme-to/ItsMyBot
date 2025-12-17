@@ -3,103 +3,103 @@ import { User } from '@itsmybot';
 
 export const timeVariables = (timestamp: number, prefix = "time") => {
   return [{
-    searchFor: `%${prefix}_short_date%`,
-    replaceWith: time(timestamp, "d"),
+    name: `${prefix}_short_date`,
+    value: time(timestamp, "d"),
   }, {
-    searchFor: `%${prefix}_long_date%`,
-    replaceWith: time(timestamp, "D"),
+    name: `${prefix}_long_date`,
+    value: time(timestamp, "D"),
   }, {
-    searchFor: `%${prefix}_short_time%`,
-    replaceWith: time(timestamp, "t"),
+    name: `${prefix}_short_time`,
+    value: time(timestamp, "t"),
   }, {
-    searchFor: `%${prefix}_long_time%`,
-    replaceWith: time(timestamp, "T"),
+    name: `${prefix}_long_time`,
+    value: time(timestamp, "T"),
   }, {
-    searchFor: `%${prefix}_short%`,
-    replaceWith: time(timestamp, "f"),
+    name: `${prefix}_short`,
+    value: time(timestamp, "f"),
   }, {
-    searchFor: `%${prefix}_long%`,
-    replaceWith: time(timestamp, "F"),
+    name: `${prefix}_long`,
+    value: time(timestamp, "F"),
   }, {
-    searchFor: `%${prefix}_relative%`,
-    replaceWith: time(timestamp, "R"),
+    name: `${prefix}_relative`,
+    value: time(timestamp, "R"),
   }]
 }
 
 export const userVariables = (user: User, prefix = "user") => {
   return [{
-    searchFor: `%${prefix}_id%`,
-    replaceWith: user.id || "Unknown",
+    name: `${prefix}_id`,
+    value: user.id || "Unknown",
   }, {
-    searchFor: `%${prefix}_display_name%`,
-    replaceWith: user.displayName,
+    name: `${prefix}_display_name`,
+    value: user.displayName,
   }, {
-    searchFor: `%${prefix}_username%`,
-    replaceWith: user.username,
+    name: `${prefix}_username`,
+    value: user.username,
   }, {
-    searchFor: `%${prefix}_mention%`,
-    replaceWith: user.mention,
+    name: `${prefix}_mention`,
+    value: user.mention,
   }, {
-    searchFor: `%${prefix}_avatar%`,
-    replaceWith: user.avatar,
+    name: `${prefix}_avatar`,
+    value: user.avatar,
   }, {
-    searchFor: `%${prefix}_bot%`,
-    replaceWith: user.isBot,
+    name: `${prefix}_bot`,
+    value: user.isBot,
   }, {
-    searchFor: `%${prefix}_create_date%`,
-    replaceWith: time(user.createdAt, "D"),
+    name: `${prefix}_create_date`,
+    value: time(user.createdAt, "D"),
   }, {
-    searchFor: `%${prefix}_join_date%`,
-    replaceWith: user.joinedAt ? time(user.joinedAt, "D") : "Unknown",
+    name: `${prefix}_join_date`,
+    value: user.joinedAt ? time(user.joinedAt, "D") : "Unknown",
   }, {
-    searchFor: `%${prefix}_roles%`,
-    replaceWith: user.roles ? user.roles.join(", ") : "None",
+    name: `${prefix}_roles`,
+    value: user.roles ? user.roles.join(", ") : "None",
   }, {
-    searchFor: `%${prefix}_messages%`,
-    replaceWith: user.messages,
+    name: `${prefix}_messages`,
+    value: user.messages,
   }, {
-    searchFor: `%${prefix}_coins%`,
-    replaceWith: user.coins,
+    name: `${prefix}_coins`,
+    value: user.coins,
   }]
 }
 
 export const channelVariables = (channel: Channel, prefix = "channel") => {
   return [{
-    searchFor: `%${prefix}_id%`,
-    replaceWith: channel.id,
+    name: `${prefix}_id`,
+    value: channel.id,
   }, {
-    searchFor: `%${prefix}_name%`,
-    replaceWith: channel.isDMBased() ? "DM" : channel.name,
+    name: `${prefix}_name`,
+    value: channel.isDMBased() ? "DM" : channel.name,
   }, {
-    searchFor: `%${prefix}_mention%`,
-    replaceWith: channelMention(channel.id),
+    name: `${prefix}_mention`,
+    value: channelMention(channel.id),
   }, {
-    searchFor: `%${prefix}_type%`,
-    replaceWith: channel.type,
+    name: `${prefix}_type`,
+    value: channel.type,
   },  {
-    searchFor: `%${prefix}_create_date%`,
-    replaceWith: channel.createdTimestamp ? time(Math.round(channel.createdTimestamp / 1000), "D") : "Unknown",
+    name: `${prefix}_create_date`,
+    value: channel.createdTimestamp ? time(Math.round(channel.createdTimestamp / 1000), "D") : "Unknown",
   }, {
-    searchFor: `%${prefix}_topic%`,
-    replaceWith: !channel.isDMBased() && !channel.isThread() && !channel.isVoiceBased() && channel.isTextBased() ? channel.topic : "None"
+    name: `${prefix}_topic`,
+    value: !channel.isDMBased() && !channel.isThread() && !channel.isVoiceBased() && channel.isTextBased() ? channel.topic : "None"
   }, {
-    searchFor: `%${prefix}_url%`,
-    replaceWith: channel.url,
+    name: `${prefix}_url`,
+    value: channel.url,
   }, {
-    searchFor: `%${prefix}_parent_id%`,
-    replaceWith: channel.isDMBased() ? 'N/A' : channel.parent?.id || 'N/A',
+    name: `${prefix}_parent_id`,
+    value: channel.isDMBased() ? 'N/A' : channel.parent?.id || 'N/A',
   }]
 }
 
 export const roleVariables = (role: Role, prefix = "role") => {
   return [{
-    searchFor: `%${prefix}_id%`,
-    replaceWith: role.id,
+    name: `${prefix}_id`,
+    value: role.id,
   }, {
-    searchFor: `%${prefix}_name%`,
-    replaceWith: role.name,
+    name: `${prefix}_name`,
+    value: role.name,
   }, {
-    searchFor: `%${prefix}_mention%`,
-    replaceWith: roleMention(role.id),
+    name: `${prefix}_mention`,
+    value: roleMention(role.id),
   }]
 }

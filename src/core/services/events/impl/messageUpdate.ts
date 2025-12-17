@@ -23,7 +23,7 @@ export default class MessageUpdateEvent extends Event {
     };
 
     const variables = [
-      { searchFor: '%old_content%', replaceWith: oldMessage.content || oldMessage.embeds[0]?.description || oldMessage.embeds[0]?.title || (oldMessage.embeds.length ? 'Embed' : undefined) }
+      { name: 'old_content', value: oldMessage.content || oldMessage.embeds[0]?.description || oldMessage.embeds[0]?.title || (oldMessage.embeds.length ? 'Embed' : undefined) }
     ]
 
     this.manager.services.engine.event.emit('messageUpdate', context, variables);

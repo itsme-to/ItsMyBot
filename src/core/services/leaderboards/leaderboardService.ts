@@ -85,8 +85,8 @@ export default class LeaderboardService extends Service{
 
     for (const row of leaderboardData) {
       const variables = [
-        { searchFor: "%leaderboard_position%", replaceWith: rank++ },
-        { searchFor: "%leaderboard_message%", replaceWith: row }
+        { name: "leaderboard_position", value: rank++ },
+        { name: "leaderboard_message", value: row }
       ];
 
       leaders.push({
@@ -119,7 +119,7 @@ export default class LeaderboardService extends Service{
 
         return components;
       })
-      .setVariables([{ searchFor: "%leaderboard_name%", replaceWith: Utils.capitalizeFirst(leaderboard.name) }])
+      .setVariables([{ name: "leaderboard_name", value: Utils.capitalizeFirst(leaderboard.name) }])
       .setItemsPerPage(10)
       .reply(interaction);
   }

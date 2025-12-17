@@ -19,11 +19,12 @@ export default class MessagesLeaderboard extends Leaderboard {
     const messageFormat = this.manager.lang.getString("leaderboard.messages-format")
 
     const formattedData = data.map((user, index) => {
-      return Utils.applyVariables(messageFormat, [
-        { searchFor: "%position%", replaceWith: index + 1 },
-      ], {
-        user: user
-      })
+      const variables = [
+        { name: "position", value: index + 1 },
+        ...Utils.userVariables(user, 'position_user')
+      ];
+
+      return Utils.applyVariables(messageFormat, variables, { user: user })
     })
 
     return Promise.all(formattedData)

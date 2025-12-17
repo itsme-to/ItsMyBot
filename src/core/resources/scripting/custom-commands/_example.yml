@@ -22,19 +22,19 @@ actions:
     args:
       components:
         - type: text-display
-          content: "Hello %user_mention%, you used the role %option_role_name% and user %option_user_display_name%"
+          content: "Hello %user_mention%, you used the role [[option_role_name]] and user [[option_user_display_name]]"
   - actions:
     - id: addRole
       args:
-        value: "%option_role_id%"
+        value: "[[option_role_id]]"
     - id: reply
       args:
         delay: 3
         components:
           - type: text-display
-            content: "Role %option_role_mention% added to %user_mention%"
+            content: "Role [[option_role_mention]] added to %user_mention%" # The %user_mention% now refers to the user the role was added to
     target:
-      member: "%option_user_id%"
+      member: "[[option_user_id]]"
 
 conditions:
   - id: hasRole

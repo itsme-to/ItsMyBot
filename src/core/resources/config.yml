@@ -45,10 +45,10 @@ default-color: "#3498db"
 default-message:
   components: 
     - type: 'container'
-      color: '%default_color%'
+      color: '[[default_color]]'
       components:
         - type: 'text-display'
-          content: '%message%'
+          content: '[[message]]'
 
 # Bot presence settings
 presence:

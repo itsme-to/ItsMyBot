@@ -1,152 +1,151 @@
 commands:
   addons:
-    description: "Eklentileri yönetin."
+    description: Eklentileri yönetin.
     subcommands:
       list:
-        description: "Eklentiler listesini göster."
+        description: Eklentilerin listesini göster.
       enable:
-        description: "Bir eklentiyi etkinleştir."
+        description: Bir eklentiyi etkinleştir.
         options:
-          addon: "Etkinleştirilecek eklenti."
+          addon: Etkinleştirilecek eklenti.
       disable:
-        description: "Bir eklentiyi devre dışı bırak."
+        description: Bir eklentiyi devre dışı bırak.
         options:
-          addon: "Devre dışı bırakılacak eklenti."
+          addon: Devre dışı bırakılacak eklenti.
   reload:
-    description: "Botu yeniden yükle"
+    description: Botu yeniden yükle
   parse:
-    description: "Bir metni ayrıştır."
+    description: Bir metni ayrıştır.
     options:
-      text: "Ayrıştırılacak metin."
-      user: "Metni ayrıştırılacak kullanıcı."
+      text: Ayrıştırılacak metin.
+      user: Metni için ayrıştırılacak kullanıcı.
   leaderboard:
-    description: "Liderlik tablosunu göster."
+    description: Liderlik tablosunu göster.
   meta:
-    description: "Meta verileri yönetin."
+    description: Meta verileri yönetin.
     subcommands:
       set:
-        description: "Bir meta verisini ayarla."
+        description: Meta veriyi ayarla.
       remove:
-        description: "Bir meta verisini sil."
+        description: Meta veriyi sil.
       add:
-        description: "Bir meta verisi ekle."
+        description: Meta veriye ekle.
       subtract:
-        description: "Bir meta verisinden bir değer çıkar."
+        description: Meta veriden bir değer çıkar.
       toggle:
-        description: "Boolean (mantıksal) bir meta veriyi değiştir."
+        description: Boolean meta veriyi değiştir.
       list-add:
-        description: "Liste meta verisine bir değer ekle."
+        description: Liste meta verisine bir değer ekle.
       list-remove:
-        description: "Liste meta verisinden bir değer kaldır."
+        description: Liste meta verisinden bir değer kaldır.
     options:
-      key: "Meta verisinin anahtarı."
-      value: "Meta verisinin değeri."
-      scope: "Meta verisini ayarlamak için kanal veya kullanıcının id'si."
+      key: Meta verinin anahtarı.
+      value: Meta verinin değeri.
+      scope: Meta veriyi ayarlamak için kanal veya kullanıcı kimliği.
   commands:
-    description: "Bot komutlarını yönetin."
+    description: Bot komutlarını yönetin.
     subcommands:
       list:
-        description: "Komut listesini göster."
+        description: Komutların listesini göster.
       enable:
-        description: "Bir komutu etkinleştir."
+        description: Bir komutu etkinleştir.
         options:
-          command: "Etkinleştirilecek komut."
+          command: Etkinleştirilecek komut.
       disable:
-        description: "Bir komutu devre dışı bırak."
+        description: Bir komutu devre dışı bırak.
         options:
-          command: "Devre dışı bırakılacak komut."
+          command: Devre dışı bırakılacak komut.
       permission:
-        description: "Komut izinlerini yönetin."
+        description: Komut izinlerini yönetin.
         subcommands:
           set:
-            description: "Komut iznini ayarla."
+            description: Komut iznini ayarla.
             options:
-              command: "İzni ayarlanacak komut."
-              permission: "Ayarlanacak izin."
+              command: İzni ayarlanacak komut.
+              permission: Ayaralanacak izin.
           remove:
-            description: "Komut iznini kaldır."
+            description: Komut iznini kaldır.
             options:
-              command: "İzni kaldırılacak komut."
+              command: İzninin kaldırılacağı komut.
 
-no-permission: "Bunu kullanma izniniz yok."
-in-cooldown: "Şu anda bekleme süresindesiniz. Bu işlemi %cooldown% sonra tekrar gerçekleştirebilirsiniz."
-only-in-primary-guild: "Bu işlem yalnızca birincil sunucuda kullanılabilir."
+no-permission: Bunu kullanma izniniz yok.
+in-cooldown: Şu anda bekleme süresindesiniz. Bu işlemi tekrar [[cooldown]] sonra yapabilirsiniz.
+only-in-primary-guild: Bu işlem yalnızca ana sunucuda kullanılabilir.
 invalid-time: "Geçersiz zaman formatı. Lütfen geçerli bir zaman formatı kullanın. Örnek: 1d, 1h, 1m, 1s."
 
 pagination:
-  select-placeholder: "Sayfa %current_page%/%total_pages%"
-  placeholder: "Bir seçenek seçin"
-  no-items: "Gösterilecek değer yok."
-  filter-placeholder: "Bir filtre seçin"
-  next-page: 'İleri'
-  previous-page: 'Geri'
+  select-placeholder: Sayfa [[pagination_current_page]]/[[pagination_total_pages]]
+  placeholder: Bir seçenek seçin
+  no-items: Görüntülenecek değer yok.
+  filter-placeholder: Bir filtre seçin
+  next-page: İleri
+  previous-page: Önceki
 
 leaderboard:
-  messages-format: '`%position%.` %user_mention% • **%user_messages%** gönderilen mesaj'
-  title: "### 🏆︎ Liderlik Tablosu - %leaderboard_name%"
-  footer: "Sayfa %pagination_current_page%/%pagination_total_pages%"
+  messages-format: "`[[position]].` [[position_user_mention]] • **[[position_user_messages]]** gönderilen mesaj"
+  title: "### 🏆 Liderlik Tablosu – [[leaderboard_name]]"
+  footer: Sayfa [[pagination_current_page]]/[[pagination_total_pages]]
 
 addons:
-  title: 'Aşağıda mevcut eklentilerin listesi'
+  title: Aşağıda mevcut eklentilerin listesi bulunmaktadır.
   info: |
-    ### %addon_status% %addon_name% v%addon_version%
-    Yazarlar: %addon_authors%
-  website: 'Web sitesi'
-  enabled: "Eklenti `%addon_name%` etkinleştirildi. Değişikliklerin uygulanması için botu yeniden başlatın."
-  disabled: "Eklenti `%addon_name%` devre dışı bırakıldı. Değişikliklerin uygulanması için botu yeniden başlatın."
-  already-enabled: "Eklenti `%addon_name%` zaten etkin."
-  already-disabled: "Eklenti `%addon_name%` zaten devre dışı."
-  not-found: "Eklenti `%addon_name%` mevcut değil."
-
-reloaded: "Bot yeniden yüklendi. Komutların uygulanması birkaç saniye sürebilir."
+    ### [[addon_status]] [[addon_name]] v[[addon_version]]
+    Yazarlar: [[addon_authors]]
+  website: Web sitesi
+  enabled: Eklenti `[[addon_name]]` etkinleştirildi. Değişikliklerin uygulanması için botu yeniden başlatın.
+  disabled: Eklenti `[[addon_name]]` devre dışı bırakıldı. Değişikliklerin uygulanması için botu yeniden başlatın.
+  already-enabled: Eklenti `[[addon_name]]` zaten etkin.
+  already-disabled: Eklenti `[[addon_name]]` zaten devre dışı.
+  not-found: Eklenti `[[addon_name]]` mevcut değil.
+reloaded: Bot yeniden yüklendi. Komutların dağıtılması birkaç saniye sürebilir.
 error-reloading: |
   ### Bot yeniden yüklenirken hata
   Bot yeniden yüklenirken bir hata oluştu.
   ```
-  %error_message%
+  [[error_message]]
   ```  
 parsed: |
-  Metin %user_mention% için ayrıştırılıyor:
+  [[target_mention]] için metin ayrıştırılıyor:
 
   ```
-  %parsed_text%
+  [[parsed_text]]
   ```
 engine:
-  missing-argument: "Motor `%engine%` `%missing%` argümanı eksik."
-  missing-context: "Script %script% için `%missing%` bağlamı eksik."
+  missing-argument: Script `[[script]]` için `[[missing]]` argümanı eksik.
+  missing-context: Script `[[script]]` için `[[missing]]` bağlamı eksik.
 
 meta:
-  scope-required: "Bu işlem için kapsam gereklidir."
-  set: "Meta veri `%meta_key%` `%meta_value%` olarak ayarlandı."
-  remove: "Meta veri `%meta_key%` kaldırıldı."
-  add: "Meta veri `%meta_key%` `%meta_value%` değeriyle eklendi."
-  subtract: "Meta veri `%meta_key%` `%meta_value%` kadar çıkarıldı."
-  toggle: "Meta veri `%meta_key%` `%meta_value%` olarak ayarlandı."
+  scope-required: Bu işlem için kapsam gereklidir.
+  set: Meta verisi `[[meta_key]]` `[[meta_value]]` olarak ayarlandı.
+  remove: Meta verisi `[[meta_key]]` kaldırıldı.
+  add: Meta verisi `[[meta_key]]` `[[meta_value]]` değeri ile eklendi.
+  subtract: Meta verisi `[[meta_key]]` `[[meta_value]]` değeri kadar azaltıldı.
+  toggle: Meta verisi `[[meta_key]]` `[[meta_value]]` olarak ayarlandı.
 
 command:
-  not-found: "Komut `%command%` bulunamadı."
-  enabled: "Komut `%command%` etkinleştirildi."
-  disabled: "Komut `%command%` devre dışı bırakıldı."
+  not-found: Komut `[[command]]` bulunamadı.
+  enabled: Komut `[[command]]` etkinleştirildi.
+  disabled: Komut `[[command]]` devre dışı bırakıldı.
   permission:
-    set: "Komut `%command%` için izin güncellendi."
-    remove: "Komut `%command%` için izin kaldırıldı."
-    unknown: "Geçersiz izin değeri"
+    set: Komut `[[command]]` için izin güncellendi.
+    remove: Komut `[[command]]` için izin kaldırıldı.
+    unknown: Geçersiz izin değeri.
 
 time:
   short:
-    second: "s"
-    minute: "m"
-    hour: "h"
-    day: "d"
-    month: "m"
+    second: s
+    minute: m
+    hour: h
+    day: d
+    month: m
   long:
-    second: "saniye"
-    seconds: "saniyeler"
-    minute: "dakika"
-    minutes: "dakikalar"
-    hour: "saat"
-    hours: "saatler"
-    day: "gün"
-    days: "günler"
-    month: "ay"
-    months: "aylar"
+    second: saniye
+    seconds: saniyeler
+    minute: dakika
+    minutes: dakikalar
+    hour: saat
+    hours: saatler
+    day: gün
+    days: günler
+    month: ay
+    months: aylar

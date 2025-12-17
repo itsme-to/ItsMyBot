@@ -149,7 +149,7 @@ export default class MetaCommand extends Command {
         key: 'messages.meta.not-found',
         ephemeral: true,
         variables: [
-          { searchFor: "%meta_key%", replaceWith: key }
+          { name: "meta_key", value: key }
         ],
         context
       }));
@@ -162,7 +162,7 @@ export default class MetaCommand extends Command {
         key: 'messages.meta.scope-required',
         ephemeral: true,
         variables: [
-          { searchFor: "%meta_mode%", replaceWith: meta.mode }
+          { name: "meta_mode", value: meta.mode }
         ],
         context
       }));
@@ -178,10 +178,10 @@ export default class MetaCommand extends Command {
           key: 'messages.meta.set',
           ephemeral: true,
           variables: [
-            { searchFor: "%meta_key%", replaceWith: key },
-            { searchFor: "%meta_value%", replaceWith: value },
-            { searchFor: "%meta_mode%", replaceWith: meta.mode },
-            { searchFor: "%meta_type%", replaceWith: meta.type }
+            { name: "meta_key", value: key },
+            { name: "meta_value", value: value },
+            { name: "meta_mode", value: meta.mode },
+            { name: "meta_type", value: meta.type }
           ],
           context
         }));
@@ -197,9 +197,9 @@ export default class MetaCommand extends Command {
           key: `messages.meta.${subcommand}`,
           ephemeral: true,
           variables: [
-            { searchFor: "%meta_key%", replaceWith: key },
-            { searchFor: "%meta_value%", replaceWith: value.toString() },
-            { searchFor: "%meta_mode%", replaceWith: meta.mode }
+            { name: "meta_key", value: key },
+            { name: "meta_value", value: value.toString() },
+            { name: "meta_mode", value: meta.mode }
           ],
           context
         }));
@@ -213,9 +213,9 @@ export default class MetaCommand extends Command {
           key: 'messages.meta.toggle',
           ephemeral: true,
           variables: [
-            { searchFor: "%meta_key%", replaceWith: key },
-            { searchFor: "%meta_value%", replaceWith: value ? "true" : "false" },
-            { searchFor: "%meta_mode%", replaceWith: meta.mode }
+            { name: "meta_key", value: key },
+            { name: "meta_value", value: value ? "true" : "false" },
+            { name: "meta_mode", value: meta.mode }
           ],
           context
         }));
@@ -229,9 +229,9 @@ export default class MetaCommand extends Command {
           key: 'messages.meta.list-add',
           ephemeral: true,
           variables: [
-            { searchFor: "%meta_key%", replaceWith: key },
-            { searchFor: "%meta_value%", replaceWith: value },
-            { searchFor: "%meta_mode%", replaceWith: meta.mode }
+            { name: "meta_key", value: key },
+            { name: "meta_value", value: value },
+            { name: "meta_mode", value: meta.mode }
           ],
           context
         }));
@@ -245,9 +245,9 @@ export default class MetaCommand extends Command {
           key: 'messages.meta.list-remove',
           ephemeral: true,
           variables: [
-            { searchFor: "%meta_key%", replaceWith: key },
-            { searchFor: "%meta_value%", replaceWith: value },
-            { searchFor: "%meta_mode%", replaceWith: meta.mode }
+            { name: "meta_key", value: key },
+            { name: "meta_value", value: value },
+            { name: "meta_mode", value: meta.mode }
           ],
           context
         }));
@@ -261,7 +261,7 @@ export default class MetaCommand extends Command {
           key: 'messages.meta.remove',
           ephemeral: true,
           variables: [
-            { searchFor: "%meta_key%", replaceWith: key },
+            { name: "meta_key", value: key },
           ],
           context
         }));

@@ -287,8 +287,8 @@ export class Pagination<T> {
 
   private getVariables() {
     const variables = [...this.variables,
-      { searchFor: "%pagination_current_page%", replaceWith: this.currentPage + 1 },
-      { searchFor: "%pagination_total_pages%", replaceWith: this.getTotalPages() }
+      { name: "pagination_current_page", value: this.currentPage + 1 },
+      { name: "pagination_total_pages", value: this.getTotalPages() }
     ];
 
     if (this.type === 'select_menu') {

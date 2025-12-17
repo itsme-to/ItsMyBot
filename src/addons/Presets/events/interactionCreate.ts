@@ -69,7 +69,7 @@ export default class InteractionCreateEvent extends Event<PresetsAddon> {
       key: "edited",
       ephemeral: true,
       context: { guild: interaction.guild, channel: interaction.channel },
-      variables: [{ searchFor: "%preset_path%", replaceWith: presetPath }]
+      variables: [{ name: "preset_path", value: presetPath }]
     }));
   }
 };

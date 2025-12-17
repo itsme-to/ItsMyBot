@@ -1,26 +1,40 @@
 commands:
   preset:
-    description: "Önayar gönder"
-    context-menu: "Mesajı düzenle"
+    description: Önayar gönder
+    context-menu: Mesajı düzenle
     subcommands:
       send:
-        description: "Mesaj gönder"
+        description: Bir mesaj gönder
         options:
-          preset: "Gönderilecek önayar"
-          channel: "Mesajın gönderileceği kanal"
+          preset: Gönderilecek önayar
+          channel: Mesajın gönderileceği kanal
+  sent: Mesaj %channel_mention% kanalına gönderildi
+  unknown-message: Mesaj bulunamadı
+  unknown-preset: Önayar bulunamadı
+  edited: Mesaj %preset_path% önayarı ile güncellendi
+  not-bot-message: Sadece benim tarafımdan gönderilen mesajları düzenleyebilirim!
+  modals:
+    edit:
+      title: Önayarlarla Mesajı Düzenle
+      label: Kullanılacak önayar yolu
+      description: Bu mesaj için kullanmak istediğiniz önayarın yolunu girin
+      text-input:
+        placeholder: Yol .yml olmadan, örn. welcome-message
+      select-menu:
+        placeholder: Kullanmak için bir önayar seçin
 
-sent: "Mesaj %channel_mention%'e gönderildi"
-unknown-message: "Mesaj bulunamadı"
-unknown-preset: "Önayar bulunamadı"
-edited: "Mesaj %preset_path% önayarıyla güncellendi"
-not-bot-message: 'Sadece benim tarafımdan gönderilen mesajları düzenleyebilirim!'
+sent: "Message sent to %channel_mention%"
+unknown-message: "Message not found"
+unknown-preset: "Preset not found"
+edited: "Message updated with preset %preset_path%"
+not-bot-message: 'I can only edit messages sent by me!'
 
 modals:
   edit:
-    title: 'Önayarlarla Mesajı Düzenle'
-    label: 'Kullanılacak önayar yolu'
-    description: 'Bu mesaj için kullanmak istediğiniz önayarın yolunu girin'
+    title: 'Edit Message with Presets'
+    label: 'The preset path to use'
+    description: 'Enter the path of the preset you want to use for this message'
     text-input:
-      placeholder: 'Yol .yml olmadan, örn. welcome-message'
+      placeholder: 'Path without .yml, e.g. welcome-message'
     select-menu:
-      placeholder: 'Kullanılacak bir önayar seçin'
+      placeholder: 'Select a preset to use'

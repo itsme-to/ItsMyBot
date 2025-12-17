@@ -1,4 +1,4 @@
-unknown: 'Unbekannt'
-offline: 'Offline'
-online: 'Online'
-no-motd: 'Keine MOTD'
+unknown: Unbekannt
+offline: Nicht verbunden
+online: Verbunden
+no-motd: Keine MOTD

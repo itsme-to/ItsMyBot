@@ -45,7 +45,7 @@ export default class ReloadCommand extends Command {
         key: 'messages.error-reloading',
         ephemeral: true,
         variables: [
-          { searchFor: "%error_message%", replaceWith: error.toString() }
+          { name: "error_message", value: error.toString() }
         ],
         context: {
           user: user,

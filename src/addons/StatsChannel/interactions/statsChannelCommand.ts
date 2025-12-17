@@ -95,8 +95,8 @@ export default class StatsChannelCommand extends Command<StatsChannelAddon> {
       key: "channel-renamed",
       ephemeral: true,
       variables: [
-        { searchFor: "%old_name%", replaceWith: channel.name },
-        { searchFor: "%new_name%", replaceWith: rawRename }
+        { name: "old_name", value: channel.name },
+        { name: "new_name", value: rawRename }
       ],
       context: {
         user,

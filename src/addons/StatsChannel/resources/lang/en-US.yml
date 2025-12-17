@@ -13,4 +13,4 @@ commands:
           name: "New name of the stats channel"
 
 channel-created: "Stats channel created. %channel_name%"
-channel-renamed: "Stats channel renamed. %new_name%"
+channel-renamed: "Stats channel renamed. [[new_name]]"

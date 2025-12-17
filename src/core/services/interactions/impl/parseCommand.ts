@@ -1,4 +1,4 @@
-import { Command, User, CommandBuilder } from '@itsmybot';
+import { Command, User, CommandBuilder, Utils } from '@itsmybot';
 import { ChatInputCommandInteraction, PermissionFlagsBits } from 'discord.js';
 export default class ParseCommand extends Command {
 
@@ -22,10 +22,11 @@ export default class ParseCommand extends Command {
       key: 'messages.parsed',
       ephemeral: true,
       variables: [
-        { searchFor: "%parsed_text%", replaceWith: interaction.options.getString("text", true) }
+        { name: "parsed_text", value: interaction.options.getString("text", true) },
+        ...Utils.userVariables(targetUser, 'target')
       ],
       context: {
-        user: targetUser,
+        user: user,
         guild: interaction.guild || undefined,
         channel: interaction.channel || undefined
       }

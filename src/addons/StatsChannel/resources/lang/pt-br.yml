@@ -1,16 +1,16 @@
 commands:
   stats-channel:
-    description: "Gerenciar o canal de estatísticas"
+    description: Gerenciar o canal de estatísticas
     subcommands:
       create:
-        description: "Criar um canal de estatísticas"
+        description: Criar um canal de estatísticas
         options:
-          name: "Nome do canal de estatísticas"
+          name: Nome do canal de estatísticas
       rename:
-        description: "Renomear um canal de estatísticas"
+        description: Renomear um canal de estatísticas
         options:
-          channel: "ID do canal de estatísticas"
-          name: "Novo nome do canal de estatísticas"
+          channel: ID do canal de estatísticas
+          name: Novo nome do canal de estatísticas
 
-channel-created: "Canal de estatísticas criado. %channel_name%"
-channel-renamed: "Canal de estatísticas renomeado. %new_name%"
+channel-created: Canal de estatísticas criado. %channel_name%
+channel-renamed: Canal de estatísticas renomeado. [[new_name]]

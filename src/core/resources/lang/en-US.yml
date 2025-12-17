@@ -5,13 +5,13 @@ commands:
       list:
         description: "Show the list of addons."
       enable: 
-        description: "Enable a addon."
+        description: "Enable an addon."
         options:
           addon: "The addon to enable."
       disable:
-        description: "Disable a addon."
+        description: "Disable an addon."
         options:
-          addon: "The addon to disabled."
+          addon: "The addon to disable."
   reload:
     description: "Reload the bot"
   parse: 
@@ -22,26 +22,26 @@ commands:
   leaderboard:
     description: "Show the leaderboard."
   meta:
-    description: "Manage meta data."
+    description: "Manage metadata."
     subcommands:
       set:
-        description: "Set a meta data."
+        description: "Set metadata."
       remove:
-        description: "Delete a meta data."
+        description: "Delete metadata."
       add:
-        description: "Add a meta data."
+        description: "Add metadata."
       subtract:
-        description: "Subtract a value from a meta data."
+        description: "Subtract a value from metadata."
       toggle:
-        description: "Toggle a boolean meta data."
+        description: "Toggle boolean metadata."
       list-add:
-        description: "Add a value to a list meta data."
+        description: "Add a value to list metadata."
       list-remove:
-        description: "Remove a value from a list meta data."
+        description: "Remove a value from list metadata."
     options:
-      key: "The key of the meta data."
-      value: "The value of the meta data."
-      scope: "The id of the channel or user to set the meta data for"
+      key: "The key of the metadata."
+      value: "The value of the metadata."
+      scope: "The ID of the channel or user to set the metadata for."
   commands:
     description: "Manage bot commands."
     subcommands:
@@ -68,13 +68,13 @@ commands:
             options:
               command: "The command to remove the permission from."
 
-no-permission: "You don't have the permission to use that."
-in-cooldown: "You're currently in cooldown. You can perform this action again %cooldown%."
+no-permission: "You don't have permission to use that."
+in-cooldown: "You're currently on cooldown. You can perform this action again [[cooldown]]."
 only-in-primary-guild: "This action can only be used in the primary guild."
 invalid-time: "Invalid time format. Please use a valid time format. Example: 1d, 1h, 1m, 1s."
 
 pagination:
-  select-placeholder: "Page %current_page%/%total_pages%"
+  select-placeholder: "Page [[pagination_current_page]]/[[pagination_total_pages]]"
   placeholder: "Select an option"
   no-items: "No values to display."
   filter-placeholder: "Select a filter"
@@ -82,55 +82,54 @@ pagination:
   previous-page: 'Previous'
 
 leaderboard:
-  messages-format: '`%position%.` %user_mention% • **%user_messages%** messages sent'
-  title: "### 🏆︎ Leaderboard - %leaderboard_name%"
-  footer: "Page %pagination_current_page%/%pagination_total_pages%"
+  messages-format: '`[[position]].` [[position_user_mention]] • **[[position_user_messages]]** messages sent'
+  title: "### 🏆 Leaderboard – [[leaderboard_name]]"
+  footer: "Page [[pagination_current_page]]/[[pagination_total_pages]]"
 
 addons:
-  title: 'Find below the list of addons available'
+  title: 'Find below the list of available addons.'
   info: |
-    ### %addon_status% %addon_name% v%addon_version%
-    Authors: %addon_authors%
+    ### [[addon_status]] [[addon_name]] v[[addon_version]]
+    Authors: [[addon_authors]]
   website: 'Website'
-  enabled: "The addon `%addon_name%` has been enabled. Restart the bot to apply the changes."
-  disabled: "The addon `%addon_name%` has been disabled. Restart the bot to apply the changes."
-  already-enabled: "The addon `%addon_name%` is already enabled."
-  already-disabled: "The addon `%addon_name%` is already disabled."
-  not-found: "The addon `%addon_name%` doesn't exist."
-
-reloaded: "The bot has been reloaded. It may take a few seconds to deploy command."
+  enabled: "The addon `[[addon_name]]` has been enabled. Restart the bot to apply the changes."
+  disabled: "The addon `[[addon_name]]` has been disabled. Restart the bot to apply the changes."
+  already-enabled: "The addon `[[addon_name]]` is already enabled."
+  already-disabled: "The addon `[[addon_name]]` is already disabled."
+  not-found: "The addon `[[addon_name]]` doesn't exist."
+reloaded: "The bot has been reloaded. It may take a few seconds to deploy commands."
 error-reloading: |
   ### Error while reloading the bot
   An error occurred while reloading the bot.
   ```
-  %error_message%
+  [[error_message]]
   ```  
 parsed: |
-  Parsing the text for %user_mention%:
+  Parsing the text for [[target_mention]]:
   
   ```
-  %parsed_text%
+  [[parsed_text]]
   ```
 engine:
-  missing-argument: "The engine `%engine%` is missing the `%missing%` argument."
-  missing-context: "The script %script% is missing the `%missing%` context."
+  missing-argument: "The script `[[script]]` is missing the `[[missing]]` argument."
+  missing-context: "The script `[[script]]` is missing the `[[missing]]` context."
 
 meta:
   scope-required: "The scope is required for this action."
-  set: "The meta data `%meta_key%` has been set to `%meta_value%`."
-  remove: "The meta data `%meta_key%` has been removed."
-  add: "The meta data `%meta_key%` has been added with the value `%meta_value%`."
-  subtract: "The meta data `%meta_key%` has been subtracted with the value `%meta_value%`."
-  toggle: "The meta data `%meta_key%` has been set to `%meta_value%`."
+  set: "The meta data `[[meta_key]]` has been set to `[[meta_value]]`."
+  remove: "The meta data `[[meta_key]]` has been removed."
+  add: "The meta data `[[meta_key]]` has been added with the value `[[meta_value]]`."
+  subtract: "The meta data `[[meta_key]]` has been subtracted with the value `[[meta_value]]`."
+  toggle: "The meta data `[[meta_key]]` has been set to `[[meta_value]]`."
 
 command:
-  not-found: "The command `%command%` was not found."
-  enabled: "The command `%command%` has been enabled."
-  disabled: "The command `%command%` has been disabled."
+  not-found: "The command `[[command]]` was not found."
+  enabled: "The command `[[command]]` has been enabled."
+  disabled: "The command `[[command]]` has been disabled."
   permission:
-    set: "The permission for the command `%command%` has been updated."
-    remove: "The permission for the command `%command%` has been removed."
-    unknown: "Invalid permission value"
+    set: "The permission for the command `[[command]]` has been updated."
+    remove: "The permission for the command `[[command]]` has been removed."
+    unknown: "Invalid permission value."
 
 time:
   short:

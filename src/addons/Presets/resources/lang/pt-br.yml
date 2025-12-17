@@ -1,26 +1,26 @@
 commands:
   preset:
-    description: "Enviar uma predefinição"
-    context-menu: "Editar a mensagem"
+    description: Enviar uma predefinição
+    context-menu: Editar a mensagem
     subcommands:
       send:
-        description: "Enviar uma mensagem"
+        description: Enviar uma mensagem
         options:
-          preset: "Predefinição para enviar"
-          channel: "Canal para enviar a mensagem"
+          preset: Predefinição para enviar
+          channel: Canal para enviar a mensagem
 
-sent: "Mensagem enviada para %channel_mention%"
-unknown-message: "Mensagem não encontrada"
-unknown-preset: "Predefinição não encontrada"
-edited: "Mensagem atualizada com a predefinição %preset_path%"
-not-bot-message: 'Só posso editar mensagens enviadas por mim!'
+sent: Mensagem enviada para %channel_mention%
+unknown-message: Mensagem não encontrada
+unknown-preset: Predefinição não encontrada
+edited: Mensagem atualizada com a predefinição %preset_path%
+not-bot-message: Só posso editar mensagens enviadas por mim!
 
 modals:
   edit:
-    title: 'Editar Mensagem com Predefinições'
-    label: 'O caminho da predefinição a usar'
-    description: 'Insira o caminho da predefinição que você deseja usar para esta mensagem'
+    title: Editar mensagem com predefinições
+    label: O caminho da predefinição a usar
+    description: Digite o caminho da predefinição que você deseja usar para esta mensagem
     text-input:
-      placeholder: 'Caminho sem .yml, ex.: welcome-message'
+      placeholder: Caminho sem .yml, por exemplo welcome-message
     select-menu:
-      placeholder: 'Selecione uma predefinição para usar'
+      placeholder: Selecione uma predefinição para usar

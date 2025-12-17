@@ -49,7 +49,7 @@ export default class SendRequestAction extends Action {
         variables.push(...this.jsonToVariable(data));
       } else {
         data = await response.text();
-        variables.push({ searchFor: "%data%", replaceWith: data });
+        variables.push({ name: "data", value: data });
       }
 
       return this.triggerFollowUpActions(script, context, variables);
@@ -66,7 +66,7 @@ export default class SendRequestAction extends Action {
         variables.push(...this.jsonToVariable(value, this.getPath(key, path)));
       }
     } else {
-      variables.push({ searchFor: `%data_${path}%`, replaceWith: json });
+      variables.push({ name: `data_${path}`, value: json });
     }
     return variables;
   }

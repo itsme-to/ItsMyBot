@@ -1,4 +1,4 @@
-unknown: 'Ismeretlen'
-offline: 'Offline'
-online: 'Online'
-no-motd: 'Nincs MOTD'
+unknown: Ismeretlen
+offline: Nem elérhető
+online: Elérhető
+no-motd: Nincs MOTD

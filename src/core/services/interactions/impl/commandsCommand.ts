@@ -91,7 +91,7 @@ export default class CommandsCommand extends Command {
     const commandDB = await CommandModel.findOne({ where: { id: commandOption } });
 
     const variables = [
-      { searchFor: '%command%', replaceWith: commandOption }
+      { name: 'command', value: commandOption }
     ];
 
     const context = {
@@ -130,7 +130,7 @@ export default class CommandsCommand extends Command {
     const commandDB = await CommandModel.findOne({ where: { id: commandOption } });
 
     const variables = [
-      { searchFor: '%command%', replaceWith: commandOption }
+      { name: 'command', value: commandOption }
     ];
 
     const context = {
@@ -170,7 +170,7 @@ export default class CommandsCommand extends Command {
     const commandDB = await CommandModel.findOne({ where: { id: commandOption } });
 
     const variables = [
-      { searchFor: '%command%', replaceWith: commandOption }
+      { name: 'command', value: commandOption }
     ];
 
     const context = {
@@ -209,7 +209,7 @@ export default class CommandsCommand extends Command {
       context,
       variables: [
         ...variables,
-        { searchFor: '%permission%', replaceWith: permissionOption }
+        { name: 'permission', value: permissionOption }
       ]
     }));
 
@@ -224,7 +224,7 @@ export default class CommandsCommand extends Command {
     const commandDB = await CommandModel.findOne({ where: { id: commandOption } });
 
     const variables = [
-      { searchFor: '%command%', replaceWith: commandOption }
+      { name: 'command', value: commandOption }
     ];
 
     const context = {

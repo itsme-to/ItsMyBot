@@ -112,15 +112,14 @@ export class Utils {
   static async applyVariables(value: string | undefined, variables: Variable[], context?: Context) {
     if (!value) return "";
     
-    if (context?.content) variables.push({ searchFor: "%content%", replaceWith: context.content })
-    if (context?.message) variables.push(
-      { searchFor: "%message_content%", replaceWith: Utils.blockPlaceholders(context.message.content) },
-      { searchFor: "%message_url%", replaceWith: context.message.url })
+    if (context?.content) variables.push({ name: "content", value: context.content })
 
-    variables.forEach(variable => {
-      if (!value) return "";
-      value = value.replaceAll(variable.searchFor, variable.replaceWith?.toString() || 'undefined');
-    });
+    if (value.includes('[[')) {
+      variables.forEach(variable => {
+        if (!value) return "";
+        value = value.replaceAll(`[[${variable.name}]]`, variable.value?.toString() || 'undefined');
+      });
+    }
 
     return manager.services.expansion.resolvePlaceholders(value, context);
   }

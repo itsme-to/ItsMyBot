@@ -1,16 +1,16 @@
 commands:
   stats-channel:
-    description: "A statisztikai csatorna kezelése"
+    description: A statisztika csatorna kezelése
     subcommands:
       create:
-        description: "Hozz létre egy statisztikai csatornát"
+        description: Statisztika csatorna létrehozása
         options:
-          name: "A statisztikai csatorna neve"
+          name: A statisztika csatorna neve
       rename:
-        description: "Nevezd át a statisztikai csatornát"
+        description: Statisztika csatorna átnevezése
         options:
-          channel: "A statisztikai csatorna azonosítója"
-          name: "A statisztikai csatorna új neve"
+          channel: A statisztika csatorna ID-je
+          name: A statisztika csatorna új neve
 
-channel-created: "Statisztikai csatorna létrehozva. %channel_name%"
-channel-renamed: "Statisztikai csatorna átnevezve. %new_name%"
+channel-created: Statisztika csatorna létrehozva. %channel_name%
+channel-renamed: Statisztika csatorna átnevezve. [[new_name]]

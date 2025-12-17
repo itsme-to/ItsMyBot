@@ -1,143 +1,151 @@
 commands:
   addons:
-    description: "Tvarkyti papildinius."
+    description: Valdyti priedus.
     subcommands:
       list:
-        description: "Rodyti papildinių sąrašą."
+        description: Rodyti priedų sąrašą.
       enable:
-        description: "Įjungti papildinį."
+        description: Įjungti priedą.
         options:
-          addon: "Papildinys, kurį įjungti."
+          addon: Priedas, kurį įjungti.
       disable:
-        description: "Išjungti papildinį."
+        description: Išjungti priedą.
         options:
-          addon: "Papildinys, kurį išjungti."
+          addon: Priedas, kurį išjungti.
   reload:
-    description: "Perkrauti botą"
+    description: Perkrauti botą
   parse:
-    description: "Analizuoti tekstą."
+    description: Analizuoti tekstą.
     options:
-      text: "Tekstas, kurį analizuoti."
-      user: "Vartotojas, dėl kurio analizuojamas tekstas."
+      text: Tekstas, kurį analizuoti.
+      user: Vartotojas, kuriam analizuoti tekstą.
   leaderboard:
-    description: "Rodyti lyderių lentelę."
+    description: Rodyti lyderių lentelę.
   meta:
-    description: "Tvarkyti metaduomenis."
+    description: Valdyti meta duomenis.
     subcommands:
       set:
-        description: "Nustatyti metaduomenį."
+        description: Nustatyti meta duomenis.
       remove:
-        description: "Ištrinti metaduomenį."
+        description: Ištrinti meta duomenis.
       add:
-        description: "Pridėti metaduomenį."
+        description: Pridėti meta duomenis.
       subtract:
-        description: "Atimti reikšmę iš metaduomenio."
+        description: Atimti reikšmę iš meta duomenų.
       toggle:
-        description: "Perjungti loginį metaduomenį."
+        description: Perjungti loginę (boolean) meta reikšmę.
       list-add:
-        description: "Pridėti reikšmę prie sąrašo tipo metaduomenio."
+        description: Pridėti reikšmę prie sąrašų meta duomenų.
       list-remove:
-        description: "Pašalinti reikšmę iš sąrašo tipo metaduomenio."
+        description: Pašalinti reikšmę iš sąrašų meta duomenų.
     options:
-      key: "Metaduomenų raktas."
-      value: "Metaduomenų reikšmė."
-      scope: "Kanalo arba vartotojo id, kuriam nustatyti metaduomenis"
+      key: Meta duomenų raktas.
+      value: Meta duomenų reikšmė.
+      scope: Kanalo arba vartotojo ID, kuriam nustatyti meta duomenis.
   commands:
-    description: "Tvarkyti boto komandas."
+    description: Valdyti boto komandas.
     subcommands:
       list:
-        description: "Rodyti komandų sąrašą."
+        description: Rodyti komandų sąrašą.
       enable:
-        description: "Įjungti komandą."
+        description: Įjungti komandą.
         options:
-          command: "Komanda, kurią įjungti."
+          command: Komanda, kurią įjungti.
       disable:
-        description: "Išjungti komandą."
+        description: Išjungti komandą.
         options:
-          command: "Komanda, kurią išjungti."
+          command: Komanda, kurią išjungti.
       permission:
-        description: "Tvarkyti komandų teises."
+        description: Valdyti komandos leidimus.
         subcommands:
           set:
-            description: "Nustatyti komandos teises."
+            description: Nustatyti komandos leidimą.
             options:
-              command: "Komanda, kuriai nustatyti teises."
-              permission: "Nustatoma teisė."
+              command: Komanda, kuriai nustatyti leidimą.
+              permission: Nustatomas leidimas.
           remove:
-            description: "Pašalinti komandos teises."
+            description: Pašalinti komandos leidimą.
             options:
-              command: "Komanda, iš kurios pašalinti teises."
+              command: Komanda, iš kurios pašalinti leidimą.
 
-no-permission: "Jūs neturite leidimo tai naudoti."
-in-cooldown: "Šiuo metu esate laukimo būsenoje. Galite vėl atlikti šį veiksmą po %cooldown%."
-only-in-primary-guild: "Šis veiksmas gali būti naudojamas tik pagrindinėje gildijoje."
-invalid-time: "Neteisingas laiko formatas. Prašome naudoti galiojantį laiko formatą. Pavyzdys: 1d, 1h, 1m, 1s."
+no-permission: Neturite leidimo tai naudoti.
+in-cooldown: Šiuo metu turite laiko apribojimą. Šią veiksmą vėl galėsite atlikti po [[cooldown]].
+only-in-primary-guild: Šis veiksmas gali būti naudojamas tik pagrindinėje gildijoje.
+invalid-time: "Neteisingas laiko formatas. Naudokite galiojantį laiko formatą. Pavyzdys: 1d, 1h, 1m, 1s."
 
 pagination:
-  select-placeholder: "Puslapis %current_page%/%total_pages%"
-  placeholder: "Pasirinkite parinktį"
-  no-items: "Nėra rodomų reikšmių."
-  filter-placeholder: "Pasirinkite filtrą"
-  next-page: 'Kitas'
-  previous-page: 'Ankstesnis'
+  select-placeholder: Puslapis [[pagination_current_page]]/[[pagination_total_pages]]
+  placeholder: Pasirinkite parinktį
+  no-items: Nėra rodytinų reikšmių.
+  filter-placeholder: Pasirinkite filtrą
+  next-page: Kitas
+  previous-page: Ankstesnis
 
 leaderboard:
-  messages-format: '`%position%.` %user_mention% • **%user_messages%** išsiųstų pranešimų'
-  title: "### 🏆︎ Lyderių lentelė - %leaderboard_name%"
-  footer: "Puslapis %pagination_current_page%/%pagination_total_pages%"
+  messages-format: "`[[position]].` [[position_user_mention]] • **[[position_user_messages]]** išsiųstų pranešimų"
+  title: "### 🏆 Reitingų lenta – [[leaderboard_name]]"
+  footer: Puslapis [[pagination_current_page]]/[[pagination_total_pages]]
 
 addons:
-  title: 'Žemiau rasite prieinamų papildinių sąrašą'
-  info: |-
-    ### %addon_status% %addon_name% v%addon_version%\nAutoriai: %addon_authors%\n
-  website: 'Svetainė'
-  enabled: "Papildinys `%addon_name%` buvo įjungtas. Perkraukite botą, kad pritaikytumėte pakeitimus."
-  disabled: "Papildinys `%addon_name%` buvo išjungtas. Perkraukite botą, kad pritaikytumėte pakeitimus."
-  already-enabled: "Papildinys `%addon_name%` jau yra įjungtas."
-  already-disabled: "Papildinys `%addon_name%` jau yra išjungtas."
-  not-found: "Papildinys `%addon_name%` neegzistuoja."
+  title: Žemiau rasite prieinamų priedų sąrašą.
+  info: |
+    ### [[addon_status]] [[addon_name]] v[[addon_version]]
+    Autoriai: [[addon_authors]]
+  website: Svetainė
+  enabled: Priedas `[[addon_name]]` buvo įjungtas. Perkraukite botą, kad pakeitimai įsigaliotų.
+  disabled: Priedas `[[addon_name]]` buvo išjungtas. Perkraukite botą, kad pakeitimai įsigaliotų.
+  already-enabled: Priedas `[[addon_name]]` jau yra įjungtas.
+  already-disabled: Priedas `[[addon_name]]` jau yra išjungtas.
+  not-found: Priedas `[[addon_name]]` neegzistuoja.
+reloaded: Botas buvo perkrautas. Komandų įdiegimas gali užtrukti kelias sekundes.
+error-reloading: |
+  ### Klaida perkraunant botą
+  Perkraunant botą įvyko klaida.
+  ```
+  [[error_message]]
+  ```  
+parsed: |
+  Analizuojamas tekstas vartotojui [[target_mention]]:
 
-reloaded: "Botas buvo perkrautas. Gali prireikti kelių sekundžių, kol komandos bus pritaikytos."
-error-reloading: |-
-  ### Klaida perkraunant botą\nPerkraunant botą įvyko klaida.\n```\n%error_message%\n```  \n
-parsed: |-
-  Analizuojamas tekstas vartotojui %user_mention%:\n\n```\n%parsed_text%\n```\n
+  ```
+  [[parsed_text]]
+  ```
 engine:
-  missing-argument: "Variklis `%engine%` neturi argumento `%missing%`."
-  missing-context: "Skriptui %script% trūksta konteksto `%missing%`."
+  missing-argument: Scenarijui `[[script]]` trūksta argumento `[[missing]]`.
+  missing-context: Scenarijui `[[script]]` trūksta konteksto `[[missing]]`.
 
 meta:
-  scope-required: "Šiam veiksmui reikia nurodyti apimtį."
-  set: "Metaduomenis `%meta_key%` nustatytas į `%meta_value%`."
-  remove: "Metaduomenis `%meta_key%` buvo pašalintas."
-  add: "Metaduomenis `%meta_key%` pridėtas su reikšme `%meta_value%`."
-  subtract: "Iš metaduomenio `%meta_key%` atimta reikšmė `%meta_value%`."
-  toggle: "Metaduomenis `%meta_key%` nustatytas į `%meta_value%`."
+  scope-required: Šiam veiksmui reikalinga apimtis.
+  set: Meta duomenys `[[meta_key]]` nustatyti į `[[meta_value]]`.
+  remove: Meta duomenys `[[meta_key]]` buvo pašalinti.
+  add: Meta duomenys `[[meta_key]]` buvo pridėti su verte `[[meta_value]]`.
+  subtract: Iš meta duomenų `[[meta_key]]` buvo atimta reikšmė `[[meta_value]]`.
+  toggle: Meta duomenys `[[meta_key]]` buvo nustatyti į `[[meta_value]]`.
 
 command:
-  not-found: "Komanda `%command%` nerasta."
-  enabled: "Komanda `%command%` buvo įjungta."
-  disabled: "Komanda `%command%` buvo išjungta."
+  not-found: Komanda `[[command]]` nerasta.
+  enabled: Komanda `[[command]]` buvo įjungta.
+  disabled: Komanda `[[command]]` buvo išjungta.
   permission:
-    set: "Teisė komandai `%command%` buvo atnaujinta."
-    remove: "Teisė komandai `%command%` buvo pašalinta."
-    unknown: "Neteisinga teisės reikšmė"
+    set: Leidimas komandai `[[command]]` buvo atnaujintas.
+    remove: Leidimas komandai `[[command]]` buvo pašalintas.
+    unknown: Neteisinga leidimo reikšmė.
 
 time:
   short:
-    second: "s"
-    minute: "m"
-    hour: "h"
-    day: "d"
-    month: "m"
+    second: s
+    minute: m
+    hour: h
+    day: d
+    month: m
   long:
-    second: "sekundė"
-    seconds: "sekundės"
-    minute: "minutė"
-    minutes: "minutės"
-    hour: "valanda"
-    hours: "valandos"
-    day: "diena"
-    days: "dienos"
-    month: "mėnuo"
-    months: "mėnesiai"
+    second: sekundė
+    seconds: sekundės
+    minute: minutė
+    minutes: minutės
+    hour: valanda
+    hours: valandos
+    day: diena
+    days: dienos
+    month: mėnuo
+    months: mėnesiai

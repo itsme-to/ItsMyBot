@@ -1,26 +1,26 @@
 commands:
   preset:
-    description: "发送预设"
-    context-menu: "编辑消息"
+    description: 发送预设
+    context-menu: 编辑消息
     subcommands:
       send:
-        description: "发送消息"
+        description: 发送消息
         options:
-          preset: "要发送的预设"
-          channel: "发送消息的频道"
+          preset: 要发送的预设
+          channel: 发送消息的频道
 
-sent: "消息已发送到 %channel_mention%"
-unknown-message: "未找到消息"
-unknown-preset: "未找到预设"
-edited: "消息已使用预设 %preset_path% 更新"
-not-bot-message: '我只能编辑由我发送的消息！'
+sent: 消息已发送到 %channel_mention%
+unknown-message: 未找到消息
+unknown-preset: 未找到预设
+edited: 消息已使用预设 %preset_path% 更新
+not-bot-message: 我只能编辑我发送的消息！
 
 modals:
   edit:
-    title: '使用预设编辑消息'
-    label: '要使用的预设路径'
-    description: '输入您想用于此消息的预设路径'
+    title: 使用预设编辑消息
+    label: 要使用的预设路径
+    description: 输入要用于此消息的预设路径
     text-input:
-      placeholder: '路径不带 .yml，例如 welcome-message'
+      placeholder: 不带 .yml 的路径，例如 welcome-message
     select-menu:
-      placeholder: '选择要使用的预设'
+      placeholder: 选择要使用的预设

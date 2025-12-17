@@ -1,224 +1,151 @@
 commands:
   addons:
-    description: "Manage addons."
+    description: Управление аддонами.
     subcommands:
       list:
-        description: "Show the list of addons."
+        description: Показать список аддонов.
       enable:
-        description: "Enable a addon."
+        description: Включить аддон.
         options:
-          addon: "The addon to enable."
+          addon: Аддон для включения.
       disable:
-        description: "Disable a addon."
+        description: Отключить аддон.
         options:
-          addon: "The addon to disabled."
-    title: Ниже приведен список доступных дополнений
-    info: |
-      ### %addon_status% %addon_name% v%addon_version%
-      Авторы: %addon_authors%
-    website: Веб-сайт
-    enabled: Аддон `%addon_name%` был включён. Перезапустите бота, чтобы применить изменения.
-    disabled: Аддон `%addon_name%` был отключён. Перезапустите бота, чтобы применить изменения.
-    already-enabled: Аддон `%addon_name%` уже включён.
-    already-disabled: Аддон `%addon_name%` уже отключён.
-    not-found: Аддон `%addon_name%` не существует.
+          addon: Аддон для отключения.
   reload:
-    description: "Перезагрузить бота"
+    description: Перезагрузить бота
   parse:
-    description: "Проанализировать текст."
+    description: Разобрать текст.
     options:
-      text: "Текст для парсинга."
-      user: "Пользователь, для которого нужно распарсить текст."
+      text: Текст для разбора.
+      user: Пользователь, для которого нужно разобрать текст.
   leaderboard:
-    description: "Show the leaderboard."
-    messages-format: "`%position%.` %user_mention% • **%user_messages%** сообщений"
-    title: "### 🏆︎ Рейтинг - %leaderboard_name%"
-    footer: Страница %pagination_current_page%/%pagination_total_pages%
+    description: Показать таблицу лидеров.
   meta:
-    description: "Manage meta data."
+    description: Управление метаданными.
     subcommands:
       set:
-        description: "Set a meta data."
+        description: Установить метаданные.
       remove:
-        description: "Delete a meta data."
+        description: Удалить метаданные.
       add:
-        description: "Add a meta data."
+        description: Добавить метаданные.
       subtract:
-        description: "Subtract a value from a meta data."
+        description: Вычесть значение из метаданных.
       toggle:
-        description: "Toggle a boolean meta data."
+        description: Переключить булевые метаданные.
       list-add:
-        description: "Add a value to a list meta data."
+        description: Добавить значение в список метаданных.
       list-remove:
-        description: "Remove a value from a list meta data."
+        description: Удалить значение из списка метаданных.
     options:
-      key: "The key of the meta data."
-      value: "The value of the meta data."
-      scope: "The id of the channel or user to set the meta data for"
-    scope-required: Для этого действия требуется указать область.
-    set: Метаданные `%meta_key%` были установлены в `%meta_value%`.
-    remove: Метаданные `%meta_key%` были удалены.
-    add: Метаданные `%meta_key%` были добавлены со значением `%meta_value%`.
-    subtract: Метаданные `%meta_key%` были уменьшены на значение `%meta_value%`.
-    toggle: Метаданные `%meta_key%` установлены в `%meta_value%`.
+      key: Ключ метаданных.
+      value: Значение метаданных.
+      scope: ID канала или пользователя, для которого нужно установить метаданные.
   commands:
-    description: "Управление командами бота."
+    description: Управление командами бота.
     subcommands:
       list:
-        description: "Показать список команд."
+        description: Показать список команд.
       enable:
-        description: "Включить команду."
+        description: Включить команду.
         options:
-          command: "Команда для включения."
+          command: Команда для включения.
       disable:
-        description: "Отключить команду."
+        description: Отключить команду.
         options:
-          command: "Команда для отключения."
+          command: Команда для отключения.
       permission:
-        description: "Управление правами команд."
+        description: Управление правами команд.
         subcommands:
           set:
-            description: "Установить разрешение для команды."
+            description: Установить разрешение для команды.
             options:
-              command: "Команда, для которой нужно установить разрешение."
-              permission: "Разрешение для установки."
+              command: Команда, для которой нужно установить разрешение.
+              permission: Разрешение для установки.
           remove:
-            description: "Удалить разрешение команды."
+            description: Удалить разрешение команды.
             options:
-              command: "Команда, у которой нужно удалить разрешение."
-  no-permission: У вас нет разрешения на использование этого.
-  in-cooldown: В данный момент вы на перезарядке. Вы сможете выполнить это действие снова %cooldown%.
-  only-in-primary-guild: Это действие можно использовать только в основной гильдии.
-  invalid-time: "Неверный формат времени. Пожалуйста, используйте корректный формат времени. Пример: 1d, 1h, 1m, 1s."
-  pagination:
-    select-placeholder: Страница %current_page%/%total_pages%
-    placeholder: Выберите вариант
-    no-items: Нет значений для отображения.
-    filter-placeholder: Выберите фильтр
-    next-page: Далее
-    previous-page: Предыдущая
-  reloaded: Бот был перезагружен. Может потребоваться несколько секунд для развёртывания команд.
-  error-reloading: |
-    ### Ошибка при перезагрузке бота
-    Произошла ошибка при перезагрузке бота.
-    ```
-    %error_message%
-    ```  
-  parsed: |
-    Парсинг текста для %user_mention%:
+              command: Команда, у которой нужно удалить разрешение.
 
-    ```
-    %parsed_text%
-    ```
-  engine:
-    missing-argument: У движка `%engine%` отсутствует аргумент `%missing%`.
-    missing-context: У скрипта %script% отсутствует контекст `%missing%`.
-  command:
-    not-found: Команда `%command%` не найдена.
-    enabled: Команда `%command%` была включена.
-    disabled: Команда `%command%` была отключена.
-    permission:
-      set: Разрешение для команды `%command%` было обновлено.
-      remove: Разрешение для команды `%command%` было удалено.
-      unknown: Недопустимое значение разрешения
-  time:
-    short:
-      second: s
-      minute: m
-      hour: h
-      day: d
-      month: m
-    long:
-      second: секунда
-      seconds: секунд
-      minute: минута
-      minutes: минут
-      hour: час
-      hours: часов
-      day: день
-      days: дней
-      month: месяц
-      months: месяцев
-
-no-permission: "You don't have the permission to use that."
-in-cooldown: "You're currently in cooldown. You can perform this action again %cooldown%."
-only-in-primary-guild: "This action can only be used in the primary guild."
-invalid-time: "Invalid time format. Please use a valid time format. Example: 1d, 1h, 1m, 1s."
+no-permission: У вас нет прав для использования этой команды.
+in-cooldown: Сейчас вы в кулдауне. Вы сможете выполнить это действие снова через [[cooldown]].
+only-in-primary-guild: Это действие можно использовать только в основной гильдии.
+invalid-time: "Неверный формат времени. Пожалуйста, используйте допустимый формат времени. Пример: 1d, 1h, 1m, 1s."
 
 pagination:
-  select-placeholder: "Page %current_page%/%total_pages%"
-  placeholder: "Select an option"
-  no-items: "No values to display."
-  filter-placeholder: "Select a filter"
-  next-page: 'Next'
-  previous-page: 'Previous'
+  select-placeholder: Страница [[pagination_current_page]]/[[pagination_total_pages]]
+  placeholder: Выберите вариант
+  no-items: Нет значений для отображения.
+  filter-placeholder: Выберите фильтр
+  next-page: Следующая
+  previous-page: Предыдущая
 
 leaderboard:
-  messages-format: '`%position%.` %user_mention% • **%user_messages%** messages sent'
-  title: "### 🏆︎ Leaderboard - %leaderboard_name%"
-  footer: "Page %pagination_current_page%/%pagination_total_pages%"
+  messages-format: "`[[position]].` [[position_user_mention]] • **[[position_user_messages]]** отправлено сообщений"
+  title: "### 🏆 Таблица лидеров – [[leaderboard_name]]"
+  footer: Страница [[pagination_current_page]]/[[pagination_total_pages]]
 
 addons:
-  title: 'Find below the list of addons available'
+  title: Ниже приведён список доступных аддонов.
   info: |
-    ### %addon_status% %addon_name% v%addon_version%
-    Authors: %addon_authors%
-  website: 'Website'
-  enabled: "The addon `%addon_name%` has been enabled. Restart the bot to apply the changes."
-  disabled: "The addon `%addon_name%` has been disabled. Restart the bot to apply the changes."
-  already-enabled: "The addon `%addon_name%` is already enabled."
-  already-disabled: "The addon `%addon_name%` is already disabled."
-  not-found: "The addon `%addon_name%` doesn't exist."
-
-reloaded: "The bot has been reloaded. It may take a few seconds to deploy command."
+    ### [[addon_status]] [[addon_name]] v[[addon_version]]
+    Авторы: [[addon_authors]]
+  website: Веб-сайт
+  enabled: Аддон `[[addon_name]]` был включён. Перезапустите бота, чтобы применить изменения.
+  disabled: Аддон `[[addon_name]]` был отключён. Перезапустите бота, чтобы применить изменения.
+  already-enabled: Аддон `[[addon_name]]` уже включён.
+  already-disabled: Аддон `[[addon_name]]` уже отключён.
+  not-found: Аддон `[[addon_name]]` не существует.
+reloaded: Бот был перезагружен. Развертывание команд может занять несколько секунд.
 error-reloading: |
-  ### Error while reloading the bot
-  An error occurred while reloading the bot.
+  ### Ошибка при перезагрузке бота
+  Произошла ошибка при перезагрузке бота.
   ```
-  %error_message%
+  [[error_message]]
   ```  
 parsed: |
-  Parsing the text for %user_mention%:
+  Анализ текста для [[target_mention]]:
 
   ```
-  %parsed_text%
+  [[parsed_text]]
   ```
 engine:
-  missing-argument: "The engine `%engine%` is missing the `%missing%` argument."
-  missing-context: "The script %script% is missing the `%missing%` context."
+  missing-argument: В скрипте `[[script]]` отсутствует аргумент `[[missing]]`.
+  missing-context: В скрипте `[[script]]` отсутствует контекст `[[missing]]`.
 
 meta:
-  scope-required: "The scope is required for this action."
-  set: "The meta data `%meta_key%` has been set to `%meta_value%`."
-  remove: "The meta data `%meta_key%` has been removed."
-  add: "The meta data `%meta_key%` has been added with the value `%meta_value%`."
-  subtract: "The meta data `%meta_key%` has been subtracted with the value `%meta_value%`."
-  toggle: "The meta data `%meta_key%` has been set to `%meta_value%`."
+  scope-required: Необходимо указать область для этого действия.
+  set: Метаданные `[[meta_key]]` установлены в `[[meta_value]]`.
+  remove: Метаданные `[[meta_key]]` были удалены.
+  add: Метаданные `[[meta_key]]` добавлены со значением `[[meta_value]]`.
+  subtract: Из метаданных `[[meta_key]]` было вычтено значение `[[meta_value]]`.
+  toggle: Метаданные `[[meta_key]]` установлены в `[[meta_value]]`.
 
 command:
-  not-found: "The command `%command%` was not found."
-  enabled: "The command `%command%` has been enabled."
-  disabled: "The command `%command%` has been disabled."
+  not-found: Команда `[[command]]` не найдена.
+  enabled: Команда `[[command]]` была включена.
+  disabled: Команда `[[command]]` была отключена.
   permission:
-    set: "The permission for the command `%command%` has been updated."
-    remove: "The permission for the command `%command%` has been removed."
-    unknown: "Invalid permission value"
+    set: Разрешение для команды `[[command]]` было обновлено.
+    remove: Разрешение для команды `[[command]]` было удалено.
+    unknown: Недопустимое значение разрешения.
 
 time:
   short:
-    second: "s"
-    minute: "m"
-    hour: "h"
-    day: "d"
-    month: "m"
+    second: s
+    minute: m
+    hour: h
+    day: d
+    month: m
   long:
-    second: "second"
-    seconds: "seconds"
-    minute: "minute"
-    minutes: "minutes"
-    hour: "hour"
-    hours: "hours"
-    day: "day"
-    days: "days"
-    month: "month"
-    months: "months"
+    second: секунда
+    seconds: секунд
+    minute: минута
+    minutes: минут
+    hour: час
+    hours: часов
+    day: день
+    days: дней
+    month: месяц
+    months: месяцев

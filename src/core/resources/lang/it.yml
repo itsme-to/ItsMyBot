@@ -1,152 +1,151 @@
 commands:
   addons:
-    description: "Gestisci gli addon."
+    description: Gestisci gli addon.
     subcommands:
       list:
-        description: "Mostra la lista degli addon."
+        description: Mostra l'elenco degli addon.
       enable:
-        description: "Abilita un addon."
+        description: Abilita un addon.
         options:
-          addon: "L'addon da abilitare."
+          addon: L'addon da abilitare.
       disable:
-        description: "Disabilita un addon."
+        description: Disabilita un addon.
         options:
-          addon: "L'addon da disabilitare."
+          addon: L'addon da disabilitare.
   reload:
-    description: "Ricarica il bot"
+    description: Ricarica il bot
   parse:
-    description: "Analizza un testo."
+    description: Analizza un testo.
     options:
-      text: "Il testo da analizzare."
-      user: "L'utente per cui analizzare il testo."
+      text: Il testo da analizzare.
+      user: L'utente per cui analizzare il testo.
   leaderboard:
-    description: "Mostra la classifica."
+    description: Mostra la classifica.
   meta:
-    description: "Gestisci i meta dati."
+    description: Gestisci i metadati.
     subcommands:
       set:
-        description: "Imposta un meta dato."
+        description: Imposta i metadati.
       remove:
-        description: "Elimina un meta dato."
+        description: Elimina i metadati.
       add:
-        description: "Aggiungi un meta dato."
+        description: Aggiungi metadati.
       subtract:
-        description: "Sottrai un valore da un meta dato."
+        description: Sottrai un valore dai metadati.
       toggle:
-        description: "Attiva/disattiva un meta dato booleano."
+        description: Attiva/disattiva metadati booleani.
       list-add:
-        description: "Aggiungi un valore a un meta dato lista."
+        description: Aggiungi un valore ai metadati di tipo lista.
       list-remove:
-        description: "Rimuovi un valore da un meta dato lista."
+        description: Rimuovi un valore dai metadati di tipo lista.
     options:
-      key: "La chiave del meta dato."
-      value: "Il valore del meta dato."
-      scope: "L'id del canale o dell'utente per cui impostare il meta dato"
+      key: La chiave dei metadati.
+      value: Il valore dei metadati.
+      scope: L'ID del canale o dell'utente per cui impostare i metadati.
   commands:
-    description: "Gestisci i comandi del bot."
+    description: Gestisci i comandi del bot.
     subcommands:
       list:
-        description: "Mostra la lista dei comandi."
+        description: Mostra l'elenco dei comandi.
       enable:
-        description: "Abilita un comando."
+        description: Abilita un comando.
         options:
-          command: "Il comando da abilitare."
+          command: Il comando da abilitare.
       disable:
-        description: "Disabilita un comando."
+        description: Disabilita un comando.
         options:
-          command: "Il comando da disabilitare."
+          command: Il comando da disabilitare.
       permission:
-        description: "Gestisci i permessi dei comandi."
+        description: Gestisci le autorizzazioni dei comandi.
         subcommands:
           set:
-            description: "Imposta il permesso di un comando."
+            description: Imposta il permesso del comando.
             options:
-              command: "Il comando per cui impostare il permesso."
-              permission: "Il permesso da impostare."
+              command: Il comando per cui impostare il permesso.
+              permission: Il permesso da impostare.
           remove:
-            description: "Rimuovi il permesso di un comando."
+            description: Rimuovi il permesso del comando.
             options:
-              command: "Il comando da cui rimuovere il permesso."
+              command: Il comando da cui rimuovere il permesso.
 
-no-permission: "Non hai il permesso per usare questo."
-in-cooldown: "Sei attualmente in cooldown. Puoi eseguire di nuovo questa azione tra %cooldown%."
-only-in-primary-guild: "Questa azione può essere usata solo nella guild primaria."
-invalid-time: "Formato del tempo non valido. Usa un formato di tempo valido. Esempio: 1d, 1h, 1m, 1s."
+no-permission: Non hai il permesso per usare questo.
+in-cooldown: Sei attualmente in cooldown. Potrai eseguire di nuovo questa azione tra [[cooldown]].
+only-in-primary-guild: Questa azione può essere usata solo nel server principale.
+invalid-time: "Formato temporale non valido. Usa un formato temporale valido. Esempio: 1d, 1h, 1m, 1s."
 
 pagination:
-  select-placeholder: "Pagina %current_page%/%total_pages%"
-  placeholder: "Seleziona un'opzione"
-  no-items: "Nessun valore da visualizzare."
-  filter-placeholder: "Seleziona un filtro"
-  next-page: 'Successiva'
-  previous-page: 'Precedente'
+  select-placeholder: Pagina [[pagination_current_page]]/[[pagination_total_pages]]
+  placeholder: Seleziona un'opzione
+  no-items: Nessun valore da visualizzare.
+  filter-placeholder: Seleziona un filtro
+  next-page: Successiva
+  previous-page: Precedente
 
 leaderboard:
-  messages-format: '`%position%.` %user_mention% • **%user_messages%** messaggi inviati'
-  title: "### 🏆︎ Classifica - %leaderboard_name%"
-  footer: "Pagina %pagination_current_page%/%pagination_total_pages%"
+  messages-format: "`[[position]].` [[position_user_mention]] • **[[position_user_messages]]** messaggi inviati"
+  title: "### 🏆 Classifica – [[leaderboard_name]]"
+  footer: Pagina [[pagination_current_page]]/[[pagination_total_pages]]
 
 addons:
-  title: 'Di seguito l''elenco degli addon disponibili'
+  title: Trova di seguito l'elenco degli addon disponibili.
   info: |
-    ### %addon_status% %addon_name% v%addon_version%
-    Autori: %addon_authors%
-  website: 'Sito web'
-  enabled: "L'addon `%addon_name%` è stato abilitato. Riavvia il bot per applicare le modifiche."
-  disabled: "L'addon `%addon_name%` è stato disabilitato. Riavvia il bot per applicare le modifiche."
-  already-enabled: "L'addon `%addon_name%` è già abilitato."
-  already-disabled: "L'addon `%addon_name%` è già disabilitato."
-  not-found: "L'addon `%addon_name%` non esiste."
-
-reloaded: "Il bot è stato ricaricato. Potrebbero essere necessari alcuni secondi per distribuire i comandi."
+    ### [[addon_status]] [[addon_name]] v[[addon_version]]
+    Autori: [[addon_authors]]
+  website: Sito web
+  enabled: L'addon `[[addon_name]]` è stato abilitato. Riavvia il bot per applicare le modifiche.
+  disabled: L'addon `[[addon_name]]` è stato disabilitato. Riavvia il bot per applicare le modifiche.
+  already-enabled: L'addon `[[addon_name]]` è già abilitato.
+  already-disabled: L'addon `[[addon_name]]` è già disabilitato.
+  not-found: L'addon `[[addon_name]]` non esiste.
+reloaded: Il bot è stato ricaricato. Potrebbero essere necessari alcuni secondi per distribuire i comandi.
 error-reloading: |
   ### Errore durante il ricaricamento del bot
   Si è verificato un errore durante il ricaricamento del bot.
   ```
-  %error_message%
+  [[error_message]]
   ```  
 parsed: |
-  Analisi del testo per %user_mention%:
+  Analisi del testo per [[target_mention]]:
 
   ```
-  %parsed_text%
+  [[parsed_text]]
   ```
 engine:
-  missing-argument: "Al motore `%engine%` manca l'argomento `%missing%`."
-  missing-context: "Lo script %script% non ha il contesto `%missing%`."
+  missing-argument: Lo script `[[script]]` manca l'argomento `[[missing]]`.
+  missing-context: Lo script `[[script]]` manca del contesto `[[missing]]`.
 
 meta:
-  scope-required: "L'ambito è richiesto per questa azione."
-  set: "Il meta dato `%meta_key%` è stato impostato su `%meta_value%`."
-  remove: "Il meta dato `%meta_key%` è stato rimosso."
-  add: "Il meta dato `%meta_key%` è stato aggiunto con il valore `%meta_value%`."
-  subtract: "Al meta dato `%meta_key%` è stato sottratto il valore `%meta_value%`."
-  toggle: "Il meta dato `%meta_key%` è stato impostato su `%meta_value%`."
+  scope-required: L'ambito è obbligatorio per questa azione.
+  set: I metadati `[[meta_key]]` sono stati impostati su `[[meta_value]]`.
+  remove: I metadati `[[meta_key]]` sono stati rimossi.
+  add: I metadati `[[meta_key]]` sono stati aggiunti con il valore `[[meta_value]]`.
+  subtract: Ai metadati `[[meta_key]]` è stato sottratto il valore `[[meta_value]]`.
+  toggle: I metadati `[[meta_key]]` sono stati impostati su `[[meta_value]]`.
 
 command:
-  not-found: "Il comando `%command%` non è stato trovato."
-  enabled: "Il comando `%command%` è stato abilitato."
-  disabled: "Il comando `%command%` è stato disabilitato."
+  not-found: Il comando `[[command]]` non è stato trovato.
+  enabled: Il comando `[[command]]` è stato abilitato.
+  disabled: Il comando `[[command]]` è stato disabilitato.
   permission:
-    set: "Il permesso per il comando `%command%` è stato aggiornato."
-    remove: "Il permesso per il comando `%command%` è stato rimosso."
-    unknown: "Valore del permesso non valido"
+    set: Il permesso per il comando `[[command]]` è stato aggiornato.
+    remove: Il permesso per il comando `[[command]]` è stato rimosso.
+    unknown: Valore di permesso non valido.
 
 time:
   short:
-    second: "s"
-    minute: "m"
-    hour: "h"
-    day: "d"
-    month: "m"
+    second: s
+    minute: m
+    hour: h
+    day: d
+    month: m
   long:
-    second: "secondo"
-    seconds: "secondi"
-    minute: "minuto"
-    minutes: "minuti"
-    hour: "ora"
-    hours: "ore"
-    day: "giorno"
-    days: "giorni"
-    month: "mese"
-    months: "mesi"
+    second: secondo
+    seconds: secondi
+    minute: minuto
+    minutes: minuti
+    hour: ora
+    hours: ore
+    day: giorno
+    days: giorni
+    month: mese
+    months: mesi

@@ -111,8 +111,8 @@ export class LangDirectory {
   async buildMessage({ key, ephemeral, variables = [], context, lang }: { key: string, ephemeral: boolean, variables?: Variable[], context: Context, lang?: string }): Promise<MessageOutput> {
     const parsedMessage = await this.getParsedString(key, variables, context, lang);
 
-    variables.push({ searchFor: '%message%', replaceWith: parsedMessage });
-    variables.push({ searchFor: '%default_color%', replaceWith: manager.configs.config.getString('default-color') });
+    variables.push({ name: 'message', value: parsedMessage });
+    variables.push({ name: 'default_color', value: manager.configs.config.getString('default-color') });
 
     return Utils.setupMessage({
       config: manager.configs.config.getSubsection('default-message'),

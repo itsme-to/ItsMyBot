@@ -15,8 +15,8 @@ export * from './validators/component.js';
 export * from './validators/scripting.js';
 
 export interface Variable {
-  searchFor: string;
-  replaceWith: string | number | undefined | null | boolean;
+  name: string;
+  value: string | number | undefined | null | boolean;
 }
 
 

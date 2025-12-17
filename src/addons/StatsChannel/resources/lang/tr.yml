@@ -1,16 +1,16 @@
 commands:
   stats-channel:
-    description: "İstatistik kanalını yönet"
+    description: İstatistik kanalını yönetin
     subcommands:
       create:
-        description: "İstatistik kanalı oluştur"
+        description: İstatistik kanalı oluşturun
         options:
-          name: "İstatistik kanalının adı"
+          name: İstatistik kanalının adı
       rename:
-        description: "İstatistik kanalını yeniden adlandır"
+        description: İstatistik kanalının adını değiştirin
         options:
-          channel: "İstatistik kanalının ID'si"
-          name: "İstatistik kanalının yeni adı"
+          channel: İstatistik kanalının ID'si
+          name: İstatistik kanalının yeni adı
 
-channel-created: "İstatistik kanalı oluşturuldu. %channel_name%"
-channel-renamed: "İstatistik kanalı yeniden adlandırıldı. %new_name%"
+channel-created: İstatistik kanalı oluşturuldu. %channel_name%
+channel-renamed: İstatistik kanalı yeniden adlandırıldı. [[new_name]]

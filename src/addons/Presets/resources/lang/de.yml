@@ -1,26 +1,26 @@
 commands:
   preset:
-    description: "Sende ein Preset"
-    context-menu: "Nachricht bearbeiten"
+    description: Sende ein Preset
+    context-menu: Nachricht bearbeiten
     subcommands:
       send:
-        description: "Sende eine Nachricht"
+        description: Sende eine Nachricht
         options:
-          preset: "Zu sendendes Preset"
-          channel: "Kanal, in den die Nachricht gesendet werden soll"
+          preset: Zu sendendes Preset
+          channel: Kanal, an den die Nachricht gesendet werden soll
 
-sent: "Nachricht an %channel_mention% gesendet"
-unknown-message: "Nachricht nicht gefunden"
-unknown-preset: "Preset nicht gefunden"
-edited: "Nachricht mit Preset %preset_path% aktualisiert"
-not-bot-message: 'Ich kann nur Nachrichten bearbeiten, die ich gesendet habe!'
+sent: Nachricht an %channel_mention% gesendet
+unknown-message: Nachricht nicht gefunden
+unknown-preset: Preset nicht gefunden
+edited: Nachricht mit Preset %preset_path% aktualisiert
+not-bot-message: Ich kann nur Nachrichten bearbeiten, die von mir gesendet wurden!
 
 modals:
   edit:
-    title: 'Nachricht mit Presets bearbeiten'
-    label: 'Der Preset-Pfad, der verwendet werden soll'
-    description: 'Gib den Pfad des Presets ein, das du für diese Nachricht verwenden möchtest'
+    title: Nachricht mit Presets bearbeiten
+    label: Der zu verwendende Preset-Pfad
+    description: Geben Sie den Pfad des Presets ein, den Sie für diese Nachricht verwenden möchten
     text-input:
-      placeholder: 'Pfad ohne .yml, z. B. welcome-message'
+      placeholder: Pfad ohne .yml, z. B. welcome-message
     select-menu:
-      placeholder: 'Wähle ein Preset aus, das verwendet werden soll'
+      placeholder: Wählen Sie ein Preset aus

@@ -1,152 +1,223 @@
 commands:
   addons:
-    description: "管理插件。"
+    description: "Manage addons."
     subcommands:
       list:
-        description: "显示插件列表。"
+        description: "Show the list of addons."
       enable:
-        description: "启用一个插件。"
+        description: "Enable an addon."
         options:
-          addon: "要启用的插件。"
+          addon: "The addon to enable."
       disable:
-        description: "禁用一个插件。"
+        description: "Disable an addon."
         options:
-          addon: "要被禁用的插件。"
+          addon: "The addon to disable."
+    title: 以下是可用插件列表。
+    info: |
+      ### [[addon_status]] [[addon_name]] v[[addon_version]]
+      作者： [[addon_authors]]
+    website: 网站
+    enabled: 插件 `[[addon_name]]` 已启用。重启机器人以应用更改。
+    disabled: 插件 `[[addon_name]]` 已禁用。重启机器人以应用更改。
+    already-enabled: 插件 `[[addon_name]]` 已经启用。
+    already-disabled: 插件 `[[addon_name]]` 已经禁用。
+    not-found: 插件 `[[addon_name]]` 不存在。
   reload:
-    description: "重新加载机器人"
+    description: 重新加载机器人
   parse:
-    description: "解析文本。"
+    description: 解析文本。
     options:
-      text: "要解析的文本。"
-      user: "要为其解析文本的用户。"
+      text: 要解析的文本。
+      user: 为其解析文本的用户。
   leaderboard:
-    description: "显示排行榜。"
+    description: "Show the leaderboard."
+    messages-format: "`[[position]].` [[position_user_mention]] • **[[position_user_messages]]** 条消息已发送"
+    title: "### 🏆 排行榜 – [[leaderboard_name]]"
+    footer: 第 [[pagination_current_page]]/[[pagination_total_pages]] 页
   meta:
-    description: "管理元数据。"
+    description: "Manage metadata."
     subcommands:
       set:
-        description: "设置元数据。"
+        description: "Set metadata."
       remove:
-        description: "删除元数据。"
+        description: "Delete metadata."
       add:
-        description: "添加元数据。"
+        description: "Add metadata."
       subtract:
-        description: "从元数据中减去一个值。"
+        description: "Subtract a value from metadata."
       toggle:
-        description: "切换布尔型元数据。"
+        description: "Toggle boolean metadata."
       list-add:
-        description: "向列表型元数据添加一个值。"
+        description: "Add a value to list metadata."
       list-remove:
-        description: "从列表型元数据移除一个值。"
+        description: "Remove a value from list metadata."
     options:
-      key: "元数据的键。"
-      value: "元数据的值。"
-      scope: "要为其设置元数据的频道或用户的 id"
+      key: "The key of the metadata."
+      value: "The value of the metadata."
+      scope: "The ID of the channel or user to set the metadata for."
+    scope-required: 此操作需要指定范围。
+    set: 元数据 `[[meta_key]]` 已设置为 `[[meta_value]]`。
+    remove: 元数据 `[[meta_key]]` 已被移除。
+    add: 元数据 `[[meta_key]]` 已添加，值为 `[[meta_value]]`。
+    subtract: 元数据 `[[meta_key]]` 已减去值 `[[meta_value]]`。
+    toggle: 元数据 `[[meta_key]]` 已设置为 `[[meta_value]]`。
   commands:
-    description: "管理机器人命令。"
+    description: 管理机器人命令。
     subcommands:
       list:
-        description: "显示命令列表。"
+        description: 显示命令列表。
       enable:
-        description: "启用一个命令。"
+        description: 启用命令。
         options:
-          command: "要启用的命令。"
+          command: 要启用的命令。
       disable:
-        description: "禁用一个命令。"
+        description: 禁用命令。
         options:
-          command: "要禁用的命令。"
+          command: 要禁用的命令。
       permission:
-        description: "管理命令权限。"
+        description: 管理命令权限。
         subcommands:
           set:
-            description: "设置命令权限。"
+            description: 设置命令权限。
             options:
-              command: "要为其设置权限的命令。"
-              permission: "要设置的权限。"
+              command: 要为其设置权限的命令。
+              permission: 要设置的权限。
           remove:
-            description: "移除命令权限。"
+            description: 移除命令权限。
             options:
-              command: "要移除权限的命令。"
+              command: 要从中移除权限的命令。
+  no-permission: 您没有权限使用该功能。
+  in-cooldown: 您当前处于冷却中。您可以在 [[cooldown]] 后再次执行此操作。
+  only-in-primary-guild: 此操作只能在主公会中使用。
+  invalid-time: 无效的时间格式。请使用有效的时间格式。示例：1d, 1h, 1m, 1s。
+  pagination:
+    select-placeholder: 第 [[pagination_current_page]]/[[pagination_total_pages]] 页
+    placeholder: 选择一个选项
+    no-items: 没有要显示的值。
+    filter-placeholder: 选择筛选器
+    next-page: 下一页
+    previous-page: 上一页
+  reloaded: 机器人已重新加载。部署命令可能需要几秒钟。
+  error-reloading: |
+    ### 重新加载机器人时出错
+    重新加载机器人时发生错误。
+    ```
+    [[error_message]]
+    ```  
+  parsed: |
+    正在为 [[target_mention]] 解析文本：
 
-no-permission: "你没有权限使用该功能。"
-in-cooldown: "你当前处于冷却中。你可以在 %cooldown% 后再次执行此操作。"
-only-in-primary-guild: "此操作只能在主服务器中使用。"
-invalid-time: "无效的时间格式。请使用有效的时间格式。例如：1d, 1h, 1m, 1s。"
+    ```
+    [[parsed_text]]
+    ```
+  engine:
+    missing-argument: 脚本 `[[script]]` 缺少 `[[missing]]` 参数。
+    missing-context: 脚本 `[[script]]` 缺少 `[[missing]]` 上下文。
+  command:
+    not-found: 命令 `[[command]]` 未找到。
+    enabled: 命令 `[[command]]` 已启用。
+    disabled: 命令 `[[command]]` 已禁用。
+    permission:
+      set: 命令 `[[command]]` 的权限已更新。
+      remove: 命令 `[[command]]` 的权限已被移除。
+      unknown: 无效的权限值。
+  time:
+    short:
+      second: s
+      minute: m
+      hour: h
+      day: d
+      month: m
+    long:
+      second: 秒
+      seconds: 秒
+      minute: 分钟
+      minutes: 分钟
+      hour: 小时
+      hours: 小时
+      day: 天
+      days: 天
+      month: 月
+      months: 月
+
+no-permission: "You don't have permission to use that."
+in-cooldown: "You're currently on cooldown. You can perform this action again [[cooldown]]."
+only-in-primary-guild: "This action can only be used in the primary guild."
+invalid-time: "Invalid time format. Please use a valid time format. Example: 1d, 1h, 1m, 1s."
 
 pagination:
-  select-placeholder: "第 %current_page%/%total_pages% 页"
-  placeholder: "选择一个选项"
-  no-items: "没有可显示的值。"
-  filter-placeholder: "选择一个筛选器"
-  next-page: '下一页'
-  previous-page: '上一页'
+  select-placeholder: "Page [[pagination_current_page]]/[[pagination_total_pages]]"
+  placeholder: "Select an option"
+  no-items: "No values to display."
+  filter-placeholder: "Select a filter"
+  next-page: 'Next'
+  previous-page: 'Previous'
 
 leaderboard:
-  messages-format: '`%position%.` %user_mention% • **%user_messages%** 条消息已发送'
-  title: "### 🏆︎ 排行榜 - %leaderboard_name%"
-  footer: "第 %pagination_current_page%/%pagination_total_pages% 页"
+  messages-format: '`[[position]].` [[position_user_mention]] • **[[position_user_messages]]** messages sent'
+  title: "### 🏆 Leaderboard – [[leaderboard_name]]"
+  footer: "Page [[pagination_current_page]]/[[pagination_total_pages]]"
 
 addons:
-  title: '以下是可用插件列表'
+  title: 'Find below the list of available addons.'
   info: |
-    ### %addon_status% %addon_name% v%addon_version%
-    作者： %addon_authors%
-  website: '网站'
-  enabled: "插件 `%addon_name%` 已启用。重启机器人以应用更改。"
-  disabled: "插件 `%addon_name%` 已禁用。重启机器人以应用更改。"
-  already-enabled: "插件 `%addon_name%` 已经启用。"
-  already-disabled: "插件 `%addon_name%` 已经禁用。"
-  not-found: "插件 `%addon_name%` 不存在。"
-
-reloaded: "机器人已重新加载。部署命令可能需要几秒钟。"
+    ### [[addon_status]] [[addon_name]] v[[addon_version]]
+    Authors: [[addon_authors]]
+  website: 'Website'
+  enabled: "The addon `[[addon_name]]` has been enabled. Restart the bot to apply the changes."
+  disabled: "The addon `[[addon_name]]` has been disabled. Restart the bot to apply the changes."
+  already-enabled: "The addon `[[addon_name]]` is already enabled."
+  already-disabled: "The addon `[[addon_name]]` is already disabled."
+  not-found: "The addon `[[addon_name]]` doesn't exist."
+reloaded: "The bot has been reloaded. It may take a few seconds to deploy commands."
 error-reloading: |
-  ### 重新加载机器人时出错
-  重新加载机器人时发生错误。
+  ### Error while reloading the bot
+  An error occurred while reloading the bot.
   ```
-  %error_message%
+  [[error_message]]
   ```  
 parsed: |
-  正在为 %user_mention% 解析文本：
+  Parsing the text for [[target_mention]]:
 
   ```
-  %parsed_text%
+  [[parsed_text]]
   ```
 engine:
-  missing-argument: "引擎 `%engine%` 缺少 `%missing%` 参数。"
-  missing-context: "脚本 %script% 缺少 `%missing%` 上下文。"
+  missing-argument: "The engine `[[engine]]` is missing the `[[missing]]` argument."
+  missing-context: "The script [[script]] is missing the `[[missing]]` context."
 
 meta:
-  scope-required: "此操作需要指定作用域。"
-  set: "元数据 `%meta_key%` 已设置为 `%meta_value%`。"
-  remove: "元数据 `%meta_key%` 已被移除。"
-  add: "已向元数据 `%meta_key%` 添加值 `%meta_value%`。"
-  subtract: "已从元数据 `%meta_key%` 中减去值 `%meta_value%`。"
-  toggle: "元数据 `%meta_key%` 已设置为 `%meta_value%`。"
+  scope-required: "The scope is required for this action."
+  set: "The meta data `[[meta_key]]` has been set to `[[meta_value]]`."
+  remove: "The meta data `[[meta_key]]` has been removed."
+  add: "The meta data `[[meta_key]]` has been added with the value `[[meta_value]]`."
+  subtract: "The meta data `[[meta_key]]` has been subtracted with the value `[[meta_value]]`."
+  toggle: "The meta data `[[meta_key]]` has been set to `[[meta_value]]`."
 
 command:
-  not-found: "未找到命令 `%command%`。"
-  enabled: "命令 `%command%` 已启用。"
-  disabled: "命令 `%command%` 已禁用。"
+  not-found: "The command `[[command]]` was not found."
+  enabled: "The command `[[command]]` has been enabled."
+  disabled: "The command `[[command]]` has been disabled."
   permission:
-    set: "命令 `%command%` 的权限已更新。"
-    remove: "命令 `%command%` 的权限已被移除。"
-    unknown: "无效的权限值"
+    set: "The permission for the command `[[command]]` has been updated."
+    remove: "The permission for the command `[[command]]` has been removed."
+    unknown: "Invalid permission value."
 
 time:
   short:
-    second: "秒"
-    minute: "分"
-    hour: "时"
-    day: "天"
-    month: "月"
+    second: "s"
+    minute: "m"
+    hour: "h"
+    day: "d"
+    month: "m"
   long:
-    second: "秒"
-    seconds: "秒"
-    minute: "分钟"
-    minutes: "分钟"
-    hour: "小时"
-    hours: "小时"
-    day: "天"
-    days: "天"
-    month: "月"
-    months: "月"
+    second: "second"
+    seconds: "seconds"
+    minute: "minute"
+    minutes: "minutes"
+    hour: "hour"
+    hours: "hours"
+    day: "day"
+    days: "days"
+    month: "month"
+    months: "months"

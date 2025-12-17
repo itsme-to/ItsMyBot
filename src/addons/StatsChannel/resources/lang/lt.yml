@@ -1,16 +1,16 @@
 commands:
   stats-channel:
-    description: "Valdyti statistikos kanalą"
+    description: Valdyti statistikos kanalą
     subcommands:
       create:
-        description: "Sukurti statistikos kanalą"
+        description: Sukurti statistikos kanalą
         options:
-          name: "Statistikos kanalo pavadinimas"
+          name: Statistikos kanalo pavadinimas
       rename:
-        description: "Pervardyti statistikos kanalą"
+        description: Pervardyti statistikos kanalą
         options:
-          channel: "Statistikos kanalo ID"
-          name: "Naujas statistikos kanalo pavadinimas"
+          channel: Statistikos kanalo ID
+          name: Naujas statistikos kanalo pavadinimas
 
-channel-created: "Statistikos kanalas sukurtas. %channel_name%"
-channel-renamed: "Statistikos kanalas pervardytas. %new_name%"
+channel-created: Statistikos kanalas sukurtas. %channel_name%
+channel-renamed: Statistikos kanalas pervadintas. [[new_name]]
