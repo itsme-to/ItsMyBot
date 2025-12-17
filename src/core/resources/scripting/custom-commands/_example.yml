@@ -33,7 +33,7 @@ actions:
         components:
           - type: text-display
             content: "Role %option_role_mention% added to %user_mention%"
-    mutators:
+    target:
       member: "%option_user_id%"
 
 conditions:
