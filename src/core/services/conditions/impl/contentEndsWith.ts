@@ -16,6 +16,8 @@ export default class ContentEndsWithCondition extends Condition {
   argumentsValidator = ArgumentsValidator;
 
   isMet(condition: ConditionData, context: Context, variables: Variable[]) {
+    condition.logWarning('The "contentEndsWith" condition is deprecated. Please use the "textEndsWith" condition instead.');
+
     const arg = condition.args.getStrings("value");
     if (!context.content) return false
 

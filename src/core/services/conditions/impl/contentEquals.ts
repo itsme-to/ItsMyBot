@@ -16,6 +16,8 @@ export default class ContentEqualsCondition extends Condition {
   argumentsValidator = ArgumentsValidator;
 
   isMet(condition: ConditionData, context: Context, variables: Variable[]) {
+    condition.logWarning('The "contentEquals" condition is deprecated. Please use the "textEquals" condition instead.');
+    
     const arg = condition.args.getStrings("value");
     if (!context.content) return false
 

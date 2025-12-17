@@ -16,6 +16,8 @@ export default class ContentContainsCondition extends Condition {
   argumentsValidator = ArgumentsValidator;
 
   isMet(condition: ConditionData, context: Context, variables: Variable[]) {
+    condition.logWarning('The "contentContains" condition is deprecated. Please use the "textContains" condition instead.');
+
     const arg = condition.args.getStrings("value");
     if (!context.content) return false
 
