@@ -10,15 +10,21 @@ export default class PresenceUpdateEvent extends Event {
     if (oldPresence === newPresence) return;
     if (!newPresence.member) return;
 
-    const customStatus = newPresence.activities.find(activity => activity.type === ActivityType.Custom);
+    const newCustomStatus = newPresence.activities.find(activity => activity.type === ActivityType.Custom);
+    const oldCustomStatus = oldPresence.activities.find(activity => activity.type === ActivityType.Custom);
     const user = await this.manager.services.user.findOrCreate(newPresence.member);
     const context: Context = {
-      content: Utils.blockPlaceholders(customStatus?.state) || 'N/A',
+      content: Utils.blockPlaceholders(newCustomStatus?.state) || 'N/A',
       member: newPresence.member,
       user: user,
       guild: newPresence.guild
     };
 
-    this.manager.services.engine.event.emit('presenceUpdate', context);
+    const variables = [
+      { name: 'old_status', value: Utils.blockPlaceholders(oldCustomStatus?.state) || 'N/A' }, 
+      { name: 'new_status', value: Utils.blockPlaceholders(newCustomStatus?.state) || 'N/A' }
+    ]
+
+    this.manager.services.engine.event.emit('presenceUpdate', context, variables);
   }
 };

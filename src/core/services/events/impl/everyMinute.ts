@@ -10,6 +10,10 @@ export default class EveryMinuteEvent extends Event {
       content: new Date().getMinutes().toString()
     };
 
-    this.manager.services.engine.event.emit('everyMinute', context);
+    const variables = [
+      { name: 'minute', value: new Date().getMinutes().toString() }
+    ]
+
+    this.manager.services.engine.event.emit('everyMinute', context, variables);
   }
 };
