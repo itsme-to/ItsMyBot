@@ -16,8 +16,8 @@ export async function setupLabel(settings: TextDisplaySettings)  {
 
   const label = new LabelBuilder()
     .setLabel(await Utils.applyVariables(config.getString('label', true), variables, context))
-  
-  description ?? label.setDescription(await Utils.applyVariables(description, variables, context));
+    
+  if (description) label.setDescription(await Utils.applyVariables(description, variables, context));
 
   const components = await Utils.setupComponent<LabelComponentBuilder>({ config: config.getSubsection('component'), variables, context });
   if (components?.length) label.data.component = components[0];
