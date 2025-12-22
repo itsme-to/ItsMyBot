@@ -26,34 +26,20 @@ export class Logger {
   public error(...text: any[]) {
     const timestamp = this.getCurrentTimestamp();
     const messageParts: string[] = [];
+    const errors: any[] = [];
   
     for (const item of text) {
-      if (item instanceof Error) {
-        const message = item.message || 'Unknown error';
-        messageParts.push(message);
-
-        if (item.stack) {
-          const stackLines = item.stack.split('\n').slice(1).join('\n');
-          messageParts.push(chalk.gray(stackLines));
-        }
-
-        if ('errors' in item) {
-          messageParts.push('Validation errors:\n' + JSON.stringify((item as any).errors, null, 2));
-        }
-      
-        if ('cause' in item) {
-          messageParts.push('Cause:\n' + JSON.stringify((item as any).cause, null, 2));
-        }
-      } else if (Array.isArray(item)) {
-        messageParts.push(...item);
-      } else {
+      if (typeof item === 'string') {
         messageParts.push(item);
+      } else {
+        errors.push(item);
       }
     }
   
     const message = `[${timestamp}] ${chalk.bold(chalk.hex("#FF380B")("[ERROR]"))}: [${this.prefix}] ${messageParts.join('\n')}`;
   
     stdout.write(message + '\n');
+    console.error(...errors);
   }
 
   public empty(...text: any[]) {
