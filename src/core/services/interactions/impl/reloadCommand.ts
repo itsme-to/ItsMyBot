@@ -42,7 +42,7 @@ export default class ReloadCommand extends Command {
 
     if (error) {
       return interaction.reply(await this.manager.lang.buildMessage({
-        key: 'messages.error-reloading',
+        key: 'error-reloading',
         ephemeral: true,
         variables: [
           { name: "error_message", value: error.toString() }
@@ -56,7 +56,7 @@ export default class ReloadCommand extends Command {
     }
 
     interaction.reply(await this.manager.lang.buildMessage({
-      key: 'messages.reloaded',
+      key: 'reloaded',
       ephemeral: true,
       context: {
         user: user,

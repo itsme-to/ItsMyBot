@@ -146,7 +146,7 @@ export default class MetaCommand extends Command {
     if (!meta) {
 
       return interaction.reply(await this.manager.lang.buildMessage({
-        key: 'messages.meta.not-found',
+        key: 'meta.not-found',
         ephemeral: true,
         variables: [
           { name: "meta_key", value: key }
@@ -159,7 +159,7 @@ export default class MetaCommand extends Command {
 
     if ((meta.mode === 'user' || meta.mode === 'channel') && !scopeId) {
       return interaction.reply(await this.manager.lang.buildMessage({
-        key: 'messages.meta.scope-required',
+        key: 'meta.scope-required',
         ephemeral: true,
         variables: [
           { name: "meta_mode", value: meta.mode }
@@ -175,7 +175,7 @@ export default class MetaCommand extends Command {
         await meta.setValue(value);
 
         return interaction.reply(await this.manager.lang.buildMessage({
-          key: 'messages.meta.set',
+          key: 'meta.set',
           ephemeral: true,
           variables: [
             { name: "meta_key", value: key },
@@ -210,7 +210,7 @@ export default class MetaCommand extends Command {
         const meta = await this.manager.services.engine.metaHandler.findOrCreate(key, value.toString(), scopeId);
         await meta.toggle(value);
         return interaction.reply(await this.manager.lang.buildMessage({
-          key: 'messages.meta.toggle',
+          key: 'meta.toggle',
           ephemeral: true,
           variables: [
             { name: "meta_key", value: key },
@@ -226,7 +226,7 @@ export default class MetaCommand extends Command {
         const meta = await this.manager.services.engine.metaHandler.findOrCreate(key, "[]", scopeId);
         await meta.listAdd(value);
         return interaction.reply(await this.manager.lang.buildMessage({
-          key: 'messages.meta.list-add',
+          key: 'meta.list-add',
           ephemeral: true,
           variables: [
             { name: "meta_key", value: key },
@@ -242,7 +242,7 @@ export default class MetaCommand extends Command {
         const meta = await this.manager.services.engine.metaHandler.findOrCreate(key, "[]", scopeId);
         await meta.listRemove(value);
         return interaction.reply(await this.manager.lang.buildMessage({
-          key: 'messages.meta.list-remove',
+          key: 'meta.list-remove',
           ephemeral: true,
           variables: [
             { name: "meta_key", value: key },
@@ -258,7 +258,7 @@ export default class MetaCommand extends Command {
         await meta?.destroy();
 
         return interaction.reply(await this.manager.lang.buildMessage({
-          key: 'messages.meta.remove',
+          key: 'meta.remove',
           ephemeral: true,
           variables: [
             { name: "meta_key", value: key },

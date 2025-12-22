@@ -11,7 +11,7 @@ export default class PresetsAddon extends Addon {
   version = "2.0.0"
   authors = ["Théo"]
   description = "An addon to create and manage preset messages."
-  website = "https://builtbybit.com/resources/28488/"
+  website = "https://docs.itsmy.studio/itsmybot/addons/presets"
 
   configs: PresetsConfig = {} as PresetsConfig;
   updateCount = 0;
