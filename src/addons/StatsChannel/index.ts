@@ -7,10 +7,10 @@ interface StatsChannelConfig {
 }
 
 export default class StatsChannelAddon extends Addon {
-  version = "1.1.2"
+  version = "1.2.0"
   authors = ["Théo"]
   description = "Create and manage channels for your stats"
-  website = "https://builtbybit.com/resources/29520/"
+  website = "https://docs.itsmy.studio/itsmybot/addons/statschannel"
 
   configs: StatsChannelConfig = {} as StatsChannelConfig;
 

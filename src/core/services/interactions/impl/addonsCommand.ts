@@ -133,7 +133,7 @@ export default class AddonCommand extends Command {
 
     if (!addon) {
       return interaction.reply(await this.manager.lang.buildMessage({
-        key: 'messages.addon.not-found',
+        key: 'addon.not-found',
         ephemeral: true,
         variables,
         context
@@ -142,7 +142,7 @@ export default class AddonCommand extends Command {
 
     if (addon.enabled && subcommand === "enable" || !addon.enabled && subcommand === "disable") {
       return interaction.reply(await this.manager.lang.buildMessage({
-        key: `messages.addon.already-${subcommand}d`,
+        key: `addon.already-${subcommand}d`,
         ephemeral: true,
         variables,
         context
@@ -152,7 +152,7 @@ export default class AddonCommand extends Command {
     await addon.update({ enabled: subcommand === "enable" ? true : false });
 
     interaction.reply(await this.manager.lang.buildMessage({
-      key: `messages.addon.${subcommand}d`,
+      key: `addon.${subcommand}d`,
       ephemeral: true,
       variables,
       context

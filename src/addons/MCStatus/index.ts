@@ -41,12 +41,13 @@ export interface ServerStats {
 }
 
 export default class MCStatsAddon extends Addon {
-  version = "1.2.4"
+  version = "1.3.0"
   authors = ["Théo"]
   description = "Get the status of a Minecraft server"
-  website = "https://builtbybit.com/resources/31222/"
+  website = "https://docs.itsmy.studio/itsmybot/addons/mcstatus"
 
   configs: MCStatsConfig = {} as MCStatsConfig;
+  
   async load() {
     this.configs.config = await this.createConfig('config.yml', DefaultConfig);
   }

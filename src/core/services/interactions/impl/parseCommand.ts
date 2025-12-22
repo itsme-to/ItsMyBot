@@ -19,7 +19,7 @@ export default class ParseCommand extends Command {
     const targetUser = target ? await this.manager.services.user.findOrCreate(target) : user;
 
     interaction.reply(await this.manager.lang.buildMessage({
-      key: 'messages.parsed',
+      key: 'parsed',
       ephemeral: true,
       variables: [
         { name: "parsed_text", value: interaction.options.getString("text", true) },
