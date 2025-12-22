@@ -34,7 +34,7 @@ export default class MetaRemoveAction extends Action {
         await messageMeta?.destroy();
         break;
       case 'global':
-        const globalMeta = await this.manager.services.engine.metaHandler.findOrNull(key);
+        const globalMeta = await this.manager.services.engine.metaHandler.findOrNull(key, 'global');
         await globalMeta?.destroy();
         break;
     }

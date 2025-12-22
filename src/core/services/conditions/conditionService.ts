@@ -38,7 +38,15 @@ export default class ConditionService extends Service {
     this.conditions.set(condition.id, condition);
   }
 
-  buildConditions(conditions: Config[], notMetAction: boolean = true): ConditionData[] {
+  unregisterByAddon(addon: Addon) {
+    for (const [id, condition] of this.conditions) {
+      if (condition.addon === addon) {
+        this.conditions.delete(id);
+      }
+    }
+  }
+
+  parseConditions(conditions: Config[], notMetAction: boolean = true): ConditionData[] {
     if (!conditions) return [];
     return conditions.map(condition => new ConditionData(this.manager, condition, notMetAction));
   }

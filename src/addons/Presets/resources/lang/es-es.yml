@@ -1,0 +1,26 @@
+commands:
+  preset:
+    description: Enviar un preajuste
+    context-menu: Editar el mensaje
+    subcommands:
+      send:
+        description: Enviar un mensaje
+        options:
+          preset: Plantilla a enviar
+          channel: Canal para enviar el mensaje
+
+sent: Mensaje enviado a %channel_mention%
+unknown-message: Mensaje no encontrado
+unknown-preset: Plantilla no encontrada
+edited: Mensaje actualizado con la plantilla %preset_path%
+not-bot-message: ¡Solo puedo editar mensajes enviados por mí!
+
+modals:
+  edit:
+    title: Editar mensaje con plantillas
+    label: La ruta de la plantilla a usar
+    description: Introduzca la ruta de la plantilla que desea usar para este mensaje
+    text-input:
+      placeholder: Ruta sin .yml, p. ej. welcome-message
+    select-menu:
+      placeholder: Seleccione una plantilla para usar

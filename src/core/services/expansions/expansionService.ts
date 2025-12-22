@@ -43,20 +43,28 @@ export default class ExpansionService extends Service{
     this.expansions.delete(identifier);
   }
 
+  unregisterByAddon(addon: Addon) {
+    for (const [name, expansion] of this.expansions) {
+      if (expansion.addon === addon) {
+        this.expansions.delete(name);
+      }
+    }
+  }
+
   async resolvePlaceholders(text: string, context: Context = {}) {
     const matches = [...text.matchAll(/%([^%_]+)_(.*?)%/g)];
 
-    for (const match of matches) {
+    await Promise.all(matches.map(async (match) => {
       const [fullMatch, identifier, placeholder] = match;
 
       const expansion = this.expansions.get(identifier);
       if (expansion) {
         const resolvedPlaceholder = await this.resolveNestedPlaceholders(placeholder, context);
         const replacement = await expansion.onRequest(context, resolvedPlaceholder);
-        if (replacement === undefined) continue;
+        if (replacement === undefined) return;
         text = text.replace(fullMatch, replacement);
       }
-    }
+    }));
 
     return text;
   }
@@ -64,16 +72,16 @@ export default class ExpansionService extends Service{
   async resolveNestedPlaceholders(placeholder: string, context: Context) {
     const nestedMatches = [...placeholder.matchAll(/\{(.*?)_(.*?)\}/g)];
 
-    for (const nestedMatch of nestedMatches) {
+    await Promise.all(nestedMatches.map(async (nestedMatch) => {
       const [fullNestedMatch, nestedIdentifier, nestedPlaceholder] = nestedMatch;
 
       const nestedExpansion = this.expansions.get(nestedIdentifier);
       if (nestedExpansion) {
         const nestedReplacement = await nestedExpansion.onRequest(context, nestedPlaceholder);
-        if (nestedReplacement === undefined) continue;
+        if (nestedReplacement === undefined) return;
         return placeholder.replace(fullNestedMatch, nestedReplacement);
       }
-    }
+    }));
 
     return placeholder;
   }

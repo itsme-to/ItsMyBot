@@ -1,0 +1,51 @@
+# This is an example of a simple Embeds configuration file
+# You can create as many embeds as you want, and customize them as you want
+# More information about messages configuration can be found at:
+# https://docs.itsme.to/itsmybot/configuration/message
+
+update-time: 5 # The time in minute between each update of the message
+
+content: |
+  Hello there !
+  This is a nice and simple message, created with Embeds addon
+
+embeds:
+  # Embeds are not required, you can create as many as you want
+  # This is an example of a simple embed
+  - title: "Simple Embed"
+    description: "This is just a little tast of what Embeds can do..."
+    color: "#2bff88"
+    footer: Itsme.to
+    footer-icon: "%bot_avatar%"
+
+  # This is an example of a complex embed
+  - title: "Complex Embed"
+    url: "https://itsme.to"
+    author: "Théo"
+    author-icon: "%bot_avatar%"
+    author-url: "https://itsme.to"
+    color: "#2bd2ff"
+    thumbnail: "%guild_icon%"
+    description: "This is some random text."
+    timestamp: true
+    fields:
+      - name: 'Field 1'
+        value: "Some random text."
+        inline: false
+      - name: 'Field 2'
+        value: |
+          More random text.
+          But this one is on 2 line
+    image: "https://media.itsme.to/image"
+    footer: "Made with %bot_username%"
+    footer-icon: "%bot_avatar%"
+
+action-rows:
+  1: 
+    - type: button
+      label: "Share"
+      emoji: "👍" # Emoji are not required
+      url: "https://itsmy.studio/discord"
+    - type: button
+      label: "Download"
+      url: "https://builtbybit.com/resources/28488/"

@@ -1,11 +1,11 @@
-import { manager, Config, BaseScript, Manager, Context, Variable, Utils, Logger } from '@itsmybot';
+import { Config, BaseScript, Manager, Context, Variable, Utils, Logger } from '@itsmybot';
 
 export class ActionData extends BaseScript {
   public id?: string;
   public args: Config;
   private filePath: string;
   public triggers?: string[];
-  public mutators?: Config;
+  public target?: Config;
   public followUpActions: ActionData[];
   public executionCounter: number = 0;
   public lastExecutionTime: number = 0;
@@ -14,9 +14,15 @@ export class ActionData extends BaseScript {
     super(manager, data, logger);
     this.id = data.getStringOrNull("id");
     this.filePath = data.filePath || "unknown";
-    this.args = data.getSubsectionOrNull("args") || data.empty();
+    this.args = data.getSubsectionOrNull("args") || data.newConfig();
     this.triggers = data.getStringsOrNull("triggers");
-    this.mutators = data.getSubsectionOrNull("mutators");
+    this.target = data.getSubsectionOrNull("target");
+  
+    if (data.has('mutators')) {
+      this.logger.warn(`mutators is deprecated, please rename to target instead. in ${this.filePath}`);
+      this.target = data.getSubsection('mutators');
+    }
+
     this.followUpActions = data.has("args.follow-up-actions") ? data.getSubsections("args.follow-up-actions").map((actionData: Config) => new ActionData(manager, actionData, logger)) : [];
 
     if (data.has('args.actions')) {
@@ -31,7 +37,7 @@ export class ActionData extends BaseScript {
 
     if (!await this.shouldExecute(newContext, newVariables)) return;
 
-    const updatedContext = await this.applyMutators(newContext, newVariables)
+    const updatedContext = await this.updateTarget(newContext, newVariables)
 
     if (this.args.has("delay")) {
       setTimeout(async () => await this.executeActions(updatedContext, newVariables), this.args.getNumber("delay") * 1000)
@@ -52,13 +58,13 @@ export class ActionData extends BaseScript {
     this.lastExecutionTime = Date.now();
   }
 
-  async applyMutators(context: Context, variables: Variable[]) {
-    if (!this.mutators) return context;
+  async updateTarget(context: Context, variables: Variable[]) {
+    if (!this.target) return context;
 
-    for (const [mutator, value] of this.mutators.values) {
+    for (const [target, value] of this.target.values) {
       const parsedValue = await Utils.applyVariables(value.toString(), variables, context);
 
-      switch (mutator) {
+      switch (target) {
         case "content":
           context.content = parsedValue
           break; 
@@ -134,12 +140,13 @@ export class ActionData extends BaseScript {
   public async missingArg(missing: string, context: Context) {
     this.logError(`Missing required argument: "${missing}"`);
 
-    const message = await Utils.setupMessage({
-      config: manager.configs.lang.getSubsection("engine.missing-context"),
+    const message = await this.manager.lang.buildMessage({
+      key: "engine.missing-context",
+      ephemeral: true,
       context,
       variables: [
-        { searchFor: "%missing%", replaceWith: missing },
-        { searchFor: "%script%", replaceWith: this.id }
+        { name: "missing", value: missing },
+        { name: "script", value: this.id }
       ]
     });
 
@@ -153,12 +160,13 @@ export class ActionData extends BaseScript {
   public async missingContext(missing: string, context: Context) {
     this.logError(`Missing context: "${missing}"`);
 
-    const message = await Utils.setupMessage({
-      config: manager.configs.lang.getSubsection("engine.missing-argument"),
+    const message = await this.manager.lang.buildMessage({
+      key: "engine.missing-argument",
+      ephemeral: true,
       context,
       variables: [
-        { searchFor: "%missing%", replaceWith: missing },
-        { searchFor: "%script%", replaceWith: this.id }
+        { name: "missing", value: missing },
+        { name: "script", value: this.id }
       ]
     });
 

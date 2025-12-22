@@ -91,6 +91,32 @@ export class MutatorValidator {
   message: string
 }
 
+export class TargetValidator {
+  @IsOptional()
+  @IsString()
+  channel: string
+
+  @IsOptional()
+  @IsString()
+  role: string
+
+  @IsOptional()
+  @IsString()
+  guild: string
+
+  @IsOptional()
+  @IsString()
+  member: string
+
+  @IsOptional()
+  @IsString()
+  user: string
+
+  @IsOptional()
+  @IsString()
+  message: string
+}
+
 export class PermissionOverwrites {
   @IsDefined()
   @IsString()
@@ -173,6 +199,11 @@ export class ActionValidator {
   @ValidateNested()
   @Type(() => MutatorValidator)
   mutators: MutatorValidator
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => TargetValidator)
+  target: TargetValidator
 }
 
 export class TriggerActionValidator extends ActionValidator {

@@ -1,0 +1,4 @@
+servers:
+  - id: "example"
+    address: "mc.hypixel.net"
+    port: 25565

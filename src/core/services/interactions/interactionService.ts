@@ -3,7 +3,8 @@ import { sync } from 'glob';
 import { fileURLToPath } from 'url';
 
 import { AutocompleteInteraction, Collection, RepliableInteraction } from 'discord.js';
-import { Manager, Command, ContextMenu, Addon, Service, Button, SelectMenu, Modal, ResolvableInteraction } from '@itsmybot';
+import { Manager, Command, ContextMenu, Addon, Service, Button, SelectMenu, Modal, ResolvableInteraction, CommandBuilder, ContextMenuBuilder } from '@itsmybot';
+import { CommandModel } from './command.model.js';
 
 /**
  * Service to manage interactions in the bot.
@@ -13,33 +14,29 @@ export default class InteractionService extends Service {
     buttons: Collection<string, Button<Addon | undefined>>,
     selectMenus: Collection<string, SelectMenu<Addon | undefined>>,
     modals: Collection<string, Modal<Addon | undefined>>,
-    commands: Collection<string, Command<Addon | undefined>>,
-    contextMenus: Collection<string, ContextMenu<Addon | undefined>>,
+    commands: Collection<string, Command<Addon | undefined> | ContextMenu<Addon | undefined>>
   }
 
   constructor(manager: Manager) {
-    super(manager)
+    super(manager)  
+    this.manager.database.addModels([CommandModel]);
 
     this.registries = {
       buttons: new Collection(),
       selectMenus: new Collection(),
       modals: new Collection(),
-      commands: new Collection(),
-      contextMenus: new Collection(),
+      commands: new Collection()
     };
   }
 
   async initialize() {
     await this.registerFromDir(join(dirname(fileURLToPath(import.meta.url)), 'impl'))
     this.manager.logger.info("Interaction service initialized.");
+    await CommandModel.sync();
   }
 
   getCommand(name: string) {
     return this.registries.commands.get(name) || null;
-  }
-
-  getContextMenu(name: string) {
-    return this.registries.contextMenus.get(name) || null;
   }
   
   getButton(customId: string) {
@@ -67,7 +64,7 @@ export default class InteractionService extends Service {
           this.registerCommand(instance);
           break;
         case instance instanceof ContextMenu:
-          this.registerContextMenu(instance);
+          this.registerCommand(instance);
           break;
         case instance instanceof Button:
           this.registerButton(instance);
@@ -84,34 +81,13 @@ export default class InteractionService extends Service {
     };
   }
 
-  registerCommand(command: Command<Addon | undefined>) {
+  registerCommand(command: Command<Addon | undefined> | ContextMenu<Addon | undefined>) {
     try {
       if (!command.data) throw new Error("Command needs a data object.");
-      command.data.config === undefined
       if (this.registries.commands.has(command.data.name)) throw new Error("Command already exists.");
       this.registries.commands.set(command.data.name, command);
-
-      if (command.data.aliases) {
-        for (const alias of command.data.aliases) {
-          const aliasCommandInstance = command;
-          aliasCommandInstance.data.setName(alias).setAliases([]);
-          if (this.registries.commands.has(alias)) throw new Error(`Command alias '${alias}' already exists.`);
-          this.registries.commands.set(alias, aliasCommandInstance);
-        }
-      }
     } catch (error: any) {
       command.logger.error(`Error initializing command '${command.data.name}'`, error);
-    }
-  }
-
-  registerContextMenu(contextMenu: ContextMenu<Addon | undefined>) {
-    try {
-      if (!contextMenu.data) throw new Error("Context menu needs a data object.");
-      if (this.registries.contextMenus.has(contextMenu.data.name)) throw new Error("Context menu already exists.");
-
-      this.registries.contextMenus.set(contextMenu.data.name, contextMenu);
-    } catch (error: any) {
-      contextMenu.logger.error(`Error initializing context menu '${contextMenu.data.name}'`, error);
     }
   }
 
@@ -136,7 +112,30 @@ export default class InteractionService extends Service {
       selectMenu.logger.error(`Error initializing selectMenu '${selectMenu.customId}'`, error);
     }
   }
-  
+
+  unregisterByAddon(addon: Addon) {
+    for (const [customId, button] of this.registries.buttons) {
+      if (button.addon === addon) {
+        this.registries.buttons.delete(customId);
+      }
+    }
+    for (const [customId, selectMenu] of this.registries.selectMenus) {
+      if (selectMenu.addon === addon) {
+        this.registries.selectMenus.delete(customId);
+      }
+    }
+    for (const [customId, modal] of this.registries.modals) {
+      if (modal.addon === addon) {
+        this.registries.modals.delete(customId);
+      }
+    }
+    for (const [name, command] of this.registries.commands) {
+      if (command.addon === addon) {
+        this.registries.commands.delete(name);
+      }
+    }
+  }
+
   resolveInteraction(interaction: RepliableInteraction | AutocompleteInteraction): ResolvableInteraction | undefined {
     if (interaction.isButton()) {
       return this.getButton(interaction.customId) || undefined;
@@ -148,7 +147,7 @@ export default class InteractionService extends Service {
       return this.getCommand(interaction.commandName) || undefined;
     }
     if (interaction.isContextMenuCommand()) {
-      return this.getContextMenu(interaction.commandName) || undefined;
+      return this.getCommand(interaction.commandName) || undefined;
     }
     if (interaction.isModalSubmit()) {
       return this.getModal(interaction.customId) || undefined;
@@ -168,19 +167,106 @@ export default class InteractionService extends Service {
   }
 
   async deployCommands() {
-    const enabledCommands = [...this.registries.commands.values(), ...this.registries.contextMenus.values()]
-      .filter(cmd => !(cmd.data.enabled === false))
-      .map(cmd => cmd.data);
+    const commands = await CommandModel.findAll();
+    let update = false;
+    const commandsToUpdate: (CommandBuilder | ContextMenuBuilder)[] = [];
+    
+    for (const command of this.registries.commands.values()) {
+      const existingCommand = commands.find(cmd => cmd.id === command.data.name);
+      if (existingCommand) {
+        if (existingCommand.permission) {
+          command.data.setDefaultMemberPermissions(existingCommand.permission);
+        }
+
+        if (existingCommand.data !== command.data.toJSON()) {
+          existingCommand.data = command.data.toJSON();
+          await existingCommand.save({ fields: ['data'] });
+          update = true;
+        }
+
+        if (existingCommand.enabled) {
+          commandsToUpdate.push(command.data);
+        } else {
+          command.enabled = false;
+        }
+      } else {
+        update = true;
+        commandsToUpdate.push(command.data);
+        await CommandModel.create({
+          id: command.data.name,
+          data: command.data.toJSON(),
+          permission: command.data.default_member_permissions,
+          enabled: true
+        });
+      }
+    }
+
+    if (!update) return;
     
     try {
-      const primaryGuildCommands = enabledCommands.filter(cmd => cmd.public === false);
+      const primaryGuildCommands = commandsToUpdate.filter(cmd => cmd.public === false);
       const guild = await this.manager.client.guilds.fetch(this.manager.primaryGuildId);
       if (primaryGuildCommands && guild) await guild.commands.set(primaryGuildCommands);
 
-      const publicCommands = enabledCommands.filter(cmd => cmd.public === true);
+      const publicCommands = commandsToUpdate.filter(cmd => cmd.public === true);
       if (publicCommands) await this.manager.client.application?.commands.set(publicCommands);
     } catch (error: any) {
       this.manager.logger.error(`Error syncing commands to Discord: ${error.message}`, error);
+    }
+  }
+
+  public async updateDiscordCommand(command: Command<Addon | undefined> | ContextMenu<Addon | undefined>) {
+    try {
+      if (command.data.public) {
+        const discordCommand = await this.manager.client.application.commands.fetch().then(cmds => cmds.find(cmd => cmd.name === command.data.name));
+        if (!discordCommand) return;
+        await this.manager.client.application?.commands.edit(discordCommand.id, command.data);
+      } else {
+        const guild = await this.manager.client.guilds.fetch(this.manager.primaryGuildId);
+        if (guild) {
+          const discordCommand = await guild.commands.fetch().then(cmds => cmds.find(cmd => cmd.name === command.data.name));
+          if (!discordCommand) return;
+          await guild.commands.edit(discordCommand.id, command.data);
+        }
+      }
+    } catch (error: any) {
+      this.manager.logger.error(`Error updating command '${command.data.name}': ${error.message}`, error);
+    }
+  }
+
+  public async addDiscordCommand(command: Command<Addon | undefined> | ContextMenu<Addon | undefined>) {    
+    try {
+      if (command.data.public) {
+        await this.manager.client.application?.commands.create(command.data);
+      } else {
+        const guild = await this.manager.client.guilds.fetch(this.manager.primaryGuildId);
+        if (guild) {
+          await guild.commands.create(command.data);
+        }
+      }
+    } catch (error: any) {
+      this.manager.logger.error(`Error adding command '${command.data.name}': ${error.message}`, error);
+    }
+  }
+
+  public async removeDiscordCommand(command: Command<Addon | undefined> | ContextMenu<Addon | undefined>) {
+    try {
+      if (command.data.public) {
+        const discordCommand = await this.manager.client.application.commands.fetch().then(cmds => cmds.find(cmd => cmd.name === command.data.name));
+        if (!discordCommand) return;
+
+        await this.manager.client.application?.commands.delete(discordCommand.id);
+      } else {
+        const guild = await this.manager.client.guilds.fetch(this.manager.primaryGuildId);
+        if (guild) {
+          const discordCommand = await guild.commands.fetch().then(cmds => cmds.find(cmd => cmd.name === command.data.name));
+          if (!discordCommand) return;
+
+          await guild.commands.delete(discordCommand.id);
+        }
+      }
+    } catch (error: any) {
+      this.manager.logger.error(`Error removing command '${command.data.name}': ${error.message}`, error);
     }
   }
 }

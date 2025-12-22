@@ -16,8 +16,9 @@ export default class ContentEndsWithCondition extends Condition {
   argumentsValidator = ArgumentsValidator;
 
   isMet(condition: ConditionData, context: Context, variables: Variable[]) {
+    condition.logWarning('The "contentEndsWith" condition is deprecated. Please use the "textEndsWith" condition instead.');
+
     const arg = condition.args.getStrings("value");
-    if (!arg) return condition.missingArg("value");
     if (!context.content) return false
 
     const ignoreCase = condition.args.getBoolOrNull("ignore-case") ?? false;

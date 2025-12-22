@@ -8,36 +8,36 @@ export class ConditionData {
   public manager: Manager;
   public args: Config;
 
-  constructor(manager: Manager, condition: Config, notMetAction: boolean = true) {
-    this.filePath = `${condition.filePath} at ${condition.currentPath}`
+  constructor(manager: Manager, config: Config, notMetAction: boolean = true) {
+    this.filePath = `${config.filePath} at ${config.currentPath}`
+    this.manager = manager;
 
-    if (condition.has("expression")) {
-      condition.set('id', "isExpressionTrue");
-      condition.set('args.value', condition.getString("expression"));
+    if (config.has("expression")) {
+      config.set('id', "isExpressionTrue");
+      config.set('args.value', config.getString("expression"));
     }
 
-    this.id = condition.getString("id");
+    this.id = config.getString("id");
 
     if (this.id.startsWith('!')) {
       this.id = this.id.substring(1);
-      condition.set("id", this.id);
-      condition.set("args.inverse", true);
+      config.set("id", this.id);
+      config.set("args.inverse", true);
     }
 
     this.logger = new Logger(`Condition/${this.id}`);
 
-    for (const [id, value] of condition.values) {
+    for (const [id, value] of config.values) {
       const allowed = ['id', 'args', 'inverse', 'not-met-actions', 'expression'];
       if (!allowed.includes(id)) {
-        condition.set(`args.${id}`, value);
+        config.set(`args.${id}`, value);
         this.logWarning(`The "${id}" argument should be in the "args" section. Please move it there.`);
       }
       continue;
     }
 
-    this.manager = manager;
-    this.args = condition.getSubsectionOrNull("args") || condition.empty()
-    this.notMetActions = notMetAction && condition.has("not-met-actions") ? condition.getSubsections("not-met-actions").map((actionData: Config) => new ActionData(this.manager, actionData, condition.logger)) : [];
+    this.args = config.getSubsectionOrNull("args") || config.newConfig()
+    this.notMetActions = notMetAction && config.has("not-met-actions") ? config.getSubsections("not-met-actions").map((actionData: Config) => new ActionData(this.manager, actionData, config.logger)) : [];
   }
 
   public logError(message: string) {

@@ -1,0 +1,16 @@
+commands:
+  stats-channel:
+    description: "Manage the stats channel"
+    subcommands:
+      create:
+        description: "Create a stats channel"
+        options:
+          name: "Name of the stats channel"
+      rename:
+        description: "Rename a stats channel"
+        options:
+          channel: "ID of the stats channel"
+          name: "New name of the stats channel"
+
+channel-created: "Stats channel created. %channel_name%"
+channel-renamed: "Stats channel renamed. [[new_name]]"

@@ -10,6 +10,10 @@ export default class EveryDayEvent extends Event {
       content: new Date().toDateString()
     };
 
-    this.manager.services.engine.event.emit('everyDay', context);
+    const variables = [
+      { name: 'date', value: new Date().toDateString() }
+    ]
+
+    this.manager.services.engine.event.emit('everyDay', context, variables);
   }
 };

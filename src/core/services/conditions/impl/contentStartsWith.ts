@@ -17,6 +17,8 @@ export default class ContentStartsWithCondition extends Condition {
   argumentsValidator = ArgumentsValidator;
 
   isMet(condition: ConditionData, context: Context, variables: Variable[]) {
+    condition.logWarning('The "contentStartsWith" condition is deprecated. Please use the "textStartsWith" condition instead.');
+
     const arg = condition.args.getStrings("value");
     if (!context.content) return false
 

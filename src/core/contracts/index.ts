@@ -1,4 +1,4 @@
-import { ActionRowData, APIMessageTopLevelComponent, BitFieldResolvable, APIEmbed, Attachment, AttachmentBuilder, BufferResolvable, MessageMentionOptions, PollData, MessageActionRowComponentBuilder, MessageActionRowComponentData, TopLevelComponentData, JSONEncodable, ActionRowBuilder, ContainerBuilder, FileBuilder, MediaGalleryBuilder, SectionBuilder, SeparatorBuilder, TextDisplayBuilder,  } from 'discord.js';
+import { ActionRowData, APIMessageTopLevelComponent, BitFieldResolvable, APIEmbed, Attachment, AttachmentBuilder, BufferResolvable, MessageMentionOptions, PollData, MessageActionRowComponentBuilder, MessageActionRowComponentData, TopLevelComponentData, JSONEncodable, ActionRowBuilder, ContainerBuilder, FileBuilder, MediaGalleryBuilder, SectionBuilder, SeparatorBuilder, TextDisplayBuilder, TextInputBuilder, StringSelectMenuBuilder, MentionableSelectMenuBuilder, ChannelSelectMenuBuilder, RoleSelectMenuBuilder, UserSelectMenuBuilder, FileUploadBuilder,  } from 'discord.js';
 import { Manager, Addon, Button, SelectMenu, Command, ContextMenu, Modal, Logger } from '@itsmybot';
 import { Stream } from 'stream';
 
@@ -6,17 +6,17 @@ export * from './context.js';
 export * from './events.js';
 export * from './manager.js';
 export * from './decorators/validator.js';
-export * from './config/baseConfig.js';
-export * from './config/baseConfigSection.js';
+export * from './config/configFile.js';
+export * from './config/configFolder.js';
+export * from './config/config.js';
+export * from './config/langDirectory.js';
 export * from './validators/command.js';
-export * from './validators/message.js';
 export * from './validators/component.js';
 export * from './validators/scripting.js';
-export * from './config/config.js';
 
 export interface Variable {
-  searchFor: string;
-  replaceWith: string | number | undefined | null | boolean;
+  name: string;
+  value: string | number | undefined | null | boolean;
 }
 
 
@@ -29,9 +29,11 @@ export type TopLevelComponentBuilder =
   SeparatorBuilder |
   TextDisplayBuilder;
 
+export type MessageComponentBuilder = ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder> | TopLevelComponentData | APIMessageTopLevelComponent | JSONEncodable<APIMessageTopLevelComponent>
+
 export interface MessageOutput {
   allowedMentions: MessageMentionOptions,
-  components: (ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder> | TopLevelComponentData | APIMessageTopLevelComponent | JSONEncodable<APIMessageTopLevelComponent>)[],
+  components: MessageComponentBuilder[],
   content: string | undefined,
   embeds: APIEmbed[],
   files: (Attachment | AttachmentBuilder | Stream | BufferResolvable)[],
@@ -67,3 +69,5 @@ export type ResolvableInteraction =
   | Command<Addon | undefined>
   | ContextMenu<Addon | undefined>
   | Modal<Addon | undefined>;
+
+export type LabelComponentBuilder = TextInputBuilder | StringSelectMenuBuilder | MentionableSelectMenuBuilder | ChannelSelectMenuBuilder | RoleSelectMenuBuilder | UserSelectMenuBuilder | FileUploadBuilder;

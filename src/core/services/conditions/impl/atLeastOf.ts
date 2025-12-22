@@ -24,7 +24,7 @@ export default class AtLeastOfCondition extends Condition {
     const conditionsConfig = condition.args.getSubsections("conditions");
     const amount = condition.args.getNumber("amount");
 
-    const conditions = this.manager.services.condition.buildConditions(conditionsConfig, false);
+    const conditions = this.manager.services.condition.parseConditions(conditionsConfig, false);
 
     const isMet = await Promise.all(conditions.map(condition => this.manager.services.condition.isConditionMet(condition, context, variables)))
     return isMet.filter(result => result).length >= amount;

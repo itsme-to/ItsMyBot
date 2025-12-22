@@ -14,7 +14,7 @@ export default class BotExpansion extends Expansion {
         return bot.username;
       case 'mention':
         return userMention(bot.id);
-      case 'pfp':
+      case 'avatar':
         return bot.displayAvatarURL({ forceStatic: false });
     }
   }

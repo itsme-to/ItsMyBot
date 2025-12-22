@@ -1,4 +1,4 @@
-import { Manager, BaseConfig, BaseConfigSection, Logger } from '@itsmybot';
+import { Manager, ConfigFile, ConfigFolder, Logger, LangDirectory } from '@itsmybot';
 import { join } from 'path';
 import { sync } from 'glob';
 import { Collection } from 'discord.js';
@@ -7,6 +7,7 @@ import { existsSync, mkdirSync, readdirSync, statSync } from 'fs';
 export abstract class Addon {
   manager: Manager
   logger: Logger
+  lang: LangDirectory
 
   name: string
   abstract version: string
@@ -22,6 +23,7 @@ export abstract class Addon {
     this.name = this.sanitizeName(name);
     this.logger = new Logger(this.name);
     this.path = join(manager.managerOptions.dir.addons, name);
+    this.lang = new LangDirectory(this.logger, `lang/${this.name}`, `build/addons/${this.name}/resources/lang`, 'en-US');
   }
 
   private sanitizeName(name: string): string {
@@ -36,11 +38,15 @@ export abstract class Addon {
 
   async reload() {
     await this.unload()
+    await this.lang.initialize();
     await this.load()
   }
 
+
+
   async init() {
     await this.loadDatabaseModels();
+    await this.lang.initialize();
     await this.load();
     await this.initialize();
     await this.registerInteractions();
@@ -73,6 +79,14 @@ export abstract class Addon {
     }
   }
 
+  public unregisterModules() {
+    this.manager.services.event.unregisterByAddon(this);
+    this.manager.services.expansion.unregisterByAddon(this);
+    this.manager.services.leaderboard.unregisterByAddon(this);
+    this.manager.services.action.unregisterByAddon(this);
+    this.manager.services.condition.unregisterByAddon(this);
+  }
+
   public async registerInteractions() {
     const interactionDir = join(this.path, 'interactions');
     if (!sync(`${interactionDir}/*`).length) return;
@@ -91,24 +105,23 @@ export abstract class Addon {
     }
   }
 
-  async createConfig(configFilePath: string, config?: unknown, update: boolean = false): Promise<BaseConfig> {
+  async createConfig(configFilePath: string, config?: unknown): Promise<ConfigFile> {
     const addonFolder = join(this.manager.managerOptions.dir.configs, this.name);
     if (!existsSync(addonFolder)) mkdirSync(addonFolder);
 
-    return new BaseConfig({
-      logger: this.logger,
-      configFilePath: join('configs', this.name, configFilePath),
-      defaultFilePath: join("build", "addons", this.name, "resources", configFilePath),
-      update: update,
-      id: configFilePath.slice(0, -4)
-    }).initialize(config);
+    return new ConfigFile(
+      this.logger, 
+      join('configs', this.name, configFilePath),
+      'commands',
+      join("build", "addons", this.name, "resources", configFilePath)
+    ).initialize(config);
   }
 
-  async createConfigSection(configFolderPath: string, config: unknown): Promise<Collection<string, BaseConfig>> {
+  async createConfigSection(configFolderPath: string, config: unknown): Promise<Collection<string, ConfigFile>> {
     const addonFolder = join(this.manager.managerOptions.dir.configs, this.name);
     if (!existsSync(addonFolder)) mkdirSync(addonFolder);
 
-    return new BaseConfigSection(
+    return new ConfigFolder(
       this.logger,
       join('configs', this.name, configFolderPath),
       join("build", "addons", this.name, "resources", configFolderPath)

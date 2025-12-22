@@ -1,0 +1,16 @@
+commands:
+  stats-channel:
+    description: Gestisci il canale delle statistiche
+    subcommands:
+      create:
+        description: Crea un canale delle statistiche
+        options:
+          name: Nome del canale delle statistiche
+      rename:
+        description: Rinomina un canale delle statistiche
+        options:
+          channel: ID del canale delle statistiche
+          name: Nuovo nome del canale delle statistiche
+
+channel-created: Canale delle statistiche creato. %channel_name%
+channel-renamed: Canale delle statistiche rinominato. [[new_name]]

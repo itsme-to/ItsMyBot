@@ -1,0 +1,16 @@
+commands:
+  stats-channel:
+    description: Hantera statistikkanalen
+    subcommands:
+      create:
+        description: Skapa en statistikkanal
+        options:
+          name: Namn på statistikkanalen
+      rename:
+        description: Byt namn på en statistikkanal
+        options:
+          channel: ID för statistikkanalen
+          name: Nytt namn på statistikkanalen
+
+channel-created: Statistikkanal skapad. %channel_name%
+channel-renamed: Statistikkanalens namn ändrat. [[new_name]]

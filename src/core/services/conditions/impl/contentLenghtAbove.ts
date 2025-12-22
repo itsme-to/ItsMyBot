@@ -14,6 +14,8 @@ export default class ContentLengthAboveCondition extends Condition {
   argumentsValidator = ArgumentsValidator;
 
   isMet(condition: ConditionData, context: Context, variables: Variable[]) {
+    condition.logWarning('The "contentLengthAbove" condition is deprecated. Please use the "textLengthAbove" condition instead.');
+
     const arg = condition.args.getNumber("amount");
     if (!context.content) return false
 

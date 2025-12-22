@@ -1,0 +1,40 @@
+commands:
+  preset:
+    description: Skicka en förinställning
+    context-menu: Redigera meddelandet
+    subcommands:
+      send:
+        description: Skicka ett meddelande
+        options:
+          preset: Förinställning som ska skickas
+          channel: Kanal att skicka meddelandet till
+  sent: Meddelande skickat till %channel_mention%
+  unknown-message: Meddelande hittades inte
+  unknown-preset: Förinställning hittades inte
+  edited: Meddelande uppdaterat med förinställningen %preset_path%
+  not-bot-message: Jag kan bara redigera meddelanden som jag har skickat!
+  modals:
+    edit:
+      title: Redigera meddelande med förinställningar
+      label: Sökväg till förinställningen som ska användas
+      description: Ange sökvägen till förinställningen du vill använda för detta meddelande
+      text-input:
+        placeholder: Sökväg utan .yml, t.ex. welcome-message
+      select-menu:
+        placeholder: Välj en förinställning att använda
+
+sent: "Message sent to %channel_mention%"
+unknown-message: "Message not found"
+unknown-preset: "Preset not found"
+edited: "Message updated with preset %preset_path%"
+not-bot-message: 'I can only edit messages sent by me!'
+
+modals:
+  edit:
+    title: 'Edit Message with Presets'
+    label: 'The preset path to use'
+    description: 'Enter the path of the preset you want to use for this message'
+    text-input:
+      placeholder: 'Path without .yml, e.g. welcome-message'
+    select-menu:
+      placeholder: 'Select a preset to use'

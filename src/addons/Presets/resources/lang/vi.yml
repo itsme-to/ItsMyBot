@@ -1,0 +1,26 @@
+commands:
+  preset:
+    description: Gửi một mẫu
+    context-menu: Chỉnh sửa tin nhắn
+    subcommands:
+      send:
+        description: Gửi một tin nhắn
+        options:
+          preset: Mẫu để gửi
+          channel: Kênh để gửi tin nhắn
+
+sent: Tin nhắn đã được gửi tới %channel_mention%
+unknown-message: Không tìm thấy tin nhắn
+unknown-preset: Không tìm thấy mẫu
+edited: Tin nhắn đã được cập nhật với mẫu %preset_path%
+not-bot-message: Tôi chỉ có thể chỉnh sửa các tin nhắn do tôi gửi!
+
+modals:
+  edit:
+    title: Chỉnh sửa tin nhắn với các mẫu
+    label: Đường dẫn mẫu để sử dụng
+    description: Nhập đường dẫn của mẫu bạn muốn sử dụng cho tin nhắn này
+    text-input:
+      placeholder: Đường dẫn không kèm .yml, ví dụ welcome-message
+    select-menu:
+      placeholder: Chọn một mẫu để sử dụng

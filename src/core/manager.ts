@@ -1,6 +1,6 @@
 import { Client, Collection } from 'discord.js';
 import { existsSync, mkdirSync } from 'fs';
-import { ClientOptions, ManagerOptions, Services, ManagerConfigs, BaseConfig, Addon, Logger } from '@itsmybot'
+import { ClientOptions, ManagerOptions, Services, ConfigFile, Addon, Logger, LangDirectory } from '@itsmybot'
 import { Sequelize } from 'sequelize-typescript';
 
 import EventService from './services/events/eventService.js';
@@ -13,14 +13,16 @@ import LeaderboardService from './services/leaderboards/leaderboardService.js';
 import ConditionService from './services/conditions/conditionService.js';
 import ActionService from './services/actions/actionService.js';
 import DefaultConfig from 'core/resources/config.js';
-import CommandConfig from 'core/resources/commands.js';
-import LangConfig from 'core/resources/lang.js';
+
+interface ManagerConfigs {
+  config: ConfigFile
+}
 
 export class Manager {
   public client: Client<true>;
   public services: Services = {} as Services;
   public configs: ManagerConfigs = {} as ManagerConfigs;
-  public database: Sequelize;
+  public lang: LangDirectory;
 
   public managerOptions: ManagerOptions;
 
@@ -28,6 +30,8 @@ export class Manager {
 
   public logger = new Logger();
   public primaryGuildId: string;
+
+  public database: Sequelize
 
   constructor(clientOptions: ClientOptions, managerOptions: ManagerOptions) {
     this.client = new Client(clientOptions);
@@ -39,15 +43,16 @@ export class Manager {
 
   public async initialize(): Promise<void> {
     try {
-      this.configs.config = await this.initializeConfig(DefaultConfig, 'config.yml');
-      this.configs.commands = await this.initializeConfig(CommandConfig, 'commands.yml');
-      this.configs.lang = await this.initializeConfig(LangConfig, 'lang.yml');
+      this.configs.config = await this.createConfig(DefaultConfig, 'config.yml');
     } catch (e) {
       this.logger.error(e)
       process.exit(1)
     }
 
     this.primaryGuildId = this.configs.config.getString("primary-guild");
+
+    this.lang = new LangDirectory(this.logger, 'lang/core', 'build/core/resources/lang', 'en-US');
+    await this.lang.initialize();
 
     await this.initializeDatabase();
 
@@ -86,34 +91,43 @@ export class Manager {
     });
   }
 
-  private async initializeConfig(ConfigClass: unknown, filePath: string) {
-    return await new BaseConfig({
-      logger: this.logger,
-      configFilePath: `configs/${filePath}`,
-      defaultFilePath: `build/core/resources/${filePath}`,
-      id: filePath.slice(0, -4)
-    }).initialize(ConfigClass);
+  private async createConfig(ConfigClass: unknown, filePath: string) {
+    return await new ConfigFile(
+      this.logger,
+      `configs/${filePath}`,
+      filePath.replace('.yml', ''),
+      `build/core/resources/${filePath}`
+    ).initialize(ConfigClass);
   }
 
   private async initializeDatabase() {
     this.logger.info('Initializing database...');
-    const databaseConfig = this.configs.config.getSubsection('database');
-
-    if (['mysql', 'mariadb'].includes(databaseConfig.getString('type'))) {
+    const dataConfigFile = this.configs.config.getSubsection('database');
+    if (['mysql', 'mariadb'].includes(dataConfigFile.getString('type'))) {
       this.database = new Sequelize(
-        databaseConfig.getString('database'),
-        databaseConfig.getString('username'),
-        databaseConfig.getString('password'),
+        dataConfigFile.getString('database'),
+        dataConfigFile.getString('username'),
+        dataConfigFile.getString('password'),
         {
-          host: databaseConfig.getString('host'),
-          dialect: databaseConfig.getString('type') as 'mysql' | 'mariadb',
-          logging: databaseConfig.getBoolOrNull('debug') || false
-        });
+          host: dataConfigFile.getString('host'),
+          dialect: dataConfigFile.getString('type') as 'mysql' | 'mariadb',
+          logging: dataConfigFile.getBool('debug'),
+          dialectOptions: {
+            connectTimeout: dataConfigFile.getNumber('connect-timeout'),
+          },
+          pool: {
+            acquire: 30000,
+            idle: 10000,
+            max: 5,
+            min: 0,
+          },
+        }
+      );
     } else {
         this.database = new Sequelize({
           dialect: 'sqlite',
           storage: 'database.sqlite',
-          logging: databaseConfig.getBoolOrNull('debug') || false
+          logging: dataConfigFile.getBool('debug'),
         });
     }
 

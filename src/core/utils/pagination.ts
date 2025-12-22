@@ -1,13 +1,14 @@
-import { MessageComponentInteraction, StringSelectMenuInteraction, RepliableInteraction, InteractionResponse } from 'discord.js';
-import { manager, Config, Context, TopLevelComponentBuilder, Variable, Utils } from '@itsmybot'
+import { MessageComponentInteraction, StringSelectMenuInteraction, RepliableInteraction, InteractionResponse, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle, TextDisplayBuilder, MessageFlags, BitFieldResolvable, MessageActionRowComponentBuilder } from 'discord.js';
+import { manager, Context, Variable, Utils, MessageComponentBuilder } from '@itsmybot'
 
-interface Item {
+interface Item<T> {
   label?: string;
   emoji?: string;
   description?: string;
   tags?: string[]
-  variables: Variable[]
+  item?: T
   context?: Context
+  variables?: Variable[]
 }
 
 interface Filter {
@@ -15,35 +16,49 @@ interface Filter {
   name: string;
   emoji?: string;
   description?: string;
+  default?: boolean;
 }
 
-export class Pagination {
-  interaction: RepliableInteraction
+export class Pagination<T> {
+  private type: 'select_menu' | 'button' = 'select_menu'
+  private placeholderText: string
+  private itemsPerPage: number = 25
+  private time: number = 100000;
+  private ephemeral: boolean = true;
+  private format: (items: Item<T>[], variables: Variable[], context: Context) => Promise<MessageComponentBuilder[]>
+  private filters: Filter[] = []
+  private context: Context = {}
+  private variables: Variable[] = []
 
-  type: 'select_menu' | 'button' = 'select_menu'
-  context: Context = {}
-  filters: Filter[] = []
-  variables: Variable[] = []
-  config: Config
-  placeholderText: string
+  private defaultItems: Item<T>[]
+  private filteredItems: Item<T>[]
 
-  defaultItems: Item[]
-  currentFilters: string[] = []
-  filteredItems: Item[]
-  currentItem: number = 0
-  currentPage: number = 0
-  itemsPerPage: number = 25
-  time: number = 100000;
+  private currentItem: number = 0
+  private currentFilters: string[] = []
+  private currentPage: number = 0
 
-  message?: InteractionResponse
-
-  constructor(interaction: RepliableInteraction, items: Item[], config: Config) {
-    this.interaction = interaction;
-    this.config = config
+  constructor(items: Item<T>[]) {
     this.filteredItems = items;
     this.defaultItems = items;
 
-    this.placeholderText = manager.configs.lang.getString("pagination.placeholder");
+    this.placeholderText = manager.lang.getString("pagination.placeholder");
+    return this;
+  }
+
+  /**
+    * Define the format of the message components
+    * @param format A function that takes the current items and returns the message components
+    */
+  setFormat(format: (items: Item<T>[], variables: Variable[], context: Context) => Promise<MessageComponentBuilder[]>) {
+    this.format = format;
+    return this;
+  }
+
+  /**
+    * Set whether the message is ephemeral
+    */
+  setEphemeral(ephemeral: boolean) {
+    this.ephemeral = ephemeral;
     return this;
   }
 
@@ -113,30 +128,42 @@ export class Pagination {
   /**
    * Send the pagination message
    */
-  async send() {
-    if (!this.filteredItems.length) {
-      return this.interaction.reply(await Utils.setupMessage({
-        config: manager.configs.lang.getSubsection("pagination.no-data"),
-        variables: this.variables,
-        context: this.context
-      }));
-    }
-
-    this.message = await this.interaction.reply(await Utils.setupMessage({
-      config: this.getConfig(),
-      variables: this.getVariables(),
-      context: this.getContext(),
-      components: await this.getComponents(),
-    }));
-
-    this.createCollector();
-    return this.message;
+  async reply(interaction: RepliableInteraction) {
+    const message = await interaction.reply(await this.buildMessage('initial'));
+    this.createCollector(message);
+    return message;
   }
 
-  private createCollector() {
+  async buildMessage(type: 'initial' | 'update' | 'end') {
+    const message = {
+      flags: [] as BitFieldResolvable<any, number> | undefined,
+      components: [] as MessageComponentBuilder[]
+    }
+
+    if (this.ephemeral) {
+      message.flags |= MessageFlags.Ephemeral;
+    }
+
+    message.flags |= MessageFlags.IsComponentsV2;
+
+    const items = this.type === 'select_menu' ? [this.filteredItems[this.currentItem]] : this.getCurrentItems();
+    if (this.filteredItems.length) {
+      message.components.push(...await this.format(items, this.getVariables(), this.getContext()));
+    } else {
+      message.components.push(new TextDisplayBuilder().setContent(manager.lang.getString("pagination.no-items")));
+    }
+
+    if (type !== 'end') {
+      message.components.push(...await this.getInteractiveComponents());
+    }
+
+    return message;
+  }
+
+  private createCollector(message: InteractionResponse) {
     const filter = (interaction: MessageComponentInteraction) => ['pagination_items', 'pagination_previous', 'pagination_next', 'pagination_filters'].includes(interaction.customId);
 
-    const collector = this.message!.createMessageComponentCollector({ filter,  time: this.time });
+    const collector = message.createMessageComponentCollector({ filter,  time: this.time });
 
     collector.on('collect', async (interaction: MessageComponentInteraction) => {
       if (interaction.customId === 'pagination_previous') this.prevPage();
@@ -162,31 +189,18 @@ export class Pagination {
         }
       };
 
-      interaction.update(await Utils.setupMessage({
-        config: this.getConfig(),
-        variables: this.getVariables(),
-        context: this.getContext(),
-        components: await this.getComponents(),
-      }));
+      interaction.update(await this.buildMessage('update'));
     });
 
     collector.on('end', async () => {
-      this.message!.edit(await Utils.setupMessage({
-        config: this.getConfig(),
-        variables: this.getVariables(),
-        context: this.getContext()
-      }));
+      try {
+        message.edit(await this.buildMessage('end'));
+      } catch (e) {/* Ignore */ }
     });
-  }
-
-  private getConfig() {
-    return this.filteredItems.length ? this.config : manager.configs.lang.getSubsection("pagination.no-data");
   }
 
   private getContext() {
     let context = this.context;
-    const items = this.getCurrentItems();
-    const list = []
 
     if (this.type === 'select_menu') {
       const item = this.filteredItems[this.currentItem];
@@ -194,82 +208,92 @@ export class Pagination {
         context = { ...context, ...item.context };
       }
     }
-    
-    for (const item of items) {
-      const variables = [ ...item.variables,
-        { searchFor: "%item_label%", replaceWith: item.label || "" },
-        { searchFor: "%item_value%", replaceWith: `item_${this.filteredItems.indexOf(item)}` },
-        { searchFor: "%item_emoji%", replaceWith: item.emoji || "" },
-        { searchFor: "%item_description%", replaceWith: item.description || "" },
-        { searchFor: "%item_tags%", replaceWith: item.tags?.join(", ") || "" }
-      ];
-
-      list.push({
-        context: item.context || this.context,
-        variables: variables
-      });
-    }
-
-    if (!context.data) context.data = new Map();
-    context.data.set('pagination-items', list);
-
-    const listFilters = [];
-
-    if (this.filters.length) {
-      for (const filter of this.filters) {
-        const isSelected = this.currentFilters.includes(filter.id);
-
-        const variables = [...this.variables, 
-          { searchFor: "%filter_id%", replaceWith: `filter_${filter.id}` },
-          { searchFor: "%filter_label%", replaceWith: filter.name },
-          { searchFor: "%filter_emoji%", replaceWith: filter.emoji || "" },
-          { searchFor: "%filter_description%", replaceWith: filter.description || "" },
-          { searchFor: "%filter_selected%", replaceWith: isSelected ? "true" : "false" }
-        ];
-
-        listFilters.push({
-          context: this.context,
-          variables: variables
-        });
-      }
-      context.data.set('pagination-filters', listFilters);
-    }
 
     return context;
   }
 
-  private async getComponents() {
+  private async getInteractiveComponents(): Promise<MessageComponentBuilder[]> {
     if (!this.filteredItems.length) return []
     const components = [];
+    const paginationRow = new ActionRowBuilder<MessageActionRowComponentBuilder>();
 
-    for (const component of manager.configs.lang.getSubsections('pagination.components')) {
-      const comp = await Utils.setupComponent<TopLevelComponentBuilder>({
-        config: component,
-        variables: this.getVariables(),
-        context: this.getContext()
-      });
-
-      if (comp?.length) components.push(...comp);
+    if (this.currentPage > 0) {
+      paginationRow.addComponents(
+        new ButtonBuilder()
+          .setCustomId('pagination_previous')
+          .setLabel(manager.lang.getString("pagination.previous-page"))
+          .setEmoji('◀️')
+          .setStyle(ButtonStyle.Secondary)
+      );
     }
 
+    if (this.currentPage < this.getTotalPages() - 1) {
+      paginationRow.addComponents(
+        new ButtonBuilder()
+          .setCustomId('pagination_next')
+          .setLabel(manager.lang.getString("pagination.next-page"))
+          .setEmoji('▶️')
+          .setStyle(ButtonStyle.Secondary)
+      );
+    }
+
+    if (paginationRow.components.length) {
+      components.push(paginationRow);
+    }
+
+    if (this.type === 'select_menu') {
+      const selectMenu = new StringSelectMenuBuilder()
+        .setCustomId(`pagination_items`)
+        .setPlaceholder(await Utils.applyVariables(this.placeholderText, this.getVariables()))
+
+      for (const item of this.getCurrentItems()) {
+        const index = this.filteredItems.indexOf(item);
+        selectMenu.addOptions({
+          label: item.label || `Item ${index + 1}`,
+          value: `item_${index}`,
+          description: item.description,
+          emoji: item.emoji,
+          default: this.currentItem === index
+        });
+      }
+
+      if (selectMenu.options.length) {
+        components.push(new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(selectMenu));
+      }
+    }
+
+    if (this.filters.length) {
+      const selectMenu = new StringSelectMenuBuilder()
+        .setCustomId(`pagination_filters`)
+        .setPlaceholder(this.placeholderText)
+        .setMaxValues(this.filters.length);
+
+      for (const filter of this.filters) {
+        const isSelected = this.currentFilters.includes(filter.id);
+
+        selectMenu.addOptions({
+          label: filter.name,
+          value: `filter_${filter.id}`,
+          description: filter.description,
+          emoji: filter.emoji,
+          default: isSelected
+        });
+      }
+      components.push(new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(selectMenu));
+    }
+    
     return components;
   }
 
   private getVariables() {
     const variables = [...this.variables,
-      { searchFor: "%pagination_current_page%", replaceWith: this.currentPage + 1 },
-      { searchFor: "%pagination_total_pages%", replaceWith: this.getTotalPages() },
-      { searchFor: "%pagination_has_previous%", replaceWith: this.currentPage > 0 },
-      { searchFor: "%pagination_has_next%", replaceWith: this.currentPage < this.getTotalPages() - 1 },
-      { searchFor: "%pagination_is_select%", replaceWith: this.type === 'select_menu' },
-      { searchFor: "%pagination_is_button%", replaceWith: this.type === 'button' },
-      { searchFor: "%pagination_placeholder%", replaceWith: this.placeholderText },
-      { searchFor: "%pagination_has_filter%", replaceWith: this.filters.length > 0 },
+      { name: "pagination_current_page", value: this.currentPage + 1 },
+      { name: "pagination_total_pages", value: this.getTotalPages() }
     ];
 
     if (this.type === 'select_menu') {
       const item = this.filteredItems[this.currentItem];
-      if (item) {
+      if (item && item.variables) {
         variables.push(...item.variables);
       }
     }

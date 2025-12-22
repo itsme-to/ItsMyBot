@@ -10,6 +10,10 @@ export default class EveryHourEvent extends Event {
       content: new Date().getHours().toString()
     };
 
-    this.manager.services.engine.event.emit('everyHour', context);
+    const variables = [
+      { name: 'hour', value: new Date().getHours().toString() }
+    ]
+
+    this.manager.services.engine.event.emit('everyHour', context, variables);
   }
 };

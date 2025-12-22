@@ -1,13 +1,13 @@
-import { AutocompleteInteraction, ChatInputCommandInteraction } from 'discord.js';
-import { Command, User, CommandBuilder, Utils, Pagination } from '@itsmybot';
+import { ActionRowBuilder, AutocompleteInteraction, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, ContainerBuilder, MessageActionRowComponentBuilder, PermissionFlagsBits, TextDisplayBuilder } from 'discord.js';
+import { Command, User, Utils, Pagination, MessageComponentBuilder, CommandBuilder } from '@itsmybot';
 import AddonModel from '../../addons/addon.model.js';
 
 export default class AddonCommand extends Command {
   build() {
     return new CommandBuilder()
       .setName('addons')
-      .using(this.manager.configs.commands.getSubsection("addons"))
       .setPublic()
+      .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
       .addSubcommand(subcommand =>
         subcommand
           .setName('list')
@@ -55,80 +55,107 @@ export default class AddonCommand extends Command {
     for (const [_, addon] of this.manager.services.addon.addons) {
       const status = addon.enabled ? '✅' : '❌';
       const variables = [
-        { searchFor: "%addon_status%", replaceWith: status },
-        { searchFor: "%addon_name%", replaceWith: addon.name },
-        { searchFor: "%addon_version%", replaceWith: addon.version },
-        { searchFor: "%addon_description%", replaceWith: addon.description },
-        { searchFor: "%addon_authors%", replaceWith: addon.authors.join(', ') },
-        { searchFor: "%addon_website%", replaceWith: addon.website || '' },
-        { searchFor: "%addon_has_description%", replaceWith: addon.description ? true : false },
-        { searchFor: "%addon_has_website%", replaceWith: addon.website ? true : false }
+        { name: "addon_status", value: status },
+        { name: "addon_name", value: addon.name },
+        { name: "addon_version", value: addon.version },
+        { name: "addon_description", value: addon.description },
+        { name: "addon_authors", value: addon.authors.join(', ') },
+        { name: "addon_website", value: addon.website || '' }
       ];
 
       addons.push({
         label: addon.name,
         emoji: status,
+        item: addon,
         variables: variables,
         description: addon.description,
       });
     }
 
-    new Pagination(interaction, addons, this.manager.configs.lang.getSubsection("addon.list"))
+    new Pagination(addons)
       .setContext({
         user: user,
         guild: interaction.guild || undefined,
         channel: interaction.channel || undefined
       })
-      .send();
+      .setType('select_menu')
+      .setFormat(async (items, variables, context) => {
+        const components: MessageComponentBuilder[] = [];
+        components.push(new TextDisplayBuilder()
+          .setContent(this.manager.lang.getString("addons.title")));
+
+        for (const item of items) {
+          const container = new ContainerBuilder()
+            .setAccentColor(Utils.getColorFromString(this.manager.configs.config.getString("default-color")))
+            .addTextDisplayComponents(
+              new TextDisplayBuilder()
+                .setContent(await this.manager.lang.getParsedString("addons.info", variables, context)));
+
+          if (item.item?.description) {
+            container.addTextDisplayComponents(
+              new TextDisplayBuilder()
+                .setContent(item.item.description));
+          }
+
+          if (item.item?.website) {
+            container.addActionRowComponents(
+              new ActionRowBuilder<MessageActionRowComponentBuilder>()
+                .addComponents(
+                new ButtonBuilder()
+                  .setLabel(this.manager.lang.getString("addons.website"))
+                  .setEmoji('🌐')
+                  .setStyle(ButtonStyle.Link)
+                  .setURL(item.item.website)));
+          }
+
+          components.push(container);
+        }
+
+        return components;
+      })
+      .reply(interaction);
   }
 
   async enableOrDisable(interaction: ChatInputCommandInteraction<'cached'>, user: User) {
     const subcommand = interaction.options.getSubcommand();
-    const lang = this.manager.configs.lang;
-
     const addonName = Utils.blockPlaceholders(interaction.options.getString("addon", true));
     const addon = await AddonModel.findOne({ where: { name: addonName } });
+    
+    const variables = [
+      { name: "addon_name", value: addonName }
+    ];
+
+    const context = {
+      user: user,
+      guild: interaction.guild || undefined,
+      channel: interaction.channel || undefined
+    };
 
     if (!addon) {
-      return interaction.reply(await Utils.setupMessage({
-        config: lang.getSubsection("addon.not-found"),
-        variables: [
-          { searchFor: "%addon_name%", replaceWith: addonName }
-        ],
-        context: {
-          user: user,
-          guild: interaction.guild || undefined,
-          channel: interaction.channel || undefined
-        }
+      return interaction.reply(await this.manager.lang.buildMessage({
+        key: 'messages.addon.not-found',
+        ephemeral: true,
+        variables,
+        context
       }));
     }
 
     if (addon.enabled && subcommand === "enable" || !addon.enabled && subcommand === "disable") {
-      return interaction.reply(await Utils.setupMessage({
-        config: lang.getSubsection(`addon.already-${subcommand}d`),
-        variables: [
-          { searchFor: "%addon_name%", replaceWith: addonName }
-        ],
-        context: {
-          user: user,
-          guild: interaction.guild || undefined,
-          channel: interaction.channel || undefined
-        }
+      return interaction.reply(await this.manager.lang.buildMessage({
+        key: `messages.addon.already-${subcommand}d`,
+        ephemeral: true,
+        variables,
+        context
       }));
     }
 
     await addon.update({ enabled: subcommand === "enable" ? true : false });
 
-    interaction.reply(await Utils.setupMessage({
-      config: lang.getSubsection(`addon.${subcommand}d`),
-      variables: [
-        { searchFor: "%addon_name%", replaceWith: addonName }
-      ],
-      context: {
-        user: user,
-        guild: interaction.guild || undefined,
-        channel: interaction.channel || undefined
-      }
+    interaction.reply(await this.manager.lang.buildMessage({
+      key: `messages.addon.${subcommand}d`,
+      ephemeral: true,
+      variables,
+      context
     }));
   }
 }

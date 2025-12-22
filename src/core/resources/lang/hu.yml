@@ -1,0 +1,151 @@
+commands:
+  addons:
+    description: Bővítmények kezelése.
+    subcommands:
+      list:
+        description: Bővítmények listájának megjelenítése.
+      enable:
+        description: Bővítmény engedélyezése.
+        options:
+          addon: A bővítmény, amelyet engedélyezni kell.
+      disable:
+        description: Bővítmény letiltása.
+        options:
+          addon: A bővítmény, amelyet le kell tiltani.
+  reload:
+    description: Bot újratöltése
+  parse:
+    description: Szöveg feldolgozása.
+    options:
+      text: A feldolgozandó szöveg.
+      user: A felhasználó, akire a szöveg feldolgozása vonatkozik.
+  leaderboard:
+    description: Ranglista megjelenítése.
+  meta:
+    description: Metaadatok kezelése.
+    subcommands:
+      set:
+        description: Metaadat beállítása.
+      remove:
+        description: Metaadat törlése.
+      add:
+        description: Metaadat hozzáadása.
+      subtract:
+        description: Érték levonása a metaadatból.
+      toggle:
+        description: Logikai metaadat váltása.
+      list-add:
+        description: Érték hozzáadása listatípusú metaadathoz.
+      list-remove:
+        description: Érték eltávolítása listatípusú metaadatból.
+    options:
+      key: A metaadat kulcsa.
+      value: A metaadat értéke.
+      scope: A csatorna vagy felhasználó azonosítója, amelyre a metaadat vonatkozik.
+  commands:
+    description: Botparancsok kezelése.
+    subcommands:
+      list:
+        description: Parancsok listájának megjelenítése.
+      enable:
+        description: Parancs engedélyezése.
+        options:
+          command: A parancs, amelyet engedélyezni kell.
+      disable:
+        description: Parancs letiltása.
+        options:
+          command: A parancs, amelyet le kell tiltani.
+      permission:
+        description: Parancs jogosultságok kezelése.
+        subcommands:
+          set:
+            description: Parancs jogosultságának beállítása.
+            options:
+              command: A parancs, amelyhez a jogosultságot beállítjuk.
+              permission: A beállítandó jogosultság.
+          remove:
+            description: Parancs jogosultságának eltávolítása.
+            options:
+              command: A parancs, amelyről eltávolítjuk a jogosultságot.
+
+no-permission: Nincs engedélyed ezt használni.
+in-cooldown: Jelenleg hűtési időn vagy. Ezt a műveletet [[cooldown]] múlva ismét végrehajthatod.
+only-in-primary-guild: Ez a művelet csak az elsődleges szerveren használható.
+invalid-time: "Érvénytelen időformátum. Kérlek használj érvényes időformátumot. Példa: 1d, 1h, 1m, 1s."
+
+pagination:
+  select-placeholder: Oldal [[pagination_current_page]]/[[pagination_total_pages]]
+  placeholder: Válassz egy lehetőséget
+  no-items: Nincs megjeleníthető érték.
+  filter-placeholder: Válassz egy szűrőt
+  next-page: Következő
+  previous-page: Előző
+
+leaderboard:
+  messages-format: "`[[position]].` [[position_user_mention]] • **[[position_user_messages]]** üzenet küldve"
+  title: "### 🏆 Ranglista – [[leaderboard_name]]"
+  footer: Oldal [[pagination_current_page]]/[[pagination_total_pages]]
+
+addons:
+  title: Az alábbiakban található a rendelkezésre álló bővítmények listája.
+  info: |
+    ### [[addon_status]] [[addon_name]] v[[addon_version]]
+    Szerzők: [[addon_authors]]
+  website: Weboldal
+  enabled: A `[[addon_name]]` bővítmény engedélyezve lett. Indítsd újra a botot a változtatások érvényesítéséhez.
+  disabled: A `[[addon_name]]` bővítmény le lett tiltva. Indítsd újra a botot a változtatások érvényesítéséhez.
+  already-enabled: A `[[addon_name]]` bővítmény már engedélyezve van.
+  already-disabled: A `[[addon_name]]` bővítmény már le van tiltva.
+  not-found: A `[[addon_name]]` bővítmény nem létezik.
+reloaded: A bot újratöltődött. Néhány másodpercbe telhet, mire a parancsok élesednek.
+error-reloading: |
+  ### Hiba a bot újratöltése közben
+  Hiba történt a bot újratöltése közben.
+  ```
+  [[error_message]]
+  ```  
+parsed: |
+  A szöveg feldolgozása [[target_mention]] számára:
+
+  ```
+  [[parsed_text]]
+  ```
+engine:
+  missing-argument: A `[[script]]` szkriptből hiányzik a `[[missing]]` argumentum.
+  missing-context: A `[[script]]` szkriptből hiányzik a `[[missing]]` kontextus.
+
+meta:
+  scope-required: A hatókör megadása kötelező ehhez a művelethez.
+  set: A `[[meta_key]]` metaadat értéke `[[meta_value]]` lett beállítva.
+  remove: A `[[meta_key]]` metaadat eltávolítva lett.
+  add: A `[[meta_key]]` metaadat hozzáadva a `[[meta_value]]` értékkel.
+  subtract: A `[[meta_key]]` metaadatból levonva lett a `[[meta_value]]` érték.
+  toggle: A `[[meta_key]]` metaadat értéke `[[meta_value]]` lett beállítva.
+
+command:
+  not-found: A `[[command]]` parancs nem található.
+  enabled: A `[[command]]` parancs engedélyezve lett.
+  disabled: A `[[command]]` parancs letiltva lett.
+  permission:
+    set: A `[[command]]` parancs jogosultsága frissítve lett.
+    remove: A `[[command]]` parancs jogosultsága eltávolítva lett.
+    unknown: Érvénytelen jogosultságérték.
+
+time:
+  short:
+    second: s
+    minute: m
+    hour: h
+    day: d
+    month: m
+  long:
+    second: másodperc
+    seconds: másodpercek
+    minute: perc
+    minutes: percek
+    hour: óra
+    hours: órák
+    day: nap
+    days: napok
+    month: hónap
+    months: hónapok

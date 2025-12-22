@@ -1,0 +1,151 @@
+commands:
+  addons:
+    description: Addons verwalten.
+    subcommands:
+      list:
+        description: Zeige die Liste der Addons an.
+      enable:
+        description: Aktiviere ein Addon.
+        options:
+          addon: Das Addon, das aktiviert werden soll.
+      disable:
+        description: Deaktiviere ein Addon.
+        options:
+          addon: Das Addon, das deaktiviert werden soll.
+  reload:
+    description: Den Bot neu laden
+  parse:
+    description: Einen Text parsen.
+    options:
+      text: Der zu parsende Text.
+      user: Der Benutzer, für den der Text geparst werden soll.
+  leaderboard:
+    description: Zeige die Rangliste an.
+  meta:
+    description: Metadaten verwalten.
+    subcommands:
+      set:
+        description: Metadaten setzen.
+      remove:
+        description: Metadaten löschen.
+      add:
+        description: Metadaten hinzufügen.
+      subtract:
+        description: Einen Wert von Metadaten subtrahieren.
+      toggle:
+        description: Boolesche Metadaten umschalten.
+      list-add:
+        description: Einem Listen-Metadatum einen Wert hinzufügen.
+      list-remove:
+        description: Einem Listen-Metadatum einen Wert entfernen.
+    options:
+      key: Der Schlüssel der Metadaten.
+      value: Der Wert der Metadaten.
+      scope: Die ID des Kanals oder Benutzers, für den die Metadaten gesetzt werden sollen.
+  commands:
+    description: Botbefehle verwalten.
+    subcommands:
+      list:
+        description: Zeige die Liste der Befehle an.
+      enable:
+        description: Aktiviere einen Befehl.
+        options:
+          command: Der zu aktivierende Befehl.
+      disable:
+        description: Deaktiviere einen Befehl.
+        options:
+          command: Der zu deaktivierende Befehl.
+      permission:
+        description: Berechtigungen für Befehle verwalten.
+        subcommands:
+          set:
+            description: Berechtigung für einen Befehl setzen.
+            options:
+              command: Der Befehl, für den die Berechtigung gesetzt werden soll.
+              permission: Die zu setzende Berechtigung.
+          remove:
+            description: Berechtigung eines Befehls entfernen.
+            options:
+              command: Der Befehl, dessen Berechtigung entfernt werden soll.
+
+no-permission: Du hast keine Berechtigung, das zu verwenden.
+in-cooldown: Du befindest dich derzeit in der Abklingzeit. Du kannst diese Aktion in [[cooldown]] erneut ausführen.
+only-in-primary-guild: Diese Aktion kann nur in der primären Gilde ausgeführt werden.
+invalid-time: "Ungültiges Zeitformat. Bitte verwende ein gültiges Zeitformat. Beispiel: 1d, 1h, 1m, 1s."
+
+pagination:
+  select-placeholder: Seite [[pagination_current_page]]/[[pagination_total_pages]]
+  placeholder: Wähle eine Option
+  no-items: Keine Werte zur Anzeige.
+  filter-placeholder: Wähle einen Filter
+  next-page: Nächste
+  previous-page: Vorherige
+
+leaderboard:
+  messages-format: "`[[position]].` [[position_user_mention]] • **[[position_user_messages]]** gesendete Nachrichten"
+  title: "### 🏆 Rangliste – [[leaderboard_name]]"
+  footer: Seite [[pagination_current_page]]/[[pagination_total_pages]]
+
+addons:
+  title: Unten findest du die Liste der verfügbaren Addons.
+  info: |
+    ### [[addon_status]] [[addon_name]] v[[addon_version]]
+    Autoren: [[addon_authors]]
+  website: Website
+  enabled: Das Addon `[[addon_name]]` wurde aktiviert. Starte den Bot neu, um die Änderungen anzuwenden.
+  disabled: Das Addon `[[addon_name]]` wurde deaktiviert. Starte den Bot neu, um die Änderungen anzuwenden.
+  already-enabled: Das Addon `[[addon_name]]` ist bereits aktiviert.
+  already-disabled: Das Addon `[[addon_name]]` ist bereits deaktiviert.
+  not-found: Das Addon `[[addon_name]]` existiert nicht.
+reloaded: Der Bot wurde neu geladen. Es kann einige Sekunden dauern, bis die Befehle bereitgestellt sind.
+error-reloading: |
+  ### Fehler beim Neuladen des Bots
+  Beim Neuladen des Bots ist ein Fehler aufgetreten.
+  ```
+  [[error_message]]
+  ```  
+parsed: |
+  Parsen des Textes für [[target_mention]]:
+
+  ```
+  [[parsed_text]]
+  ```
+engine:
+  missing-argument: Dem Skript `[[script]]` fehlt das Argument `[[missing]]`.
+  missing-context: Dem Skript `[[script]]` fehlt der Kontext `[[missing]]`.
+
+meta:
+  scope-required: Der Scope ist für diese Aktion erforderlich.
+  set: Die Metadaten `[[meta_key]]` wurden auf `[[meta_value]]` gesetzt.
+  remove: Die Metadaten `[[meta_key]]` wurden entfernt.
+  add: Die Metadaten `[[meta_key]]` wurden mit dem Wert `[[meta_value]]` hinzugefügt.
+  subtract: Bei den Metadaten `[[meta_key]]` wurde der Wert `[[meta_value]]` subtrahiert.
+  toggle: Die Metadaten `[[meta_key]]` wurden auf `[[meta_value]]` gesetzt.
+
+command:
+  not-found: Der Befehl `[[command]]` wurde nicht gefunden.
+  enabled: Der Befehl `[[command]]` wurde aktiviert.
+  disabled: Der Befehl `[[command]]` wurde deaktiviert.
+  permission:
+    set: Die Berechtigung für den Befehl `[[command]]` wurde aktualisiert.
+    remove: Die Berechtigung für den Befehl `[[command]]` wurde entfernt.
+    unknown: Ungültiger Berechtigungswert.
+
+time:
+  short:
+    second: s
+    minute: m
+    hour: h
+    day: d
+    month: m
+  long:
+    second: Sekunde
+    seconds: Sekunden
+    minute: Minute
+    minutes: Minuten
+    hour: Stunde
+    hours: Stunden
+    day: Tag
+    days: Tage
+    month: Monat
+    months: Monate

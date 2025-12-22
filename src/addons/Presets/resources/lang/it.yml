@@ -1,0 +1,26 @@
+commands:
+  preset:
+    description: Invia un preset
+    context-menu: Modifica il messaggio
+    subcommands:
+      send:
+        description: Invia un messaggio
+        options:
+          preset: Preset da inviare
+          channel: Canale in cui inviare il messaggio
+
+sent: Messaggio inviato a %channel_mention%
+unknown-message: Messaggio non trovato
+unknown-preset: Preset non trovato
+edited: Messaggio aggiornato con il preset %preset_path%
+not-bot-message: Posso modificare solo i messaggi inviati da me!
+
+modals:
+  edit:
+    title: Modifica messaggio con preset
+    label: Il percorso del preset da utilizzare
+    description: Inserisci il percorso del preset che vuoi usare per questo messaggio
+    text-input:
+      placeholder: Percorso senza .yml, es. welcome-message
+    select-menu:
+      placeholder: Seleziona un preset da usare

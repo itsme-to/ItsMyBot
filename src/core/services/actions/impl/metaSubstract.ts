@@ -28,21 +28,21 @@ export default class MetaSubtractAction extends Action {
     switch (meta.mode) {
       case 'user':
         if (!context.user) return script.missingContext("user", context);
-        const userMeta = await this.manager.services.engine.metaHandler.findOrCreate(key, '0', context.user.id);
+        const userMeta = await this.manager.services.engine.metaHandler.findOrCreate(key, meta.default, context.user.id);
         await userMeta.subtract(parsedValue);
         break;
       case 'channel':
         if (!context.channel) return script.missingContext("channel", context);
-        const channelMeta = await this.manager.services.engine.metaHandler.findOrCreate(key, '0', context.channel.id);
+        const channelMeta = await this.manager.services.engine.metaHandler.findOrCreate(key, meta.default, context.channel.id);
         await channelMeta.subtract(parsedValue);
         break;
       case 'message':
         if (!context.message) return script.missingContext("message", context);
-        const messageMeta = await this.manager.services.engine.metaHandler.findOrCreate(key, '0', context.message.id);
+        const messageMeta = await this.manager.services.engine.metaHandler.findOrCreate(key, meta.default, context.message.id);
         await messageMeta.subtract(parsedValue);
         break;
       case 'global':
-        const globalMeta = await this.manager.services.engine.metaHandler.findOrCreate(key, '0');
+        const globalMeta = await this.manager.services.engine.metaHandler.findOrCreate(key, meta.default, 'global');
         await globalMeta.add(parsedValue);
         break;
     }

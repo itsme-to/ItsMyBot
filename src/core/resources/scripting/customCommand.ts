@@ -63,11 +63,15 @@ export default class DefaultConfig extends CommandValidator {
   @IsString()
   name: string
 
+  @IsDefined()
+  @IsString()
+  description: string
+
   @IsOptional()
   @ValidateNested({ each: true })
   @IsArray()
   @Type(() => CommandOptionValidator)
-  declare options: CommandOptionValidator[]
+  options: CommandOptionValidator[]
 
   @IsDefined()
   @IsArray()

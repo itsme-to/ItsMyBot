@@ -1,0 +1,151 @@
+commands:
+  addons:
+    description: Zarządzaj dodatkami.
+    subcommands:
+      list:
+        description: Pokaż listę dodatków.
+      enable:
+        description: Włącz dodatek.
+        options:
+          addon: Dodatek do włączenia.
+      disable:
+        description: Wyłącz dodatek.
+        options:
+          addon: Dodatek do wyłączenia.
+  reload:
+    description: Przeładuj bota
+  parse:
+    description: Parsuj tekst.
+    options:
+      text: Tekst do sparsowania.
+      user: Użytkownik, dla którego sparsować tekst.
+  leaderboard:
+    description: Pokaż ranking.
+  meta:
+    description: Zarządzaj metadanymi.
+    subcommands:
+      set:
+        description: Ustaw metadane.
+      remove:
+        description: Usuń metadane.
+      add:
+        description: Dodaj metadane.
+      subtract:
+        description: Odejmij wartość od metadanych.
+      toggle:
+        description: Przełącz metadane typu boolean.
+      list-add:
+        description: Dodaj wartość do metadanych listy.
+      list-remove:
+        description: Usuń wartość z metadanych listy.
+    options:
+      key: Klucz metadanych.
+      value: Wartość metadanych.
+      scope: ID kanału lub użytkownika, dla którego ustawić metadane.
+  commands:
+    description: Zarządzaj poleceniami bota.
+    subcommands:
+      list:
+        description: Pokaż listę poleceń.
+      enable:
+        description: Włącz polecenie.
+        options:
+          command: Polecenie do włączenia.
+      disable:
+        description: Wyłącz polecenie.
+        options:
+          command: Polecenie do wyłączenia.
+      permission:
+        description: Zarządzaj uprawnieniami poleceń.
+        subcommands:
+          set:
+            description: Ustaw uprawnienie dla polecenia.
+            options:
+              command: Polecenie, dla którego ustawić uprawnienie.
+              permission: Uprawnienie do ustawienia.
+          remove:
+            description: Usuń uprawnienie polecenia.
+            options:
+              command: Polecenie, z którego usunąć uprawnienie.
+
+no-permission: Nie masz uprawnień do użycia tej opcji.
+in-cooldown: Masz aktywny cooldown. Możesz wykonać tę akcję ponownie za [[cooldown]].
+only-in-primary-guild: Ta akcja może być użyta tylko na głównym serwerze.
+invalid-time: "Nieprawidłowy format czasu. Użyj poprawnego formatu czasu. Przykład: 1d, 1h, 1m, 1s."
+
+pagination:
+  select-placeholder: Strona [[pagination_current_page]]/[[pagination_total_pages]]
+  placeholder: Wybierz opcję
+  no-items: Brak wartości do wyświetlenia.
+  filter-placeholder: Wybierz filtr
+  next-page: Następna
+  previous-page: Poprzednia
+
+leaderboard:
+  messages-format: "`[[position]].` [[position_user_mention]] • **[[position_user_messages]]** wysłanych wiadomości"
+  title: "### 🏆 Ranking – [[leaderboard_name]]"
+  footer: Strona [[pagination_current_page]]/[[pagination_total_pages]]
+
+addons:
+  title: Poniżej znajduje się lista dostępnych dodatków.
+  info: |
+    ### [[addon_status]] [[addon_name]] v[[addon_version]]
+    Autorzy: [[addon_authors]]
+  website: Strona
+  enabled: Dodatek `[[addon_name]]` został włączony. Zrestartuj bota, aby zastosować zmiany.
+  disabled: Dodatek `[[addon_name]]` został wyłączony. Zrestartuj bota, aby zastosować zmiany.
+  already-enabled: Dodatek `[[addon_name]]` jest już włączony.
+  already-disabled: Dodatek `[[addon_name]]` jest już wyłączony.
+  not-found: Dodatek `[[addon_name]]` nie istnieje.
+reloaded: Bot został przeładowany. Może to potrwać kilka sekund, zanim polecenia zostaną wdrożone.
+error-reloading: |
+  ### Błąd podczas przeładowywania bota
+  Wystąpił błąd podczas przeładowywania bota.
+  ```
+  [[error_message]]
+  ```  
+parsed: |
+  Parsowanie tekstu dla [[target_mention]]:
+
+  ```
+  [[parsed_text]]
+  ```
+engine:
+  missing-argument: Skrypt `[[script]]` nie ma argumentu `[[missing]]`.
+  missing-context: Skrypt `[[script]]` nie ma kontekstu `[[missing]]`.
+
+meta:
+  scope-required: Zakres jest wymagany dla tej akcji.
+  set: Metadane `[[meta_key]]` zostały ustawione na `[[meta_value]]`.
+  remove: Metadane `[[meta_key]]` zostały usunięte.
+  add: Metadane `[[meta_key]]` zostały dodane z wartością `[[meta_value]]`.
+  subtract: Od metadanych `[[meta_key]]` odjęto wartość `[[meta_value]]`.
+  toggle: Metadane `[[meta_key]]` zostały ustawione na `[[meta_value]]`.
+
+command:
+  not-found: Polecenie `[[command]]` nie zostało znalezione.
+  enabled: Polecenie `[[command]]` zostało włączone.
+  disabled: Polecenie `[[command]]` zostało wyłączone.
+  permission:
+    set: Uprawnienie dla polecenia `[[command]]` zostało zaktualizowane.
+    remove: Uprawnienie dla polecenia `[[command]]` zostało usunięte.
+    unknown: Nieprawidłowa wartość uprawnienia.
+
+time:
+  short:
+    second: s
+    minute: m
+    hour: h
+    day: d
+    month: m
+  long:
+    second: sekunda
+    seconds: sekund
+    minute: minuta
+    minutes: minut
+    hour: godzina
+    hours: godzin
+    day: dzień
+    days: dni
+    month: miesiąc
+    months: miesięcy

@@ -1,0 +1,40 @@
+commands:
+  preset:
+    description: Önayar gönder
+    context-menu: Mesajı düzenle
+    subcommands:
+      send:
+        description: Bir mesaj gönder
+        options:
+          preset: Gönderilecek önayar
+          channel: Mesajın gönderileceği kanal
+  sent: Mesaj %channel_mention% kanalına gönderildi
+  unknown-message: Mesaj bulunamadı
+  unknown-preset: Önayar bulunamadı
+  edited: Mesaj %preset_path% önayarı ile güncellendi
+  not-bot-message: Sadece benim tarafımdan gönderilen mesajları düzenleyebilirim!
+  modals:
+    edit:
+      title: Önayarlarla Mesajı Düzenle
+      label: Kullanılacak önayar yolu
+      description: Bu mesaj için kullanmak istediğiniz önayarın yolunu girin
+      text-input:
+        placeholder: Yol .yml olmadan, örn. welcome-message
+      select-menu:
+        placeholder: Kullanmak için bir önayar seçin
+
+sent: "Message sent to %channel_mention%"
+unknown-message: "Message not found"
+unknown-preset: "Preset not found"
+edited: "Message updated with preset %preset_path%"
+not-bot-message: 'I can only edit messages sent by me!'
+
+modals:
+  edit:
+    title: 'Edit Message with Presets'
+    label: 'The preset path to use'
+    description: 'Enter the path of the preset you want to use for this message'
+    text-input:
+      placeholder: 'Path without .yml, e.g. welcome-message'
+    select-menu:
+      placeholder: 'Select a preset to use'

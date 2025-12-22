@@ -12,8 +12,8 @@ export async function setupContainer(settings: ContainerSettings)  {
   const variables = settings.variables || [];
   const context = settings.context;
 
-  const colorString = config.getStringOrNull("color", true);
-  const color = getColor(colorString);
+  const colorString = await Utils.applyVariables(config.getStringOrNull("color", true), variables, context);
+  const color = Utils.getColorFromString(colorString);
 
   const container = new ContainerBuilder()
     .setSpoiler(config.getBoolOrNull("spoiler") || false)
@@ -26,12 +26,4 @@ export async function setupContainer(settings: ContainerSettings)  {
   }
 
   return container
-}
-
-function getColor(color: string | undefined) {
-  if (!color) return undefined;
-  if (/^#?[0-9a-fA-F]{6}$/.test(color)) {
-    return parseInt(color.replace(/^#/, ''), 16);
-  }
-  return parseInt(color, 10);
 }

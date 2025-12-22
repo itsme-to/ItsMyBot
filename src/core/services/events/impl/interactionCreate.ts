@@ -1,5 +1,6 @@
-import { Command, Event, User, Events, Context, ResolvableInteraction, Utils, CommandSubcommandGroupBuilder } from '@itsmybot';
-import { ChatInputCommandInteraction, ContextMenuCommandInteraction, Interaction, MessageComponentInteraction } from 'discord.js';
+import { Command, Event, User, Events, Button, SelectMenu, Modal } from '@itsmybot';
+import { CommandModel } from 'core/services/interactions/command.model.js';
+import { AnySelectMenuInteraction, ButtonInteraction, ChatInputCommandInteraction, ContextMenuCommandInteraction, Interaction, MessageComponentInteraction, ModalSubmitInteraction } from 'discord.js';
 
 export default class InteractionCreateEvent extends Event {
   name = Events.InteractionCreate;
@@ -10,7 +11,7 @@ export default class InteractionCreateEvent extends Event {
       ? await this.manager.services.user.findOrCreate(interaction.member)
       : await this.manager.services.user.findOrNull(interaction.user.id) as User;
 
-    if (interaction.isChatInputCommand() || interaction.isAutocomplete() || interaction.isContextMenuCommand() || interaction.isMessageComponent()) {
+    if (interaction.isChatInputCommand() || interaction.isAutocomplete() || interaction.isModalSubmit() || interaction.isContextMenuCommand() || interaction.isMessageComponent()) {
       const interactionComponent = this.manager.services.interaction.resolveInteraction(interaction);
       if (!interactionComponent) {
         if (interaction.isButton()) {
@@ -33,89 +34,69 @@ export default class InteractionCreateEvent extends Event {
           this.logger.error(`Error executing autocomplete command '${interactionComponent.data.name}`, error);
         }
       } else {
-        this.handleInteraction(interaction, interactionComponent, user);
+        this.handleInteraction(interaction as any, interactionComponent as any, user);
       }
     }
   }
 
-  private async handleInteraction(
-    interaction: ChatInputCommandInteraction<'cached'> | ContextMenuCommandInteraction<'cached'> | MessageComponentInteraction<'cached'>,
-    component: ResolvableInteraction,
-    user: User
-  ) {
-    if (!component.data.public && interaction.guildId && interaction.guildId !== this.manager.primaryGuildId) {
-      return interaction.reply(await Utils.setupMessage({
-        config: this.manager.configs.lang.getSubsection("only-in-primary-guild"),
-        context: { user }
-      }));
-    }
-
-    const requirementsMet = await this.checkRequirements(interaction, component, user);
-    if (!requirementsMet) return;
-
+  private async handleInteraction(interaction: ButtonInteraction<'cached'>, component: Button, user: User): Promise<void>;
+  private async handleInteraction(interaction: AnySelectMenuInteraction<'cached'>, component: SelectMenu, user: User): Promise<void>;
+  private async handleInteraction(interaction: ModalSubmitInteraction<'cached'>, component: Modal, user: User): Promise<void>;
+  private async handleInteraction(interaction: ChatInputCommandInteraction<'cached'>, component: Command, user: User): Promise<void>;
+  private async handleInteraction(interaction: ContextMenuCommandInteraction<'cached'>, component: Command, user: User): Promise<void>;
+  private async handleInteraction(interaction: any, component: any, user: User): Promise<void> {
     try {
+      if (component instanceof Button || component instanceof SelectMenu) {
+        const requirementsMet = await this.checkRequirements(interaction, component);
+        if (!requirementsMet) return;
+
+        await component.execute(interaction, user);
+      }
+
+      if (interaction instanceof ModalSubmitInteraction || interaction instanceof ContextMenuCommandInteraction) {
+        await component.execute(interaction, user);
+      }
+
       let executeComponent: any = component;
+      if (component.data.executes.size > 0) {
+        let executeKey: string[] = [];
 
-      if (component instanceof Command) {
-        if (!interaction.isChatInputCommand()) return;
-        if (component.data.subcommands?.length) {
-          let subcommands = component.data.subcommands;
-          const subcommandGroup = interaction.options.getSubcommandGroup();
+        const subcommandGroup = interaction.options.getSubcommandGroup();
+        const subcommand = interaction.options.getSubcommand();
 
-          if (subcommandGroup) {
-            const group = subcommands.find((subcommand) => subcommand.name === subcommandGroup);
-            if (!group || !(group instanceof CommandSubcommandGroupBuilder)) return;
-
-            subcommands = group.subcommands;
-            if (group.execute) {
-              executeComponent = group;
-            }
+        if (subcommandGroup) {
+          executeKey.push(subcommandGroup);
+          if (component.data.executes.has(executeKey.join('.'))) {
+            executeComponent.execute = component.data.executes.get(executeKey.join('.'));
           }
+        }
 
-          const subcommand = subcommands.find((subcommand) => subcommand.name === interaction.options.getSubcommand());
-          if (!subcommand) return;
-
-          if (subcommand.execute) {
-            await subcommand.execute(interaction, user);
-            return;
-          } 
+        if (subcommand) {
+          executeKey.push(subcommand);
+          if (component.data.executes.has(executeKey.join('.'))) {
+            executeComponent.execute = component.data.executes.get(executeKey.join('.'));
+          }
         }
       }
+
       await executeComponent.execute(interaction, user);
     } catch (error: any) {
       this.logger.error(`Error executing the interaction '${(component.data && 'name' in component.data ? (component.data as any).name : 'unknown')}'`, error);
     }
-
-    component.data.cooldown.setCooldown(interaction.user.id);
   }
 
-  async checkRequirements(interaction: ChatInputCommandInteraction<'cached'> | ContextMenuCommandInteraction<'cached'> | MessageComponentInteraction<'cached'>, component: ResolvableInteraction, user: User) {
-    const context: Context = {
-      user: user,
-      member: interaction.member,
-      guild: interaction.guild,
-      channel: interaction.channel || undefined
-    }
+  async checkRequirements(interaction: MessageComponentInteraction<'cached'>, component: Button | SelectMenu) {
+    if (component.usingPermissionFrom) {
+      const command = await CommandModel.findOne({
+        where: { id: component.usingPermissionFrom }
+      });
 
-    if (component.data.cooldown.isOnCooldown(interaction.user.id)) {
-      await interaction.reply(await Utils.setupMessage({
-        config: this.manager.configs.lang.getSubsection("in-cooldown"),
-        variables: [
-          { searchFor: "%cooldown%", replaceWith: component.data.cooldown.endsAtFormatted(interaction.user.id) },
-        ],
-        context
-      }));
-      return false;
-    }
-
-    const isMet = await this.manager.services.condition.meetsConditions(component.conditions, context, []);
-
-    if (!isMet) {
-      await interaction.reply(await Utils.setupMessage({
-        config: this.manager.configs.lang.getSubsection("no-permission"),
-        context
-      }));
-      return false;
+      if (command && command.data.default_member_permissions) {
+        const memberPermissions = interaction.channel?.permissionsFor(interaction.member);
+        if (!memberPermissions || !memberPermissions.has(command.data.default_member_permissions)) {
+          return false;
+        }
+      }
     }
 
     return true;

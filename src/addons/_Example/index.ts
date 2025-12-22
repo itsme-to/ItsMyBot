@@ -1,17 +1,13 @@
-import { Addon, BaseConfig } from '@itsmybot';
+import { Addon, ConfigFile } from '@itsmybot';
 
 import AddonConfig from './resources/config.js'; // Import configuration validators
-import LangConfig from './resources/lang.js';
-import CommandsConfig from './resources/commands.js';
 import CategoryConfig from './resources/category.js';
 import { Collection } from 'discord.js';
 
 // This is an example of how to define a configurations object, used for typing and tab completion
 interface Configs {
-  config: BaseConfig;
-  lang: BaseConfig;
-  commands: BaseConfig;
-  categories: Collection<string, BaseConfig>
+  config: ConfigFile;
+  categories: Collection<string, ConfigFile>
 }
 
 // This is an example addon, you can use this as a template for your own addons, since it's start with an underscore, it won't be loaded.
@@ -31,8 +27,6 @@ export default class ExampleAddon extends Addon {
     // The first parameter is the file path, used to save the config and to load the default config inside the resources folder
     // The second parameter is the configuration validator, used to validate the config file
     this.configs.config = await this.createConfig('config.yml', AddonConfig); 
-    this.configs.lang = await this.createConfig('lang.yml', LangConfig);
-    this.configs.commands = await this.createConfig('commands.yml', CommandsConfig);
 
     // This is an example of how to load a folder of configs, this will load all the files inside the folder and validate them with the configuration validator. Useful for like tickets categories, etc. Supports subfolders.
     this.configs.categories = await this.createConfigSection('categories', CategoryConfig);

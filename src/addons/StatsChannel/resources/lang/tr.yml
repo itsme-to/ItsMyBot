@@ -1,0 +1,16 @@
+commands:
+  stats-channel:
+    description: İstatistik kanalını yönetin
+    subcommands:
+      create:
+        description: İstatistik kanalı oluşturun
+        options:
+          name: İstatistik kanalının adı
+      rename:
+        description: İstatistik kanalının adını değiştirin
+        options:
+          channel: İstatistik kanalının ID'si
+          name: İstatistik kanalının yeni adı
+
+channel-created: İstatistik kanalı oluşturuldu. %channel_name%
+channel-renamed: İstatistik kanalı yeniden adlandırıldı. [[new_name]]

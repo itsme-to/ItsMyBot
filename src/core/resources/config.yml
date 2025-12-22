@@ -35,6 +35,21 @@ primary-guild: "GUILD_ID"
 # Debug mode (currently does nothing)
 debug: true
 
+# Default language for the bot
+default-language: "en-US" 
+
+# Default accent color for embeds and components. Use 'none' for no color.
+default-color: "#3498db"
+
+# Structure for default messages
+default-message:
+  components: 
+    - type: 'container'
+      color: '[[default_color]]'
+      components:
+        - type: 'text-display'
+          content: '[[message]]'
+
 # Bot presence settings
 presence:
   interval: 30 # Interval in seconds between each status change
@@ -57,3 +72,4 @@ database:
   password: "password" # Database password
   database: "database" # Database name
   debug: false # Debug mode for database
+  connect-timeout: 5000 # Connection timeout in milliseconds

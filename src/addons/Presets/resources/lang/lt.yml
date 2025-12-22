@@ -1,0 +1,40 @@
+commands:
+  preset:
+    description: Siųsti šabloną
+    context-menu: Redaguoti žinutę
+    subcommands:
+      send:
+        description: Siųsti žinutę
+        options:
+          preset: Šablonas, kurį siųsti
+          channel: Kanalas, į kurį siųsti žinutę
+  sent: Žinutė išsiųsta į %channel_mention%
+  unknown-message: Žinutė nerasta
+  unknown-preset: Šablonas nerastas
+  edited: Žinutė atnaujinta naudojant šabloną %preset_path%
+  not-bot-message: Galiu redaguoti tik mano siunčiamas žinutes!
+  modals:
+    edit:
+      title: Redaguoti žinutę su šablonais
+      label: Naudojamo šablono kelias
+      description: Įveskite šablono kelią, kurį norite naudoti šiai žinutei
+      text-input:
+        placeholder: Kelias be .yml, pvz. welcome-message
+      select-menu:
+        placeholder: Pasirinkite šabloną, kurį norite naudoti
+
+sent: "Message sent to %channel_mention%"
+unknown-message: "Message not found"
+unknown-preset: "Preset not found"
+edited: "Message updated with preset %preset_path%"
+not-bot-message: 'I can only edit messages sent by me!'
+
+modals:
+  edit:
+    title: 'Edit Message with Presets'
+    label: 'The preset path to use'
+    description: 'Enter the path of the preset you want to use for this message'
+    text-input:
+      placeholder: 'Path without .yml, e.g. welcome-message'
+    select-menu:
+      placeholder: 'Select a preset to use'

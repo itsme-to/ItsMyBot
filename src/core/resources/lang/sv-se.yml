@@ -1,0 +1,151 @@
+commands:
+  addons:
+    description: Hantera tillägg.
+    subcommands:
+      list:
+        description: Visa listan över tillägg.
+      enable:
+        description: Aktivera ett tillägg.
+        options:
+          addon: Tillägget som ska aktiveras.
+      disable:
+        description: Inaktivera ett tillägg.
+        options:
+          addon: Tillägget som ska inaktiveras.
+  reload:
+    description: Starta om boten
+  parse:
+    description: Parsa en text.
+    options:
+      text: Texten som ska parsas.
+      user: Användaren att parsa texten för.
+  leaderboard:
+    description: Visa topplistan.
+  meta:
+    description: Hantera metadata.
+    subcommands:
+      set:
+        description: Sätt metadata.
+      remove:
+        description: Ta bort metadata.
+      add:
+        description: Lägg till metadata.
+      subtract:
+        description: Subtrahera ett värde från metadata.
+      toggle:
+        description: Växla boolesk metadata.
+      list-add:
+        description: Lägg till ett värde i listmetadata.
+      list-remove:
+        description: Ta bort ett värde från listmetadata.
+    options:
+      key: Nyckeln för metadatan.
+      value: Värdet för metadatan.
+      scope: ID:t för kanalen eller användaren som metadatan ska sättas för.
+  commands:
+    description: Hantera botkommandon.
+    subcommands:
+      list:
+        description: Visa listan över kommandon.
+      enable:
+        description: Aktivera ett kommando.
+        options:
+          command: Kommandot som ska aktiveras.
+      disable:
+        description: Inaktivera ett kommando.
+        options:
+          command: Kommandot som ska inaktiveras.
+      permission:
+        description: Hantera kommandobehörigheter.
+        subcommands:
+          set:
+            description: Sätt kommandobehörighet.
+            options:
+              command: Kommandot som behörigheten ska sättas för.
+              permission: Behörigheten som ska sättas.
+          remove:
+            description: Ta bort kommandobehörighet.
+            options:
+              command: Kommandot som behörigheten ska tas bort från.
+
+no-permission: Du har inte behörighet att använda det.
+in-cooldown: Du är för närvarande på cooldown. Du kan utföra denna åtgärd igen [[cooldown]].
+only-in-primary-guild: Denna åtgärd kan endast användas i den primära guilden.
+invalid-time: "Ogiltigt tidsformat. Vänligen använd ett giltigt tidsformat. Exempel: 1d, 1h, 1m, 1s."
+
+pagination:
+  select-placeholder: Sida [[pagination_current_page]]/[[pagination_total_pages]]
+  placeholder: Välj ett alternativ
+  no-items: Inga värden att visa.
+  filter-placeholder: Välj ett filter
+  next-page: Nästa
+  previous-page: Föregående
+
+leaderboard:
+  messages-format: "`[[position]].` [[position_user_mention]] • **[[position_user_messages]]** skickade meddelanden"
+  title: "### 🏆 Topplista – [[leaderboard_name]]"
+  footer: Sida [[pagination_current_page]]/[[pagination_total_pages]]
+
+addons:
+  title: Nedan finns listan över tillgängliga tillägg.
+  info: |
+    ### [[addon_status]] [[addon_name]] v[[addon_version]]
+    Författare: [[addon_authors]]
+  website: Webbplats
+  enabled: Tillägget `[[addon_name]]` har aktiverats. Starta om boten för att tillämpa ändringarna.
+  disabled: Tillägget `[[addon_name]]` har inaktiverats. Starta om boten för att tillämpa ändringarna.
+  already-enabled: Tillägget `[[addon_name]]` är redan aktiverat.
+  already-disabled: Tillägget `[[addon_name]]` är redan inaktiverat.
+  not-found: Tillägget `[[addon_name]]` finns inte.
+reloaded: Boten har startats om. Det kan ta några sekunder att distribuera kommandon.
+error-reloading: |
+  ### Fel vid omstart av boten
+  Ett fel uppstod vid omstart av boten.
+  ```
+  [[error_message]]
+  ```  
+parsed: |
+  Parsar texten för [[target_mention]]:
+
+  ```
+  [[parsed_text]]
+  ```
+engine:
+  missing-argument: Skriptet `[[script]]` saknar argumentet `[[missing]]`.
+  missing-context: "Skriptet `[[script]]` saknar kontexten `[[missing]]`. "
+
+meta:
+  scope-required: Omfånget krävs för denna åtgärd.
+  set: Metadatan `[[meta_key]]` har satts till `[[meta_value]]`.
+  remove: Metadatan `[[meta_key]]` har tagits bort.
+  add: Metadatan `[[meta_key]]` har lagts till med värdet `[[meta_value]]`.
+  subtract: Värdet för metadatan `[[meta_key]]` har minskats med `[[meta_value]]`.
+  toggle: "Metadatan `[[meta_key]]` har satts till `[[meta_value]]`. "
+
+command:
+  not-found: Kommandot `[[command]]` hittades inte.
+  enabled: Kommandot `[[command]]` har aktiverats.
+  disabled: Kommandot `[[command]]` har inaktiverats.
+  permission:
+    set: Behörigheten för kommandot `[[command]]` har uppdaterats.
+    remove: Behörigheten för kommandot `[[command]]` har tagits bort.
+    unknown: Ogiltigt behörighetsvärde.
+
+time:
+  short:
+    second: s
+    minute: m
+    hour: h
+    day: d
+    month: m
+  long:
+    second: sekund
+    seconds: sekunder
+    minute: minut
+    minutes: minuter
+    hour: timme
+    hours: timmar
+    day: dag
+    days: dagar
+    month: månad
+    months: månader

@@ -8,6 +8,7 @@ import { setupButton } from './setup/setupButton.js';
 import { setupSelectMenu } from './setup/setupSelectMenu.js';
 import { setupContainer } from './setup/setupContainer.js';
 import { setupModal } from './setup/setupModal.js';
+import { setupLabel } from './setup/setupLabel.js';
 import { setupThumbnail } from './setup/setupThumbnail.js';
 import { setupTextDisplay } from './setup/setupTextDisplay.js';
 import { userVariables, channelVariables, roleVariables, timeVariables } from './variables.js';
@@ -18,9 +19,10 @@ export { Logger } from './logger.js';
 export { Cooldown } from './cooldown.js';
 export { Pagination } from './pagination.js';
 
-import { manager, Context, Variable }from '@itsmybot';
+import { manager, Context, Variable } from '@itsmybot';
 import { GuildMember } from 'discord.js';
-import { Parser } from 'expr-eval';
+import { compileExpression } from "filtrex";
+import { parseDocument } from 'yaml';
 
 const discordEpoch = 1420070400000;
 
@@ -69,7 +71,8 @@ export class Utils {
   static setupContainer = setupContainer;
   static setupModal = setupModal;
   static setupThumbnail = setupThumbnail;
-  static setupTextDisplay = setupTextDisplay
+  static setupTextDisplay = setupTextDisplay;
+  static setupLabel = setupLabel;
 
   static userVariables = userVariables;
   static channelVariables = channelVariables;
@@ -107,20 +110,16 @@ export class Utils {
    * @param context The context to apply variables and placeholders from 
    */
   static async applyVariables(value: string | undefined, variables: Variable[], context?: Context) {
-    if (!value) return ""
+    if (!value) return "";
+    
+    if (context?.content) variables.push({ name: "content", value: context.content })
 
-    if (context?.user) variables.push(...this.userVariables(context.user));
-    if (context?.channel) variables.push(...this.channelVariables(context.channel));
-    if (context?.role) variables.push(...this.roleVariables(context.role));
-    if (context?.content) variables.push({ searchFor: "%content%", replaceWith: context.content })
-    if (context?.message) variables.push(
-      { searchFor: "%message_content%", replaceWith: Utils.blockPlaceholders(context.message.content) },
-      { searchFor: "%message_url%", replaceWith: context.message.url })
-
-    variables.forEach(variable => {
-      if (!value) return "";
-      value = value.replaceAll(variable.searchFor, variable.replaceWith?.toString() || 'undefined');
-    });
+    if (value.includes('[[')) {
+      variables.forEach(variable => {
+        if (!value) return "";
+        value = value.replaceAll(`[[${variable.name}]]`, variable.value?.toString() || 'undefined');
+      });
+    }
 
     return manager.services.expansion.resolvePlaceholders(value, context);
   }
@@ -161,8 +160,8 @@ export class Utils {
   }
 
   static evaluateBoolean(expression: string): boolean | null {
-    const parsedExpression = Parser.parse(expression);
-    const result = parsedExpression.evaluate();
+    const parsedExpression = compileExpression(expression);
+    const result = parsedExpression({});
 
     if (typeof result !== 'boolean' && result !== 0 && result !== 1) {
       return null
@@ -172,11 +171,11 @@ export class Utils {
   }
 
   static evaluateNumber(expression: string) {
-    const parsedExpression = Parser.parse(expression);
-    const result = parsedExpression.evaluate();
+    const parsedExpression = compileExpression(expression);
+    const result = parsedExpression({});
 
     if (typeof result !== 'number') {
-      return null
+      return null;
     }
 
     return result;
@@ -239,7 +238,8 @@ export class Utils {
       month: 30 * 24 * 60 * 60,
       day: 24 * 60 * 60,
       hour: 60 * 60,
-      minute: 60
+      minute: 60,
+      second: 1
     };
 
     let remainingSeconds = seconds;
@@ -253,15 +253,11 @@ export class Utils {
       }
     }
 
-    if (remainingSeconds > 0) {
-      result.push({ value: remainingSeconds, unit: 'second' });
-    }
-
     return result.slice(0, 3).map(({ value, unit }) => {
       if (result.length === 1) {
-        return value === 1 ? `${value} ${unit}` : `${value} ${unit}s`;
+        return value === 1 ? `${value} ${manager.lang.getString(`time.long.${unit}`)}` : `${value} ${manager.lang.getString(`time.long.${unit}s`)}`;
       }
-      return `${value}${unit.charAt(0)}`;
+      return value + manager.lang.getString(`time.short.${unit}`);
     }).join(' ');
   }
 
@@ -274,6 +270,7 @@ export class Utils {
    */
   static parseTime(time: string): number {
     const timeUnits: { [key: string]: number } = {
+      w: 7 * 24 * 60 * 60,
       d: 24 * 60 * 60,
       h: 60 * 60,
       m: 60,
@@ -295,5 +292,40 @@ export class Utils {
 
   static capitalizeFirst(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  /**
+   * Edit a configuration file at the specified path and save it
+   * @param filePath The path to the configuration file
+   * @param path The path within the configuration file to edit
+   * @param obj The object to set at the specified path
+   */
+  static async editConfigurationFile(filePath: string, path: string, obj: unknown) {
+    const file = parseDocument(await fs.readFile(filePath, 'utf8'));
+
+    // Split the path into segments, handling array indices
+    const pathSegments = path.split('.').flatMap(segment => {
+      return segment
+        .split(/[\[\]]/) // split by [ or ]
+        .filter(Boolean) // remove empty strings
+        .map(s => ( /^\d+$/.test(s) ? Number(s) : s )); // transform to number if it's an index
+    });
+
+    file.setIn(pathSegments, obj);
+
+    await fs.writeFile(filePath, file.toString(), 'utf8');
+  }
+
+  /**
+   * Convert a color string to a number
+   * @param color The color string to convert
+   * @returns The color as a number, or undefined if the color is "none" or invalid
+   */
+  static getColorFromString(color: string | undefined) {
+    if (!color || color === "none") return undefined;
+    if (/^#?[0-9a-fA-F]{6}$/.test(color)) {
+      return parseInt(color.replace(/^#/, ''), 16);
+    }
+    return parseInt(color, 10);
   }
 };

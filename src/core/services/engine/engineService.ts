@@ -1,5 +1,5 @@
 import { Collection, ApplicationCommandOptionType, ChannelType, ChatInputCommandInteraction } from 'discord.js';
-import { Script, CustomCommand, Command, User, BaseConfigSection, BaseConfig, Config, Variable, Service, Utils, Cooldown, Logger, CommandBuilder } from '@itsmybot';
+import { Script, CustomCommand, Command, User, ConfigFolder, ConfigFile, Config, Variable, Service, Utils, Cooldown, Logger, CommandBuilder } from '@itsmybot';
 import MetaHandler from './meta/metaHandler.js';
 
 import ScriptConfig from '../../resources/scripting/script.js';
@@ -22,14 +22,14 @@ export default class EngineService extends Service {
   }
 
   async loadScripts() {
-    const scripts = await new BaseConfigSection(this.manager.logger, 'scripting/scripts', 'build/core/resources/scripting/scripts').initialize(ScriptConfig);
+    const scripts = await new ConfigFolder(this.manager.logger, 'scripting/scripts', 'build/core/resources/scripting/scripts').initialize(ScriptConfig);
     for (const filePath of scripts) {
       this.registerScript(filePath[0], filePath[1], this.manager.logger);
     }
   }
 
   async registerCustomCommands() {
-    const customCommands = await new BaseConfigSection(this.manager.logger, 'scripting/custom-commands', 'build/core/resources/scripting/custom-commands').initialize(CustomCommandConfig);
+    const customCommands = await new ConfigFolder(this.manager.logger, 'scripting/custom-commands', 'build/core/resources/scripting/custom-commands').initialize(CustomCommandConfig);
 
     for (const filePath of customCommands) {
       this.registerCustomCommand(filePath[0], filePath[1]);
@@ -55,38 +55,46 @@ export default class EngineService extends Service {
         case option.member != null || option.member != undefined: {
           const targetUserM = await this.manager.services.user.findOrCreate(option.member)
           if (!targetUserM) break;
-          variables.push(...Utils.userVariables(targetUserM, `option_${option.name}`))
+          variables.push(
+            ...Utils.userVariables(targetUserM, `option_${option.name}`),
+            { name: `option_${option.name}`, value: option.value }
+          )
           break;
         }
           
         case option.user != undefined: {
           const targetUser = await this.manager.services.user.findOrNull(option.user.id)
           if (!targetUser) break;
-          variables.push(...Utils.userVariables(targetUser, `option_${option.name}`))
+          variables.push(
+            ...Utils.userVariables(targetUser, `option_${option.name}`),
+            { name: `option_${option.name}`, value: option.value }
+          )
           break;
         }
 
         case option.role != null || option.role != undefined:
-          variables.push(...Utils.roleVariables(option.role, `option_${option.name}`))
+          variables.push(
+            ...Utils.roleVariables(option.role, `option_${option.name}`),
+            { name: `option_${option.name}`, value: option.value }
+          )
           break;
 
         case option.channel != null || option.channel != undefined:
-          variables.push(...Utils.channelVariables(option.channel, `option_${option.name}`))
+          variables.push(
+            ...Utils.channelVariables(option.channel, `option_${option.name}`),
+            { name: `option_${option.name}`, value: option.value }
+          )
           break;
 
         case option.value != null || option.value != undefined:
-          variables.push({
-            searchFor: `%option_${option.name}%`,
-            replaceWith: option.value,
-          })
+          variables.push({ name: `option_${option.name}`, value: option.value })
           break;
-
       }
     }
     customCommand.run(context, variables);
   }
 
-  registerScript(id: string, script: BaseConfig, logger: Logger) {
+  registerScript(id: string, script: ConfigFile, logger: Logger) {
     if (this.scripts.has(id)) return logger.warn(`Script ${id} is already registered`);
 
     const scriptClass = new Script(this.manager, script, logger);
@@ -95,7 +103,7 @@ export default class EngineService extends Service {
     this.scripts.set(id, scriptClass);
   }
 
-  registerCustomCommand(id: string, customCommand: BaseConfig) {
+  registerCustomCommand(id: string, customCommand: ConfigFile) {
     const customCommandClass = new CustomCommand(this.manager, customCommand, this.manager.logger);
 
     class CustomCommandBase extends Command {
@@ -103,7 +111,11 @@ export default class EngineService extends Service {
         const options = customCommand.getSubsectionsOrNull("options") || []
         const data = new CommandBuilder()
           .setName(customCommand.getString("name"))
-          .using(customCommand)
+          .setDescription(customCommand.getString("description"))
+
+        if (customCommand.has("permission")) {
+          data.setDefaultMemberPermissions(Utils.getPermissionFlags(customCommand.getString("permission")))
+        }
 
         for (const optionConfig of options) {
           const option: CommandApplicationOption = {

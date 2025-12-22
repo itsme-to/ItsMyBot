@@ -42,7 +42,7 @@ export default class MetaListRemoveAction extends Action {
         await messageMeta.listRemove(value);
         break;
       case 'global':
-        const globalMeta = await this.manager.services.engine.metaHandler.findOrCreate(key, '[]');
+        const globalMeta = await this.manager.services.engine.metaHandler.findOrCreate(key, '[]', 'global');
         await globalMeta.listRemove(value);
         break;
     }

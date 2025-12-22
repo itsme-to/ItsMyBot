@@ -8,7 +8,6 @@ import UserService from '../services/users/userService.js'
 import LeaderboardService from '../services/leaderboards/leaderboardService.js'
 import ConditionService from 'core/services/conditions/conditionService.js'
 import ActionService from 'core/services/actions/actionService.js'
-import { BaseConfig } from './config/baseConfig.js'
 
 export interface ClientOptions {
   intents: GatewayIntentBits[],
@@ -54,10 +53,4 @@ export interface Services {
 
   /** Service to manage leaderboards in the bot. */
   leaderboard: LeaderboardService
-}
-
-export interface ManagerConfigs {
-  config: BaseConfig,
-  lang: BaseConfig,
-  commands: BaseConfig
 }

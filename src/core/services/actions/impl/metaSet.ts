@@ -39,7 +39,7 @@ export default class MetaSetAction extends Action {
         await messageMeta.setValue(value);
         break;
       case 'global':
-        const globalMeta = await this.manager.services.engine.metaHandler.findOrCreate(key, value);
+        const globalMeta = await this.manager.services.engine.metaHandler.findOrCreate(key, value, 'global');
         await globalMeta.setValue(value);
         break;
     }

@@ -1,0 +1,151 @@
+commands:
+  addons:
+    description: Gestionar addons.
+    subcommands:
+      list:
+        description: Mostrar la lista de addons.
+      enable:
+        description: Habilitar un addon.
+        options:
+          addon: El addon a habilitar.
+      disable:
+        description: Deshabilitar un addon.
+        options:
+          addon: El addon a deshabilitar.
+  reload:
+    description: Recargar el bot
+  parse:
+    description: Analizar un texto.
+    options:
+      text: El texto a analizar.
+      user: El usuario para el que se analiza el texto.
+  leaderboard:
+    description: Mostrar la clasificación.
+  meta:
+    description: Gestionar metadatos.
+    subcommands:
+      set:
+        description: Establecer metadatos.
+      remove:
+        description: Eliminar metadatos.
+      add:
+        description: Agregar metadatos.
+      subtract:
+        description: Restar un valor a los metadatos.
+      toggle:
+        description: Alternar metadatos booleanos.
+      list-add:
+        description: Agregar un valor a metadatos de tipo lista.
+      list-remove:
+        description: Eliminar un valor de metadatos de tipo lista.
+    options:
+      key: La clave de los metadatos.
+      value: El valor de los metadatos.
+      scope: El ID del canal o usuario para el que establecer los metadatos.
+  commands:
+    description: Gestionar los comandos del bot.
+    subcommands:
+      list:
+        description: Mostrar la lista de comandos.
+      enable:
+        description: Habilitar un comando.
+        options:
+          command: El comando a habilitar.
+      disable:
+        description: Deshabilitar un comando.
+        options:
+          command: El comando a deshabilitar.
+      permission:
+        description: Gestionar permisos de comandos.
+        subcommands:
+          set:
+            description: Establecer permiso de comando.
+            options:
+              command: El comando al que establecer el permiso.
+              permission: El permiso a establecer.
+          remove:
+            description: Eliminar permiso de comando.
+            options:
+              command: El comando al que eliminar el permiso.
+
+no-permission: No tienes permiso para usar eso.
+in-cooldown: Estás actualmente en tiempo de espera. Puedes realizar esta acción de nuevo [[cooldown]].
+only-in-primary-guild: Esta acción solo puede usarse en el servidor principal.
+invalid-time: "Formato de tiempo inválido. Por favor, usa un formato de tiempo válido. Ejemplo: 1d, 1h, 1m, 1s."
+
+pagination:
+  select-placeholder: Página [[pagination_current_page]]/[[pagination_total_pages]]
+  placeholder: Selecciona una opción
+  no-items: No hay valores para mostrar.
+  filter-placeholder: Selecciona un filtro
+  next-page: Siguiente
+  previous-page: Anterior
+
+leaderboard:
+  messages-format: "`[[position]].` [[position_user_mention]] • **[[position_user_messages]]** mensajes enviados"
+  title: "### 🏆 Clasificación – [[leaderboard_name]]"
+  footer: Página [[pagination_current_page]]/[[pagination_total_pages]]
+
+addons:
+  title: A continuación encontrarás la lista de addons disponibles.
+  info: |
+    ### [[addon_status]] [[addon_name]] v[[addon_version]]
+    Autores: [[addon_authors]]
+  website: Sitio web
+  enabled: El addon `[[addon_name]]` ha sido habilitado. Reinicia el bot para aplicar los cambios.
+  disabled: El addon `[[addon_name]]` ha sido deshabilitado. Reinicia el bot para aplicar los cambios.
+  already-enabled: El addon `[[addon_name]]` ya está habilitado.
+  already-disabled: El addon `[[addon_name]]` ya está deshabilitado.
+  not-found: El addon `[[addon_name]]` no existe.
+reloaded: El bot ha sido recargado. Puede tardar unos segundos en desplegar los comandos.
+error-reloading: |-
+  ### Error al recargar el bot
+  Ocurrió un error al recargar el bot.
+  ```
+  [[error_message]]
+  ```
+parsed: |
+  Analizando el texto para [[target_mention]]:
+
+  ```
+  [[parsed_text]]
+  ```
+engine:
+  missing-argument: El script `[[script]]` carece del argumento `[[missing]]`.
+  missing-context: El script `[[script]]` carece del contexto `[[missing]]`.
+
+meta:
+  scope-required: El ámbito es obligatorio para esta acción.
+  set: Los metadatos `[[meta_key]]` se han establecido en `[[meta_value]]`.
+  remove: Los metadatos `[[meta_key]]` han sido eliminados.
+  add: Los metadatos `[[meta_key]]` se han añadido con el valor `[[meta_value]]`.
+  subtract: A los metadatos `[[meta_key]]` se les ha restado el valor `[[meta_value]]`.
+  toggle: "Los metadatos `[[meta_key]]` se han establecido en `[[meta_value]]`. "
+
+command:
+  not-found: El comando `[[command]]` no se encontró.
+  enabled: El comando `[[command]]` ha sido habilitado.
+  disabled: El comando `[[command]]` ha sido deshabilitado.
+  permission:
+    set: El permiso para el comando `[[command]]` ha sido actualizado.
+    remove: El permiso para el comando `[[command]]` ha sido eliminado.
+    unknown: Valor de permiso inválido.
+
+time:
+  short:
+    second: s
+    minute: m
+    hour: h
+    day: d
+    month: m
+  long:
+    second: segundo
+    seconds: segundos
+    minute: minuto
+    minutes: minutos
+    hour: hora
+    hours: horas
+    day: día
+    days: días
+    month: mes
+    months: meses

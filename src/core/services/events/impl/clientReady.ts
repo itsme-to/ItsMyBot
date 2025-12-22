@@ -1,5 +1,4 @@
 import chalk from 'chalk';
-import { schedule } from 'node-cron';
 import { Event, Events } from '@itsmybot';
 import { Client, Guild } from 'discord.js';
 
@@ -50,17 +49,41 @@ export default class ClientReadyEvent extends Event {
 
     this.manager.client.emit(Events.BotReady, primaryGuild);
 
-    schedule('* * * * *', async () => {
+    schedule("minute", async () => {
       await primaryGuild.fetch()
       this.manager.client.emit(Events.EveryMinute, primaryGuild);
     });
 
-    schedule('0 * * * *', async () => {
+    schedule("hour", async () => {
       this.manager.client.emit(Events.EveryHour, primaryGuild);
     });
 
-    schedule('0 0 * * *', async () => {
+    schedule("day", async () => {
       this.manager.client.emit(Events.EveryDay, primaryGuild);
     });
   }
 };
+
+function schedule(unit: "minute" | "hour" | "day", fn: () => void | Promise<void>) {
+  const now = new Date();
+
+  let next = new Date(now);
+
+  if (unit === "minute") {
+    next.setSeconds(0, 0);
+    if (next <= now) next.setMinutes(next.getMinutes() + 1);
+  } else if (unit === "hour") {
+    next.setMinutes(0, 0, 0);
+    if (next <= now) next.setHours(next.getHours() + 1);
+  } else if (unit === "day") {
+    next.setHours(0, 0, 0, 0);
+    if (next <= now) next.setDate(next.getDate() + 1);
+  }
+
+  const delay = next.getTime() - now.getTime();
+  const interval = unit === "minute" ? 60_000 : unit === "hour" ? 3_600_000 : 86_400_000;
+  setTimeout(() => {
+    fn();
+    setInterval(fn, interval);
+  }, delay);
+}

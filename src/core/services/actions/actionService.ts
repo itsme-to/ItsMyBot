@@ -38,7 +38,7 @@ export default class ActionService extends Service{
     this.actions.set(action.id, action);
   }
 
-  buildActions(actions: Config[], addon: Addon | undefined = undefined): ActionData[] {
+  parseActions(actions: Config[], addon: Addon | undefined = undefined): ActionData[] {
     if (!actions) return [];
     return actions.map(action => new ActionData(this.manager, action, addon?.logger || this.manager.logger));
   }
@@ -50,5 +50,13 @@ export default class ActionService extends Service{
     if (!actionInstance) return script.logger.warn(`No action found for ID: ${script.id}`);
 
     await actionInstance.trigger(script, context, variables);
+  }
+
+  unregisterByAddon(addon: Addon) {
+    for (const [id, action] of this.actions) {
+      if (action.addon === addon) {
+        this.actions.delete(id);
+      }
+    }
   }
 }

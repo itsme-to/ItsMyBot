@@ -1,0 +1,151 @@
+commands:
+  addons:
+    description: Gestionați addon-urile.
+    subcommands:
+      list:
+        description: Afișează lista addon-urilor.
+      enable:
+        description: Activați un addon.
+        options:
+          addon: Addon-ul care va fi activat.
+      disable:
+        description: Dezactivați un addon.
+        options:
+          addon: Addon-ul care va fi dezactivat.
+  reload:
+    description: Reîncărcați botul
+  parse:
+    description: Analizează un text.
+    options:
+      text: Textul de analizat.
+      user: Utilizatorul pentru care se analizează textul.
+  leaderboard:
+    description: Afișează clasamentul.
+  meta:
+    description: Gestionați metadatele.
+    subcommands:
+      set:
+        description: Setați metadatele.
+      remove:
+        description: Șterge metadatele.
+      add:
+        description: Adăugați metadatele.
+      subtract:
+        description: Scădeți o valoare din metadate.
+      toggle:
+        description: Comutați metadatele booleene.
+      list-add:
+        description: Adăugați o valoare la metadatele de tip listă.
+      list-remove:
+        description: Eliminați o valoare din metadatele de tip listă.
+    options:
+      key: Cheia metadatelor.
+      value: Valoarea metadatelor.
+      scope: ID-ul canalului sau utilizatorului pentru care se setează metadatele.
+  commands:
+    description: Gestionați comenzile botului.
+    subcommands:
+      list:
+        description: Afișează lista comenzilor.
+      enable:
+        description: Activați o comandă.
+        options:
+          command: Comanda de activat.
+      disable:
+        description: Dezactivați o comandă.
+        options:
+          command: Comanda de dezactivat.
+      permission:
+        description: Gestionați permisiunile comenzilor.
+        subcommands:
+          set:
+            description: Setați permisiunea comenzii.
+            options:
+              command: Comanda pentru care se setează permisiunea.
+              permission: Permisiunea de setat.
+          remove:
+            description: Eliminați permisiunea comenzii.
+            options:
+              command: Comanda pentru care se elimină permisiunea.
+
+no-permission: Nu aveți permisiunea de a folosi asta.
+in-cooldown: Ești în cooldown în acest moment. Poți efectua din nou această acțiune în [[cooldown]].
+only-in-primary-guild: Această acțiune poate fi folosită doar pe serverul principal.
+invalid-time: "Format de timp invalid. Vă rugăm să folosiți un format de timp valid. Exemplu: 1d, 1h, 1m, 1s."
+
+pagination:
+  select-placeholder: Pagina [[pagination_current_page]]/[[pagination_total_pages]]
+  placeholder: Selectați o opțiune
+  no-items: Nu există valori de afișat.
+  filter-placeholder: Selectați un filtru
+  next-page: Următoarea
+  previous-page: Anterioară
+
+leaderboard:
+  messages-format: "`[[position]].` [[position_user_mention]] • **[[position_user_messages]]** mesaje trimise"
+  title: "### 🏆 Clasament – [[leaderboard_name]]"
+  footer: Pagina [[pagination_current_page]]/[[pagination_total_pages]]
+
+addons:
+  title: Mai jos găsiți lista addon-urilor disponibile.
+  info: |
+    ### [[addon_status]] [[addon_name]] v[[addon_version]]
+    Autori: [[addon_authors]]
+  website: Site web
+  enabled: Addonul `[[addon_name]]` a fost activat. Reporniți botul pentru a aplica modificările.
+  disabled: Addonul `[[addon_name]]` a fost dezactivat. Reporniți botul pentru a aplica modificările.
+  already-enabled: Addonul `[[addon_name]]` este deja activat.
+  already-disabled: Addonul `[[addon_name]]` este deja dezactivat.
+  not-found: Addonul `[[addon_name]]` nu există.
+reloaded: Botul a fost reîncărcat. Poate dura câteva secunde pentru a implementa comenzile.
+error-reloading: |
+  ### Eroare la reîncărcarea botului
+  A apărut o eroare în timp ce se reîncărca botul.
+  ```
+  [[error_message]]
+  ```  
+parsed: |
+  Analizând textul pentru [[target_mention]]:
+
+  ```
+  [[parsed_text]]
+  ```
+engine:
+  missing-argument: Scriptul `[[script]]` lipsește argumentul `[[missing]]`.
+  missing-context: Scriptul `[[script]]` nu are contextul `[[missing]]`.
+
+meta:
+  scope-required: Scope-ul este obligatoriu pentru această acțiune.
+  set: Metadatele `[[meta_key]]` au fost setate la `[[meta_value]]`.
+  remove: Metadatele `[[meta_key]]` au fost eliminate.
+  add: Metadatele `[[meta_key]]` au fost adăugate cu valoarea `[[meta_value]]`.
+  subtract: Metadatele `[[meta_key]]` au fost scăzute cu valoarea `[[meta_value]]`.
+  toggle: Metadatele `[[meta_key]]` au fost setate la `[[meta_value]]`.
+
+command:
+  not-found: Comanda `[[command]]` nu a fost găsită.
+  enabled: Comanda `[[command]]` a fost activată.
+  disabled: Comanda `[[command]]` a fost dezactivată.
+  permission:
+    set: Permisiunea pentru comanda `[[command]]` a fost actualizată.
+    remove: Permisiunea pentru comanda `[[command]]` a fost eliminată.
+    unknown: Valoare de permisiune invalidă.
+
+time:
+  short:
+    second: s
+    minute: m
+    hour: h
+    day: d
+    month: m
+  long:
+    second: secundă
+    seconds: secunde
+    minute: minut
+    minutes: minute
+    hour: oră
+    hours: ore
+    day: zi
+    days: zile
+    month: lună
+    months: luni

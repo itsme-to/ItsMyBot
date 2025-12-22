@@ -1,0 +1,26 @@
+commands:
+  preset:
+    description: Küldj egy előre beállított sablont
+    context-menu: Üzenet szerkesztése
+    subcommands:
+      send:
+        description: Üzenet küldése
+        options:
+          preset: Küldendő sablon
+          channel: Csatorna, ahová az üzenetet küldjük
+
+sent: "Üzenet elküldve: %channel_mention%"
+unknown-message: Üzenet nem található
+unknown-preset: Sablon nem található
+edited: Üzenet frissítve a %preset_path% sablonnal
+not-bot-message: Csak az általam küldött üzeneteket tudom szerkeszteni!
+
+modals:
+  edit:
+    title: Üzenet szerkesztése sablonokkal
+    label: A használni kívánt sablon elérési útja
+    description: Írd be annak a sablonnak az elérési útját, amelyet ehhez az üzenethez használni szeretnél
+    text-input:
+      placeholder: Elérési út .yml nélkül, pl. welcome-message
+    select-menu:
+      placeholder: Válassz egy használni kívánt sablont

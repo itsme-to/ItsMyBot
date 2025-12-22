@@ -74,6 +74,9 @@ export default class AddonService extends Service {
         await addon.init();
       } catch (error) {
         addon.logger.error("Error initializing addon:", error);
+        addon.enabled = false;
+        addon.unregisterModules();
+        this.addons.delete(addon.name);
       }
     }));
   }

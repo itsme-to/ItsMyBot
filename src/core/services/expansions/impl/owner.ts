@@ -9,6 +9,6 @@ export default class OwnerExpansion extends Expansion {
     const owner = await context.guild.fetchOwner()
     const ownerUser = await this.manager.services.user.findOrCreate(owner);
 
-    return Utils.applyVariables(`%owner_${placeholder}%`, Utils.userVariables(ownerUser, 'owner'));
+    return Utils.applyVariables(`%owner_${placeholder}`, Utils.userVariables(ownerUser, 'owner'));
   }
 }

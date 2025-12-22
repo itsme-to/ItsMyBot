@@ -18,7 +18,7 @@ export async function setupSelectMenu(settings: SelectMenuSettings) {
   const disabled = config.getBoolOrNull("disabled") || false;
 
   const placeholder = config.getStringOrNull("placeholder", true);
-  const minSelect = config.getNumberOrNull("min-values") || 0;
+  const minSelect = config.getNumberOrNull("min-values")
   const maxSelect = config.getNumberOrNull("max-values") || 1;
   const options = config.getSubsectionsOrNull("options");
 
@@ -27,8 +27,9 @@ export async function setupSelectMenu(settings: SelectMenuSettings) {
 
   const selectMenu = new StringSelectMenuBuilder()
     .setCustomId(customId)
-    .setDisabled(disabled)
-    .setMinValues(minSelect)
+    .setDisabled(disabled);
+    
+  if (minSelect) selectMenu.setMinValues(minSelect);
 
   const placeholderValue = await Utils.applyVariables(placeholder, variables, context);
   if (placeholderValue) selectMenu.setPlaceholder(placeholderValue);
@@ -81,7 +82,7 @@ async function setupOption(
 
   const conditionConfig = config.getSubsectionsOrNull("conditions");
   if (conditionConfig) {
-    const conditions = manager.services.condition.buildConditions(conditionConfig, false);
+    const conditions = manager.services.condition.parseConditions(conditionConfig, false);
     const isMet = await manager.services.condition.meetsConditions(conditions, context, variables);
     if (!isMet) return null;
   }

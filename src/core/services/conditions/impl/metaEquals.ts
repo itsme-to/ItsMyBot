@@ -21,7 +21,6 @@ export default class BelowMetaCondition extends Condition {
     const key = condition.args.getString("key")
     let value = condition.args.getString("value");
     value = await Utils.applyVariables(value, variables, context);
-    if (!value) return condition.missingArg("value");
 
     const meta = this.manager.services.engine.metaHandler.metas.get(key)!;
 

@@ -1,4 +1,4 @@
-import { IsActivityType } from '@itsmybot';
+import { IsActivityType, MessageValidator } from '@itsmybot';
 import { Type } from 'class-transformer';
 import { IsString, IsInt, ValidateNested, IsBoolean, Validate, IsDefined, NotEquals, IsIn, IsPositive } from 'class-validator';
 
@@ -58,6 +58,11 @@ class Database {
   @IsDefined()
   @IsBoolean()
   debug: boolean;
+
+  @IsDefined()
+  @IsInt()
+  @IsPositive()
+  'connect-timeout': number;
 }
 
 export default class DefaultConfig {
@@ -76,8 +81,21 @@ export default class DefaultConfig {
   'primary-guild': string
 
   @IsDefined()
+  @IsString()
+  'default-language': string
+
+  @IsDefined()
+  @IsString()
+  'default-color': string;
+
+  @IsDefined()
+  @ValidateNested()
+  @Type(() => MessageValidator)
+  'default-message': MessageValidator;
+
+  @IsDefined()
   @IsBoolean()
-  debug: boolean
+  debug: boolean;
 
   @IsDefined()
   @ValidateNested()

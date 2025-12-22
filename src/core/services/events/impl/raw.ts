@@ -1,4 +1,4 @@
-import { Event, Events, Context, Utils } from '@itsmybot';
+import { Event, Events, Context, Utils, Variable } from '@itsmybot';
 import { DMChannel } from 'discord.js';
 
 interface RawEventPacket {
@@ -26,13 +26,13 @@ export default class RawEvent extends Event {
     const event = eventMapping[packet.t];
     if (!event) return;
 
-    const context = await this.createContextFromPacket(packet);
-    if (!context) return;
+    const contextData = await this.createContextFromPacket(packet);
+    if (!contextData) return;
 
-    this.manager.services.engine.event.emit(event, context);
+    this.manager.services.engine.event.emit(event, contextData.context, contextData.variables);
   }
 
-  async createContextFromPacket(packet: RawEventPacket): Promise<Context | undefined> {
+  async createContextFromPacket(packet: RawEventPacket): Promise<{ context: Context; variables: Variable[] } | undefined> {
     const { d: data } = packet;
     const channel = Utils.findTextChannel(data.channel_id);
     if (!channel || channel instanceof DMChannel) return;
@@ -60,6 +60,10 @@ export default class RawEvent extends Event {
       user: user || undefined
     };
 
-    return context;
+    const variables = [
+      { name: 'reaction_emoji', value: emojiKey },
+    ];
+
+    return { context, variables };
   }
 }

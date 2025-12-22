@@ -1,5 +1,5 @@
-import { manager, Config, Context, Variable, Utils } from '@itsmybot';
-import { ActionRowComponent, MessageComponentBuilder, ContainerComponentBuilder, ActionRowBuilder, MessageActionRowComponentBuilder, SeparatorBuilder, SectionBuilder, MediaGalleryBuilder, FileBuilder, MediaGalleryItemBuilder } from 'discord.js';
+import { manager, Config, Context, Variable, Utils, LabelComponentBuilder } from '@itsmybot';
+import { ActionRowComponent, MessageComponentBuilder, ContainerComponentBuilder, ActionRowBuilder, MessageActionRowComponentBuilder, SeparatorBuilder, SectionBuilder, MediaGalleryBuilder, FileBuilder, MediaGalleryItemBuilder, TextInputBuilder, TextInputStyle, FileUploadBuilder } from 'discord.js';
 
 interface ComponentSettings {
   config: Config,
@@ -7,7 +7,7 @@ interface ComponentSettings {
   context: Context,
 }
 
-export type SetupComponentType = MessageComponentBuilder | ContainerComponentBuilder | ActionRowComponent | undefined;
+export type SetupComponentType = MessageComponentBuilder | ContainerComponentBuilder | ActionRowComponent | LabelComponentBuilder | undefined;
 
 export async function setupComponent<T extends SetupComponentType = SetupComponentType>(settings: ComponentSettings): Promise<T[] | undefined> {
   const config = settings.config;
@@ -18,7 +18,7 @@ export async function setupComponent<T extends SetupComponentType = SetupCompone
 
   const conditionConfig = config.getSubsectionsOrNull('conditions');
   if (conditionConfig) {
-    const conditions = manager.services.condition.buildConditions(conditionConfig, false);
+    const conditions = manager.services.condition.parseConditions(conditionConfig, false);
     const isMet = await manager.services.condition.meetsConditions(conditions, context, variables);
     if (!isMet) return
   }
@@ -72,7 +72,7 @@ export async function setupComponent<T extends SetupComponentType = SetupCompone
       for (const componentConfig of config.getSubsections('components')) {
         const conditionConfig = componentConfig.getSubsectionsOrNull('conditions');
         if (conditionConfig) {
-          const conditions = manager.services.condition.buildConditions(conditionConfig, false);
+          const conditions = manager.services.condition.parseConditions(conditionConfig, false);
           const isMet = await manager.services.condition.meetsConditions(conditions, context, variables);
           if (!isMet) continue
         }
@@ -103,7 +103,7 @@ export async function setupComponent<T extends SetupComponentType = SetupCompone
       for (const mediaconfig of config.getSubsections('items')) {
         const mediaCondition = mediaconfig.getSubsectionsOrNull('conditions');
         if (mediaCondition) {
-          const conditions = manager.services.condition.buildConditions(mediaCondition, false);
+          const conditions = manager.services.condition.parseConditions(mediaCondition, false);
           const isMet = await manager.services.condition.meetsConditions(conditions, context, variables);
           if (!isMet) continue
         }
@@ -140,6 +140,57 @@ export async function setupComponent<T extends SetupComponentType = SetupCompone
 
     case 'container': {
       return [await Utils.setupContainer({ config, variables, context }) as T];
+    }
+
+    case 'text-input': {
+      let cCustomId = config.getString("custom-id");
+      let cPlaceholder = config.getStringOrNull("placeholder", true) || '';
+      const cRequired = config.getBoolOrNull("required") || false;
+      let cMaxLength = config.getStringOrNull("max-length") || "1000";
+      let cMinLength = config.getStringOrNull("min-length") || "0";
+      let cValue = config.getStringOrNull("value", true) || '';
+      const cStyle = config.getStringOrNull("style");
+
+      cCustomId = await Utils.applyVariables(cCustomId, variables, context);
+      cPlaceholder = await Utils.applyVariables(cPlaceholder, variables, context);
+      cMaxLength = await Utils.applyVariables(cMaxLength, variables, context);
+      cMinLength = await Utils.applyVariables(cMinLength, variables, context);
+      cValue = await Utils.applyVariables(cValue, variables, context);
+
+      const textInput = new TextInputBuilder()
+        .setCustomId(cCustomId)
+        .setStyle((cStyle ? Utils.getTextInputStyle(cStyle) || TextInputStyle.Short : TextInputStyle.Short))
+        .setRequired(cRequired)
+        .setMaxLength(parseInt(cMaxLength) || 1000)
+        .setMinLength(parseInt(cMinLength) || 0)
+
+      if (cPlaceholder && cPlaceholder !== 'undefined') {
+        textInput.setPlaceholder(cPlaceholder);
+      }
+
+      if (cValue && cValue !== 'undefined') {
+        textInput.setValue(cValue);
+      }
+
+      return [textInput as T]
+    }
+
+    case 'file-upload': {
+      let cCustomId = config.getString("custom-id");
+      const minSelect = config.getNumberOrNull("min-values")
+      const maxSelect = config.getNumberOrNull("max-values") || 1;
+      const cRequired = config.getBoolOrNull("required") || false;
+
+      cCustomId = await Utils.applyVariables(cCustomId, variables, context);
+
+      const fileUpload = new FileUploadBuilder()
+        .setMaxValues(maxSelect)
+        .setCustomId(cCustomId)
+        .setRequired(cRequired)
+        
+      if (minSelect) fileUpload.setMinValues(minSelect);
+
+      return [fileUpload as T];
     }
   }
 }

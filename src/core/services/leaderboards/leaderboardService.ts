@@ -1,5 +1,5 @@
-import { Manager, Leaderboard, Command, Addon, Service, Utils, Pagination, CommandBuilder } from '@itsmybot';
-import { ChatInputCommandInteraction, Collection } from 'discord.js';
+import { Manager, Leaderboard, Command, Addon, Service, Utils, Pagination, CommandBuilder, MessageComponentBuilder } from '@itsmybot';
+import { ChatInputCommandInteraction, Collection, ContainerBuilder, TextDisplayBuilder } from 'discord.js';
 import { sync } from 'glob';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -42,13 +42,20 @@ export default class LeaderboardService extends Service{
     this.leaderboards.delete(identifier);
   }
 
+  unregisterByAddon(addon: Addon) {
+    for (const [name, leaderboard] of this.leaderboards) {
+      if (leaderboard.addon === addon) {
+        this.leaderboards.delete(name);
+      }
+    }
+  }
+
   async registerLeaderboards() {
     class LeaderboardCommands extends Command {
 
       build() {
         const data = new CommandBuilder()
           .setName('leaderboard')
-          .using(this.manager.configs.commands.getSubsection('leaderboard'))
 
         for (const [key, leaderboard] of this.manager.services.leaderboard.leaderboards) {
           data.addSubcommand(subcommand =>
@@ -78,19 +85,42 @@ export default class LeaderboardService extends Service{
 
     for (const row of leaderboardData) {
       const variables = [
-        { searchFor: "%leaderboard_position%", replaceWith: rank++ },
-        { searchFor: "%leaderboard_message%", replaceWith: row }
+        { name: "leaderboard_position", value: rank++ },
+        { name: "leaderboard_message", value: row }
       ];
 
       leaders.push({
+        item: row,
         variables: variables,
       });
     }
 
-    new Pagination(interaction, leaders, this.manager.configs.lang.getSubsection('leaderboard'))
+    new Pagination(leaders)
       .setType('button')
-      .setVariables([{ searchFor: "%leaderboard_name%", replaceWith: Utils.capitalizeFirst(leaderboard.name) }])
+      .setFormat(async (items, variables, context) => {
+        const components: MessageComponentBuilder[] = [];
+        components.push(new TextDisplayBuilder()
+          .setContent(await this.manager.lang.getParsedString("leaderboard.title", variables, context)));
+
+        const container = new ContainerBuilder()
+          .setAccentColor(Utils.getColorFromString(this.manager.configs.config.getString("default-color")))
+        
+        const messages = [];
+        for (const item of items) {
+          messages.push(item.item);
+        }
+        container.addTextDisplayComponents(
+          new TextDisplayBuilder()
+            .setContent(messages.join('\n')),
+          new TextDisplayBuilder()
+            .setContent(await this.manager.lang.getParsedString("leaderboard.footer", variables, context)));
+
+        components.push(container);
+
+        return components;
+      })
+      .setVariables([{ name: "leaderboard_name", value: Utils.capitalizeFirst(leaderboard.name) }])
       .setItemsPerPage(10)
-      .send();
+      .reply(interaction);
   }
 }

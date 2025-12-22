@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import { Logger } from '../utils/logger.js';
-import { input } from '@inquirer/prompts';
+import inquirer from 'inquirer';
 
 
 function makeAddon(name: string): any {
@@ -37,8 +37,8 @@ export default class ${name}Addon extends Addon {
 }
 
 async function askForAddonName() {
-  const answer = await input({ message: "What's the name of the addon?" });
-  return makeAddon(answer);
+  const answer = await inquirer.prompt({ type: 'input', name: 'addonName', message: "What's the name of the addon?" });
+  return makeAddon(answer.addonName);
 }
 
 await askForAddonName();
