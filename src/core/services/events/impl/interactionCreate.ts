@@ -50,11 +50,11 @@ export default class InteractionCreateEvent extends Event {
         const requirementsMet = await this.checkRequirements(interaction, component);
         if (!requirementsMet) return;
 
-        await component.execute(interaction, user);
+        return await component.execute(interaction, user);
       }
 
       if (interaction instanceof ModalSubmitInteraction || interaction instanceof ContextMenuCommandInteraction) {
-        await component.execute(interaction, user);
+        return await component.execute(interaction, user);
       }
 
       let executeComponent: any = component;
@@ -81,7 +81,7 @@ export default class InteractionCreateEvent extends Event {
 
       await executeComponent.execute(interaction, user);
     } catch (error: any) {
-      this.logger.error(`Error executing the interaction '${(component.data && 'name' in component.data ? (component.data as any).name : 'unknown')}'`, error);
+      this.logger.error(`Error executing the interaction '${(component.data && 'name' in component.data ? (component.data as any).name : component.customId)}' (${component.constructor.name})`, error);
     }
   }
 
