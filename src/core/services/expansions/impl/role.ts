@@ -15,6 +15,18 @@ export default class RoleExpansion extends Expansion {
         return context.role.name;
       case 'mention':
         return roleMention(context.role.id);
+      case 'color':
+        return context.role.hexColor;
+      case 'created-at':
+        return context.role.createdAt.toISOString();
+      case 'position':
+        return context.role.position.toString();
+      case 'hoist':
+        return context.role.hoist ? 'true' : 'false';
+      case 'managed':
+        return context.role.managed ? 'true' : 'false';
+      case 'mentionable':
+        return context.role.mentionable ? 'true' : 'false';
     }
   }
 }
