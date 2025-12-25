@@ -79,7 +79,7 @@ export default class ExpansionService extends Service{
       if (nestedExpansion) {
         const nestedReplacement = await nestedExpansion.onRequest(context, nestedPlaceholder);
         if (nestedReplacement === undefined) return;
-        return placeholder.replace(fullNestedMatch, nestedReplacement);
+        placeholder = placeholder.replace(fullNestedMatch, nestedReplacement);
       }
     }));
 
