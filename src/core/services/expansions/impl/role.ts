@@ -17,7 +17,7 @@ export default class RoleExpansion extends Expansion {
         return roleMention(context.role.id);
       case 'color':
         return context.role.hexColor;
-      case 'created-at':
+      case 'created_at':
         return context.role.createdAt.toISOString();
       case 'position':
         return context.role.position.toString();
