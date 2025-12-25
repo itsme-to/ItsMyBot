@@ -13,13 +13,13 @@ class ArgumentsValidator extends ConditionArgumentValidator {
   amount: number
 }
 
-export default class TextLenghtBelowCondition extends Condition {
-  id = "textLenghtBelow";
+export default class TextLengthBelowCondition extends Condition {
+  id = "textLengthBelow";
   argumentsValidator = ArgumentsValidator;
 
   isMet(condition: ConditionData, context: Context, variables: Variable[]) {
     const text = condition.args.getString("text")
-    const arg = condition.args.getNumber("lenght");
+    const arg = condition.args.getNumber("length");
 
     return text.length < arg;
   }
