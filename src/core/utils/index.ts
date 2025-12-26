@@ -161,7 +161,7 @@ export class Utils {
 
   static evaluateBoolean(expression: string): boolean | null {
     const parsedExpression = compileExpression(expression);
-    const result = parsedExpression({});
+    const result = parsedExpression({ true: 1, false: 0 });
 
     if (typeof result !== 'boolean' && result !== 0 && result !== 1) {
       return null
