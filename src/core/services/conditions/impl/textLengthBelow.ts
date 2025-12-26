@@ -1,5 +1,5 @@
-import { Condition, ConditionArgumentValidator, ConditionData, Context, Variable } from '@itsmybot';
-import { IsDefined, IsNumber, IsPositive, IsString, Min } from 'class-validator';
+import { Condition, ConditionArgumentValidator, ConditionData, Context, IsNumberOrString, Utils, Variable } from '@itsmybot';
+import { IsDefined, IsString, Validate } from 'class-validator';
 
 class ArgumentsValidator extends ConditionArgumentValidator {
   @IsDefined()
@@ -7,20 +7,21 @@ class ArgumentsValidator extends ConditionArgumentValidator {
   text: string
 
   @IsDefined()
-  @IsNumber()
-  @IsPositive()
-  @Min(1)
-  amount: number
+  @Validate(IsNumberOrString)
+  amount: number | string
 }
 
 export default class TextLengthBelowCondition extends Condition {
   id = "textLengthBelow";
   argumentsValidator = ArgumentsValidator;
 
-  isMet(condition: ConditionData, context: Context, variables: Variable[]) {
-    const text = condition.args.getString("text")
-    const arg = condition.args.getNumber("length");
+  async isMet(condition: ConditionData, context: Context, variables: Variable[]) {    
+    const text = await Utils.applyVariables(condition.args.getString("text"), variables, context);
+    const amount = condition.args.getString("amount");
 
-    return text.length < arg;
+    const parsedAmount = Utils.evaluateNumber(await Utils.applyVariables(amount, variables, context));
+    if (parsedAmount === null) return condition.missingArg("amount");
+
+    return text.length < parsedAmount;
   }
 }
