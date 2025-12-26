@@ -1,10 +1,10 @@
-import { Action, ActionArgumentsValidator, ActionData, Context, IsValidMetaKey, Variable, Utils } from '@itsmybot';
+import { Action, ActionArgumentsValidator, ActionData, Context, IsValidMetaKey, Variable, Utils, IsNumberOrString } from '@itsmybot';
 import { IsDefined, IsString, Validate } from 'class-validator';
 
 class ArgumentsValidator extends ActionArgumentsValidator {
   @IsDefined()
-  @IsString({ each: true})
-  value: string | string[]
+  @Validate(IsNumberOrString)
+  value: string | number
 
   @IsDefined()
   @IsString()
