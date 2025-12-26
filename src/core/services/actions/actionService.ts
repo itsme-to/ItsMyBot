@@ -44,10 +44,10 @@ export default class ActionService extends Service{
   }
 
   async triggerAction(script: ActionData, context: Context, variables: Variable[] = []) {
-    if (!script.id) return script.logger.error("No action ID found in script");
+    if (!script.id) return script.logError("No action ID found in script");
 
     const actionInstance = this.actions.get(script.id);
-    if (!actionInstance) return script.logger.warn(`No action found for ID: ${script.id}`);
+    if (!actionInstance) return script.logError(`No action found for ID: ${script.id}`);
 
     await actionInstance.trigger(script, context, variables);
   }
