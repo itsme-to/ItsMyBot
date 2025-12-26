@@ -204,12 +204,7 @@ export default class InteractionService extends Service {
     if (!update) return;
     
     try {
-      const primaryGuildCommands = commandsToUpdate.filter(cmd => cmd.public === false);
-      const guild = await this.manager.client.guilds.fetch(this.manager.primaryGuildId);
-      if (primaryGuildCommands && guild) await guild.commands.set(primaryGuildCommands);
-
-      const publicCommands = commandsToUpdate.filter(cmd => cmd.public === true);
-      if (publicCommands) await this.manager.client.application?.commands.set(publicCommands);
+      if (commandsToUpdate) await this.manager.client.application.commands.set(commandsToUpdate, this.manager.primaryGuildId);
     } catch (error: any) {
       this.manager.logger.error(`Error syncing commands to Discord: ${error.message}`, error);
     }
@@ -217,17 +212,11 @@ export default class InteractionService extends Service {
 
   public async updateDiscordCommand(command: Command<Addon | undefined> | ContextMenu<Addon | undefined>) {
     try {
-      if (command.data.public) {
-        const discordCommand = await this.manager.client.application.commands.fetch().then(cmds => cmds.find(cmd => cmd.name === command.data.name));
+      const guild = await this.manager.client.guilds.fetch(this.manager.primaryGuildId);
+      if (guild) {
+        const discordCommand = await guild.commands.fetch().then(cmds => cmds.find(cmd => cmd.name === command.data.name));
         if (!discordCommand) return;
-        await this.manager.client.application?.commands.edit(discordCommand.id, command.data);
-      } else {
-        const guild = await this.manager.client.guilds.fetch(this.manager.primaryGuildId);
-        if (guild) {
-          const discordCommand = await guild.commands.fetch().then(cmds => cmds.find(cmd => cmd.name === command.data.name));
-          if (!discordCommand) return;
-          await guild.commands.edit(discordCommand.id, command.data);
-        }
+        await guild.commands.edit(discordCommand.id, command.data);
       }
     } catch (error: any) {
       this.manager.logger.error(`Error updating command '${command.data.name}': ${error.message}`, error);
@@ -236,13 +225,9 @@ export default class InteractionService extends Service {
 
   public async addDiscordCommand(command: Command<Addon | undefined> | ContextMenu<Addon | undefined>) {    
     try {
-      if (command.data.public) {
-        await this.manager.client.application?.commands.create(command.data);
-      } else {
-        const guild = await this.manager.client.guilds.fetch(this.manager.primaryGuildId);
-        if (guild) {
-          await guild.commands.create(command.data);
-        }
+      const guild = await this.manager.client.guilds.fetch(this.manager.primaryGuildId);
+      if (guild) {
+        await guild.commands.create(command.data);
       }
     } catch (error: any) {
       this.manager.logger.error(`Error adding command '${command.data.name}': ${error.message}`, error);
@@ -251,19 +236,12 @@ export default class InteractionService extends Service {
 
   public async removeDiscordCommand(command: Command<Addon | undefined> | ContextMenu<Addon | undefined>) {
     try {
-      if (command.data.public) {
-        const discordCommand = await this.manager.client.application.commands.fetch().then(cmds => cmds.find(cmd => cmd.name === command.data.name));
+      const guild = await this.manager.client.guilds.fetch(this.manager.primaryGuildId);
+      if (guild) {
+        const discordCommand = await guild.commands.fetch().then(cmds => cmds.find(cmd => cmd.name === command.data.name));
         if (!discordCommand) return;
 
-        await this.manager.client.application?.commands.delete(discordCommand.id);
-      } else {
-        const guild = await this.manager.client.guilds.fetch(this.manager.primaryGuildId);
-        if (guild) {
-          const discordCommand = await guild.commands.fetch().then(cmds => cmds.find(cmd => cmd.name === command.data.name));
-          if (!discordCommand) return;
-
-          await guild.commands.delete(discordCommand.id);
-        }
+        await guild.commands.delete(discordCommand.id);
       }
     } catch (error: any) {
       this.manager.logger.error(`Error removing command '${command.data.name}': ${error.message}`, error);

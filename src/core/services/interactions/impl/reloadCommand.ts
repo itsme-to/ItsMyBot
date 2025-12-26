@@ -5,7 +5,6 @@ export default class ReloadCommand extends Command {
   build() {
     return new CommandBuilder()
       .setName('reload')
-      .setPublic()
       .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
   }
 

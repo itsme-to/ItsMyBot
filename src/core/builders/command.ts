@@ -180,11 +180,4 @@ export class CommandBuilder extends SlashCommandBuilder {
   }
 }
 
-export class ContextMenuBuilder extends ContextMenuCommandBuilder {
-  public: boolean = false;
-
-  setPublic() {
-    this.public = true;
-    return this;
-  }
-}
+export class ContextMenuBuilder extends ContextMenuCommandBuilder { }

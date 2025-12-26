@@ -8,7 +8,6 @@ export default class HelloWorldCommand extends Command<ExampleAddon> {
     return new CommandBuilder()
       .setName('commission')
       .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
-      .setPublic()
       .addSubcommand(subcommand =>
         subcommand
           .setName('create')
