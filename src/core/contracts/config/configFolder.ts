@@ -41,7 +41,7 @@ export class ConfigFolder {
     if (!await Utils.fileExists(this.absoluteFolderPath)) {
       this.logger.warn(`Config folder not found at ${this.folderPath}, creating one`);
       await fs.mkdir(this.absoluteFolderPath, { recursive: true });
-      await fs.cp(this.defaultFolderPath, this.absoluteFolderPath, { recursive: true, force: true, filter: (src) => src.endsWith('.yml') });
+      await fs.cp(this.defaultFolderPath, this.absoluteFolderPath, { recursive: true, force: true });
     }
 
     await this.loadFiles(configClass);

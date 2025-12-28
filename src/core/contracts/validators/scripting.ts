@@ -135,7 +135,7 @@ export class PermissionOverwrites {
   deny: string[]
 }
 
-export class ActionArgumentsValidator extends MessageValidator{
+export class ActionArgumentsValidator extends MessageValidator {
   @IsOptional()
   @IsInt()
   @IsPositive()
