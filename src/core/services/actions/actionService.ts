@@ -1,8 +1,8 @@
 import { Collection } from 'discord.js';
 import { Action, ActionData, Manager, Addon, Context, Service, Variable, Config } from '@itsmybot';
-import { sync } from 'glob';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
+import { glob } from 'fs/promises';
 
 /**
  * Service to manage actions in the bot.
@@ -22,14 +22,14 @@ export default class ActionService extends Service{
   }
 
   async registerFromDir(actionsDir: string, addon: Addon | undefined = undefined) {
-    const actionFiles = sync(join(actionsDir, '**', '*.js').replace(/\\/g, '/'));
+    const actionFiles = await Array.fromAsync(glob(join(actionsDir, '**', '*.js').replace(/\\/g, '/')));
 
-    for (const filePath of actionFiles) {
+    await Promise.all(actionFiles.map(async (filePath) => {
       const actionPath = new URL('file://' + filePath.replace(/\\/g, '/')).href;
       const { default: action } = await import(actionPath);
 
       this.registerAction(new action(this.manager, addon));
-    };
+    }));
   }
 
   registerAction(action: Action<Addon | undefined>) {

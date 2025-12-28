@@ -1,10 +1,10 @@
 import { join, dirname } from 'path';
-import { sync } from 'glob';
 import { fileURLToPath } from 'url';
 
 import { AutocompleteInteraction, Collection, RepliableInteraction } from 'discord.js';
 import { Manager, Command, ContextMenu, Addon, Service, Button, SelectMenu, Modal, ResolvableInteraction, CommandBuilder, ContextMenuBuilder } from '@itsmybot';
 import { CommandModel } from './command.model.js';
+import { glob } from 'fs/promises';
 
 /**
  * Service to manage interactions in the bot.
@@ -52,9 +52,9 @@ export default class InteractionService extends Service {
   }
 
   async registerFromDir(interactionDir: string, addon: Addon | null = null) {
-    const interactionFiles = sync(join(interactionDir, '**', '*.js').replace(/\\/g, '/'));
+    const interactionFiles = await Array.fromAsync(glob(join(interactionDir, '**', '*.js').replace(/\\/g, '/')));
 
-    for (const filePath of interactionFiles) {
+    await Promise.all(interactionFiles.map(async (filePath) => {
       const commandPath = new URL('file://' + filePath.replace(/\\/g, '/')).href;
       const { default: CommandInstance } = await import(commandPath);
       const instance = new CommandInstance(this.manager, addon);
@@ -78,7 +78,7 @@ export default class InteractionService extends Service {
         default:
           this.manager.logger.warn(`Unknown interaction type for instance from file: ${filePath}`);
       }
-    };
+    }));
   }
 
   registerCommand(command: Command<Addon | undefined> | ContextMenu<Addon | undefined>) {

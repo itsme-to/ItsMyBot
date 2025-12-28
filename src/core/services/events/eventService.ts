@@ -1,9 +1,9 @@
 import { join, dirname } from 'path';
-import { sync } from 'glob';
 import { fileURLToPath } from 'url';
 import { Manager, Event, Addon } from '@itsmybot';
 import { Collection } from 'discord.js';
 import { Service } from '../../contracts/index.js';
+import { glob } from 'fs/promises';
 
 /**
  * Service to manage events in the bot.
@@ -22,14 +22,14 @@ export default class EventService extends Service {
   }
 
   async registerFromDir(eventsDir: string, addon: Addon | undefined = undefined) {
-    const eventFiles = sync(join(eventsDir, '**', '*.js').replace(/\\/g, '/'));
+    const eventFiles = await Array.fromAsync(glob(join(eventsDir, '**', '*.js').replace(/\\/g, '/')));
 
-    for (const filePath of eventFiles) {
+    await Promise.all(eventFiles.map(async (filePath) => {
       const eventPath = new URL('file://' + filePath.replace(/\\/g, '/')).href;
       const { default: event } = await import(eventPath);
 
       this.registerEvent(new event(this.manager, addon));
-    };
+    }));
   }
 
   registerEvent(event: Event<Addon | undefined>) {

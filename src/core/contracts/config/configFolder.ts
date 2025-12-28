@@ -1,7 +1,6 @@
 import { Logger, Utils } from '@itsmybot';
 import * as fs from 'fs/promises';
 import { join, resolve } from 'path';
-import { glob } from 'glob';
 import { Collection } from 'discord.js';
 import { ConfigFile } from './configFile.js';
 
@@ -53,10 +52,11 @@ export class ConfigFolder {
    */
   private async loadFiles(configClass?: unknown) {
     // Find all .yml files in the config folder, ignoring those starting with '_'
-    const files = await glob('**/!(_)*.yml', { cwd: this.absoluteFolderPath, dot: true });
+    const files = await Array.fromAsync(fs.glob('**/*.yml', { cwd: this.absoluteFolderPath }));
 
     // Load each config file
     await Promise.all(files.map(async (file) => {
+      if (file.startsWith('_')) return;
       const destPath = join(this.folderPath, file);
       const id = file.slice(0, -4);
       const config = await new ConfigFile(this.logger, destPath, id).initialize(configClass);

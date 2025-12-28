@@ -1,8 +1,8 @@
 import { Collection } from 'discord.js';
 import { Condition, Addon, ConditionData, Manager, Context, Variable, Config, Service } from '@itsmybot';
-import { sync } from 'glob';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { glob } from 'fs/promises';
 
 /**
  * Service to manage conditions in the bot.
@@ -22,14 +22,14 @@ export default class ConditionService extends Service {
   }
 
   async registerFromDir(conditionsDir: string, addon: Addon | undefined = undefined) {
-    const conditionFiles = sync(join(conditionsDir, '**', '*.js').replace(/\\/g, '/'));
+    const conditionFiles = await Array.fromAsync(glob(join(conditionsDir, '**', '*.js').replace(/\\/g, '/')));
 
-    for (const filePath of conditionFiles) {
+    await Promise.all(conditionFiles.map(async (filePath) => {
       const conditionPath = new URL('file://' + filePath.replace(/\\/g, '/')).href;
       const { default: condition } = await import(conditionPath);
 
       this.registerCondition(new condition(this.manager, addon));
-    };
+    }));
   }
 
   registerCondition(condition: Condition<Addon | undefined>) {

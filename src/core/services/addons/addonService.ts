@@ -1,11 +1,9 @@
 
 import { join } from 'path';
-import { sync } from 'glob';
-import { promises as fs } from 'fs';
-
 import { Manager, Addon, Service, Logger } from '@itsmybot';
 import { Collection } from 'discord.js';
 import AddonModel from './addon.model.js';
+import { access, glob } from 'fs/promises';
 
 /**
  * Service to manage addons in the bot.
@@ -27,9 +25,10 @@ export default class AddonService extends Service {
 
     await AddonModel.sync({ alter: true });
 
-    const addonFolders = sync("*/", { cwd: this.addonsDir, dot: false });
-    for (const addonFolder of addonFolders) {
-      if (addonFolder.startsWith("_")) continue;
+    const addonFolders = await Array.fromAsync(glob("*/", { cwd: this.addonsDir }));
+    
+    await Promise.all(addonFolders.map(async (addonFolder) => {
+      if (addonFolder.startsWith("_")) return;
 
       const logger = new Logger(addonFolder);
       try {
@@ -37,7 +36,7 @@ export default class AddonService extends Service {
       } catch (error: any) {
         logger.error("Error registering addon:", error);
       }
-    }
+    }));
 
     this.manager.logger.info("Addon service initialized.");
   }
@@ -45,7 +44,7 @@ export default class AddonService extends Service {
   async registerAddon(name: string) {
     const addonClassPath = join(this.addonsDir, name, 'index.js');
     try {
-      await fs.access(addonClassPath);
+      await access(addonClassPath);
     } catch {
       throw new Error(`Addon ${name} is missing the index.js file.`);
     }

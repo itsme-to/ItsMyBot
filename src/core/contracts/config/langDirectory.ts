@@ -1,14 +1,12 @@
 import { manager, Logger, Utils, Variable, Context, MessageOutput } from "@itsmybot";
 import { join, resolve } from 'path';
 import * as fs from 'fs/promises';
-import { glob } from 'glob';
 import { parse } from 'yaml';
 
 type LanguageData = Map<string, string>;
 type Languages = Map<string, LanguageData>;
 
 export class LangDirectory {
-
   langs: Languages = new Map();
   referenceLang: string;
   logger: Logger;
@@ -45,7 +43,7 @@ export class LangDirectory {
 
     const referenceLangData = await this.loadLangFile(join(this.defaultFolderPath, this.referenceLang + '.yml'));
 
-    const defaultFiles = await glob('*.yml', { cwd: this.defaultFolderPath });
+    const defaultFiles = await Array.fromAsync(fs.glob('*.yml', { cwd: this.defaultFolderPath }));
     const defaultLangs: Languages = new Map();
 
     await Promise.all(defaultFiles.map(async (file) => {
@@ -70,7 +68,7 @@ export class LangDirectory {
       defaultLangs.set(langCode, mergedLangData);
     }));
 
-    const files = await glob('*.yml', { cwd: this.absoluteFolderPath });
+    const files = await Array.fromAsync(fs.glob('*.yml', { cwd: this.absoluteFolderPath }));
 
     await Promise.all(files.map(async (file) => {
       const langCode = file.replace('.yml', '');

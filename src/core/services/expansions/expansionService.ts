@@ -1,8 +1,8 @@
 import { Collection } from 'discord.js';
 import { Manager, Expansion, Addon, Context, Service } from '@itsmybot';
-import { sync } from 'glob';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { glob } from 'fs/promises';
 
 /**
  * Service to manage expansions in the bot.
@@ -22,14 +22,14 @@ export default class ExpansionService extends Service{
   }
 
   async registerFromDir(expansionsDir: string, addon: Addon | undefined = undefined) {
-    const expansionFiles = sync(join(expansionsDir, '**', '*.js').replace(/\\/g, '/'));
+    const expansionFiles = await Array.fromAsync(glob(join(expansionsDir, '**', '*.js').replace(/\\/g, '/')));
 
-    for (const filePath of expansionFiles) {
+    await Promise.all(expansionFiles.map(async (filePath) => {
       const expansionPath = new URL('file://' + filePath.replace(/\\/g, '/')).href;
       const { default: expansion } = await import(expansionPath);
 
       this.registerExpansion(new expansion(this.manager, addon));
-    };
+    }));
   }
 
   registerExpansion(expansion: Expansion<Addon | undefined>) {

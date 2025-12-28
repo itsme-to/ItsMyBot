@@ -40,7 +40,6 @@
     "class-validator": "^0.14.1",
     "discord.js": "^14.24.0",
     "filtrex": "^3.1.0",
-    "glob": "^11.0.1",
     "jsonwebtoken": "^9.0.2",
     "mariadb": "^3.4.0",
     "mysql2": "^3.12.0",
