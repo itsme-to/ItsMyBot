@@ -11,7 +11,7 @@ export default class MessageUpdateEvent extends Event {
     if (!user) return
 
     message.content = Utils.blockPlaceholders(message.content);
-    oldMessage.content = Utils.blockPlaceholders(message.content);
+    oldMessage.content = Utils.blockPlaceholders(oldMessage.content);
 
     const context: Context = {
       message: message,
