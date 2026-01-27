@@ -27,16 +27,16 @@ export default class AddonService extends Service {
 
     const addonFolders = await Array.fromAsync(glob("*/", { cwd: this.addonsDir }));
     
-    await Promise.all(addonFolders.map(async (addonFolder) => {
-      if (addonFolder.startsWith("_")) return;
+    for (const addon of addonFolders) {
+      if (addon.startsWith("_")) continue;
 
-      const logger = new Logger(addonFolder);
+      const logger = new Logger(addon);
       try {
-        await this.registerAddon(addonFolder);
+        await this.registerAddon(addon.replace(/\/$/, ''));
       } catch (error: any) {
         logger.error("Error registering addon:", error);
       }
-    }));
+    }
 
     this.manager.logger.info("Addon service initialized.");
   }
@@ -55,7 +55,7 @@ export default class AddonService extends Service {
 
     if (this.addons.has(addon.name)) {
       throw new Error(`Addon ${addon.name} already exists.`);
-    }
+    }  
 
     const [addonData] = await AddonModel.findOrCreate({ where: { name: addon.name } });
     if (!addonData.enabled) {
