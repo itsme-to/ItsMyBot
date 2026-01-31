@@ -31,6 +31,8 @@ export class Logger {
     for (const item of text) {
       if (typeof item === 'string') {
         messageParts.push(item);
+      } else if (Array.isArray(item)) {
+        messageParts.push(...item);
       } else {
         errors.push(item);
       }

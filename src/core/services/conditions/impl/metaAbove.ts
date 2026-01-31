@@ -1,4 +1,4 @@
-import { Condition, ConditionData, Context, Variable, ConditionArgumentValidator, IsValidMetaKey, IsNumberMeta, Utils } from '@itsmybot';
+import { Condition, ConditionData, Context, Variable, ConditionArgumentValidator, IsValidMetaKey, IsNumberMeta, Utils, IsNumberOrString } from '@itsmybot';
 import { IsDefined, IsString, Validate } from 'class-validator';
 
 class ArgumentsValidator extends ConditionArgumentValidator {
@@ -9,8 +9,8 @@ class ArgumentsValidator extends ConditionArgumentValidator {
   key: string;
 
   @IsDefined()
-  @IsString()
-  value: string;
+  @Validate(IsNumberOrString)
+  value: string | number;
 }
 
 export default class MetaAboveCondition extends Condition {

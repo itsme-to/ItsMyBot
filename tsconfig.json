@@ -13,7 +13,7 @@
     "skipLibCheck": true,
     "strict": true,
     "lib": [
-      "ES2023"
+      "ESNext"
     ],
     "baseUrl": "./src/",
     "paths": {

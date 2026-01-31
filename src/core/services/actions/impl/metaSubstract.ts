@@ -1,10 +1,10 @@
-import { Action, ActionArgumentsValidator, ActionData, Context, IsNumberMeta, IsValidMetaKey, Variable, Utils } from '@itsmybot';
+import { Action, ActionArgumentsValidator, ActionData, Context, IsNumberMeta, IsValidMetaKey, Variable, Utils, IsNumberOrString } from '@itsmybot';
 import { IsDefined, IsString, Validate } from 'class-validator';
 
 class ArgumentsValidator extends ActionArgumentsValidator {
   @IsDefined()
-  @IsString({ each: true})
-  value: string | string[]
+  @Validate(IsNumberOrString)
+  value: string | number
 
   @IsDefined()
   @IsString()
@@ -21,7 +21,7 @@ export default class MetaSubtractAction extends Action {
     const key = script.args.getString("key");
     const value = await Utils.applyVariables(script.args.getString("value", true), variables, context);
     const parsedValue = Utils.evaluateNumber(value);
-    if (!parsedValue) return script.missingArg("value", context);
+    if (parsedValue === null) return script.missingArg("value", context);
 
     const meta = this.manager.services.engine.metaHandler.metas.get(key)!;
 

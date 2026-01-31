@@ -6,7 +6,6 @@ export default class AddonCommand extends Command {
   build() {
     return new CommandBuilder()
       .setName('addons')
-      .setPublic()
       .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
       .addSubcommand(subcommand =>
         subcommand

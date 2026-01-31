@@ -5,7 +5,6 @@ export default class ReloadCommand extends Command {
   build() {
     return new CommandBuilder()
       .setName('reload')
-      .setPublic()
       .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
   }
 
@@ -24,8 +23,8 @@ export default class ReloadCommand extends Command {
     let error: unknown
 
     try {
-      await this.manager.services.engine.loadScripts();
       await this.manager.services.engine.metaHandler.loadMetas();
+      await this.manager.services.engine.loadScripts();
       await this.manager.services.engine.registerCustomCommands();
 
       await Promise.all(this.manager.addons.map(async addon => {

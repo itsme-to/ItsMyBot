@@ -1,8 +1,8 @@
 import { Manager, ConfigFile, ConfigFolder, Logger, LangDirectory } from '@itsmybot';
 import { join } from 'path';
-import { sync } from 'glob';
 import { Collection } from 'discord.js';
 import { existsSync, mkdirSync, readdirSync, statSync } from 'fs';
+import { glob } from 'fs/promises';
 
 export abstract class Addon {
   manager: Manager
@@ -68,15 +68,14 @@ export abstract class Addon {
       conditions: (dir) => this.manager.services.condition.registerFromDir(dir, this),
     };
   
-    for (const dirName of directories) {
+    await Promise.all(directories.map(async (dirName) => {
       const dir = join(basePath, dirName);
-      if (!sync(`${dir}/*`).length) continue;
 
       const handler = moduleHandlers[dirName];
       if (handler) {
         await handler(dir);
       }
-    }
+    }));
   }
 
   public unregisterModules() {
@@ -89,20 +88,19 @@ export abstract class Addon {
 
   public async registerInteractions() {
     const interactionDir = join(this.path, 'interactions');
-    if (!sync(`${interactionDir}/*`).length) return;
     await this.manager.services.interaction.registerFromDir(interactionDir, this);
   }
 
   private async loadDatabaseModels() {
-    const models = sync(join(this.path, 'models', '*.js').replace(/\\/g, '/'));
-
-    for (const model of models) {
+    const models = await Array.fromAsync(glob(join(this.path, 'models', '*.js').replace(/\\/g, '/')));
+    
+    await Promise.all(models.map(async (model) => {
       const modelUrl = new URL('file://' + model.replace(/\\/g, '/')).href;
       const { default: Model } = await import(modelUrl);
 
       this.manager.database.addModels([Model]);
       await Model.sync({ alter: true });
-    }
+    }));
   }
 
   async createConfig(configFilePath: string, config?: unknown): Promise<ConfigFile> {

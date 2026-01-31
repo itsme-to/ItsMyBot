@@ -73,6 +73,17 @@ export class IsBooleanOrString implements ValidatorConstraintInterface {
   }
 }
 
+@ValidatorConstraint({ name: 'isNumberOrString', async: false })
+export class IsNumberOrString implements ValidatorConstraintInterface {
+  validate(value: any, args: ValidationArguments) {
+    return typeof value === 'number' || typeof value === 'string';
+  }
+
+  defaultMessage(args: ValidationArguments) {
+    return 'This is not a valid type. Please use either a number or a string.';
+  }
+}
+
 @ValidatorConstraint({ name: 'isValidMetaKey', async: false })
 export class IsValidMetaKey implements ValidatorConstraintInterface {
   validate(value: any, args: ValidationArguments) {

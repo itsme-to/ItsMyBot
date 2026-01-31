@@ -1,23 +1,27 @@
 import { Condition, ConditionArgumentValidator, ConditionData, Context, IsNumberOrString, Utils, Variable } from '@itsmybot';
-import { IsDefined, Validate } from 'class-validator';
+import { IsDefined, IsString, Validate } from 'class-validator';
 
 class ArgumentsValidator extends ConditionArgumentValidator {
   @IsDefined()
+  @IsString()
+  text: string
+
+  @IsDefined()
   @Validate(IsNumberOrString)
-  amount: number
+  amount: number | string
 }
 
-export default class MemberCountBelowCondition extends Condition {
-  id = "memberCountBelow";
+export default class TextLengthAboveCondition extends Condition {
+  id = "textLengthAbove";
   argumentsValidator = ArgumentsValidator;
 
   async isMet(condition: ConditionData, context: Context, variables: Variable[]) {
-    if (!context.guild) return condition.missingContext("guild");
+    const text = await Utils.applyVariables(condition.args.getString("text"), variables, context);
     const amount = condition.args.getString("amount");
 
     const parsedAmount = Utils.evaluateNumber(await Utils.applyVariables(amount, variables, context));
     if (parsedAmount === null) return condition.missingArg("amount");
 
-    return context.guild.memberCount < parsedAmount;
+    return text.length > parsedAmount;
   }
 }

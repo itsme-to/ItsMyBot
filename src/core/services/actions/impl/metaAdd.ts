@@ -1,10 +1,10 @@
-import { Action, ActionArgumentsValidator, ActionData, Context, IsNumberMeta, IsValidMetaKey, Variable, Utils } from '@itsmybot';
+import { Action, ActionArgumentsValidator, ActionData, Context, IsNumberMeta, IsValidMetaKey, Variable, Utils, IsNumberOrString } from '@itsmybot';
 import { IsDefined, IsString, Validate } from 'class-validator';
 
 class ArgumentsValidator extends ActionArgumentsValidator {
   @IsDefined()
-  @IsString({ each: true})
-  value: string | string[]
+  @Validate(IsNumberOrString)
+  value: string | number
 
   @IsDefined()
   @IsString()
@@ -19,12 +19,10 @@ export default class MetaAddAction extends Action {
 
   async onTrigger(script: ActionData, context: Context, variables: Variable[]) {
     const key = script.args.getString("key");
-    let value = script.args.getString("value");
+    const value = script.args.getString("value");
 
-    value = await Utils.applyVariables(value, variables, context);
-    const parsedValue = Utils.evaluateNumber(value)
-
-    if (!parsedValue) return script.missingArg("value", context);
+    const parsedValue = Utils.evaluateNumber(await Utils.applyVariables(value, variables, context))
+    if (parsedValue === null) return script.missingArg("value", context);
 
     const meta = this.manager.services.engine.metaHandler.metas.get(key)!;
 

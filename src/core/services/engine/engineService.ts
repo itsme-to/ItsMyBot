@@ -36,7 +36,7 @@ export default class EngineService extends Service {
     }
   }
 
-  async handleCustomCommand(id: string, interaction: ChatInputCommandInteraction<'cached'>, user: User) {
+  async handleCustomCommand(id: string, interaction: ChatInputCommandInteraction<'cached'>, user: User, config: ConfigFile) {
     const customCommand = this.customCommands.get(id);
     if (!customCommand) return this.manager.logger.error(`Custom command ${id} not found`);
 
@@ -50,14 +50,27 @@ export default class EngineService extends Service {
 
     const variables: Variable[] = []
 
-    for (const option of interaction.options.data) {
+    const options = config.getSubsectionsOrNull("options") || []
+
+    await Promise.all(options.map(async (optionConfig) => {
+      const option = interaction.options.get(optionConfig.getString("name"));
+
+      variables.push({ name: `option_${optionConfig.getString("name")}_is_provided`, value: option ? true : false });
+      if (!option) return;
+
+      variables.push({ name: `option_${option.name}`, value: option.value });
+
+      const choice = optionConfig.getSubsectionsOrNull("choices")?.find(c => c.getString("value") === option.value?.toString());
+      if (choice) {
+        variables.push({ name: `option_${option.name}_choice_name`, value: choice.getString("name") });
+      }
+
       switch (true) {
-        case option.member != null || option.member != undefined: {
+        case option.member != undefined: {
           const targetUserM = await this.manager.services.user.findOrCreate(option.member)
           if (!targetUserM) break;
           variables.push(
-            ...Utils.userVariables(targetUserM, `option_${option.name}`),
-            { name: `option_${option.name}`, value: option.value }
+            ...Utils.userVariables(targetUserM, `option_${option.name}`)
           )
           break;
         }
@@ -66,31 +79,25 @@ export default class EngineService extends Service {
           const targetUser = await this.manager.services.user.findOrNull(option.user.id)
           if (!targetUser) break;
           variables.push(
-            ...Utils.userVariables(targetUser, `option_${option.name}`),
-            { name: `option_${option.name}`, value: option.value }
+            ...Utils.userVariables(targetUser, `option_${option.name}`)
           )
           break;
         }
 
-        case option.role != null || option.role != undefined:
+        case option.role != undefined:
           variables.push(
-            ...Utils.roleVariables(option.role, `option_${option.name}`),
-            { name: `option_${option.name}`, value: option.value }
+            ...Utils.roleVariables(option.role, `option_${option.name}`)
           )
           break;
 
-        case option.channel != null || option.channel != undefined:
+        case option.channel != undefined:
           variables.push(
-            ...Utils.channelVariables(option.channel, `option_${option.name}`),
-            { name: `option_${option.name}`, value: option.value }
+            ...Utils.channelVariables(option.channel, `option_${option.name}`)
           )
-          break;
-
-        case option.value != null || option.value != undefined:
-          variables.push({ name: `option_${option.name}`, value: option.value })
           break;
       }
-    }
+    }));
+
     customCommand.run(context, variables);
   }
 
@@ -166,7 +173,7 @@ export default class EngineService extends Service {
       }
 
       async execute(interaction: ChatInputCommandInteraction<'cached'>, user: User) {
-        this.manager.services.engine.handleCustomCommand(id, interaction, user);
+        this.manager.services.engine.handleCustomCommand(id, interaction, user, customCommand);
       }
     }
 

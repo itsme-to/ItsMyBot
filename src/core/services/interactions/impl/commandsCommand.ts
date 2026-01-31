@@ -7,7 +7,6 @@ export default class CommandsCommand extends Command {
     return new CommandBuilder()
       .setName('commands')
       .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
-      .setPublic()
       .addSubcommand(subcommand =>
         subcommand
           .setName('enable')

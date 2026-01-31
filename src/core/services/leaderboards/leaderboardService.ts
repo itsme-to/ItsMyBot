@@ -1,6 +1,6 @@
 import { Manager, Leaderboard, Command, Addon, Service, Utils, Pagination, CommandBuilder, MessageComponentBuilder } from '@itsmybot';
 import { ChatInputCommandInteraction, Collection, ContainerBuilder, TextDisplayBuilder } from 'discord.js';
-import { sync } from 'glob';
+import { glob } from 'fs/promises';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -21,14 +21,14 @@ export default class LeaderboardService extends Service{
   }
 
   async registerFromDir(leaderboardsDir: string, addon: Addon | undefined = undefined) {
-    const leaderboardFiles = sync(join(leaderboardsDir, '**', '*.js').replace(/\\/g, '/'));
+    const leaderboardFiles = await Array.fromAsync(glob(join(leaderboardsDir, '**', '*.js').replace(/\\/g, '/')));
 
-    for (const filePath of leaderboardFiles) {
+    await Promise.all(leaderboardFiles.map(async (filePath) => {
       const leaderboardPath = new URL('file://' + filePath.replace(/\\/g, '/')).href;
       const { default: leaderboard } = await import(leaderboardPath);
 
       this.registerLeaderboard(new leaderboard(this.manager, addon));
-    };
+    }));
   }
 
   registerLeaderboard(leaderboard: Leaderboard<Addon | undefined>) {

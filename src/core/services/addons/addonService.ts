@@ -1,11 +1,9 @@
 
 import { join } from 'path';
-import { sync } from 'glob';
-import { promises as fs } from 'fs';
-
 import { Manager, Addon, Service, Logger } from '@itsmybot';
 import { Collection } from 'discord.js';
 import AddonModel from './addon.model.js';
+import { access, glob } from 'fs/promises';
 
 /**
  * Service to manage addons in the bot.
@@ -27,13 +25,14 @@ export default class AddonService extends Service {
 
     await AddonModel.sync({ alter: true });
 
-    const addonFolders = sync("*/", { cwd: this.addonsDir, dot: false });
-    for (const addonFolder of addonFolders) {
-      if (addonFolder.startsWith("_")) continue;
+    const addonFolders = await Array.fromAsync(glob("*/", { cwd: this.addonsDir }));
+    
+    for (const addon of addonFolders) {
+      if (addon.startsWith("_")) continue;
 
-      const logger = new Logger(addonFolder);
+      const logger = new Logger(addon);
       try {
-        await this.registerAddon(addonFolder);
+        await this.registerAddon(addon.replace(/\/$/, ''));
       } catch (error: any) {
         logger.error("Error registering addon:", error);
       }
@@ -45,7 +44,7 @@ export default class AddonService extends Service {
   async registerAddon(name: string) {
     const addonClassPath = join(this.addonsDir, name, 'index.js');
     try {
-      await fs.access(addonClassPath);
+      await access(addonClassPath);
     } catch {
       throw new Error(`Addon ${name} is missing the index.js file.`);
     }
@@ -56,7 +55,7 @@ export default class AddonService extends Service {
 
     if (this.addons.has(addon.name)) {
       throw new Error(`Addon ${addon.name} already exists.`);
-    }
+    }  
 
     const [addonData] = await AddonModel.findOrCreate({ where: { name: addon.name } });
     if (!addonData.enabled) {

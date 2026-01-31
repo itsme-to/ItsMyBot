@@ -1,17 +1,16 @@
 import { Message } from 'discord.js';
 import { Event, Context, Events, Utils } from '@itsmybot';
 
-export default class MessageUpdateEvent extends Event {
-  name = Events.MessageUpdate;
+export default class MessageDeleteEvent extends Event {
+  name = Events.MessageDelete;
 
-  async execute(oldMessage: Message<true>, message: Message<true>) {
+  async execute(message: Message<true>) {
     if (!message.guild || message.guild.id !== this.manager.primaryGuildId) return;
     const user = message.member ? await this.manager.services.user.findOrCreate(message.member) : await this.manager.services.user.findOrNull(message.author.id);
 
-    if (!user) return
+    if (!user) return;
 
     message.content = Utils.blockPlaceholders(message.content);
-    oldMessage.content = Utils.blockPlaceholders(oldMessage.content);
 
     const context: Context = {
       message: message,
@@ -22,10 +21,6 @@ export default class MessageUpdateEvent extends Event {
       content: message.content || message.embeds[0]?.description || message.embeds[0]?.title || (message.embeds.length ? 'Embed' : undefined),
     };
 
-    const variables = [
-      { name: 'message_old_content', value: oldMessage.content || oldMessage.embeds[0]?.description || oldMessage.embeds[0]?.title || (oldMessage.embeds.length ? 'Embed' : undefined) }
-    ]
-
-    this.manager.services.engine.event.emit('messageUpdate', context, variables);
+    this.manager.services.engine.event.emit('messageDelete', context);
   }
 };

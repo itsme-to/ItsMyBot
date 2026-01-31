@@ -1,4 +1,4 @@
-import { Event, User, Context, Events } from '@itsmybot';
+import { Event, User, Context, Events, Variable } from '@itsmybot';
 import { ButtonInteraction } from 'discord.js';
 
 export default class ButtonClickEvent extends Event {
@@ -17,6 +17,8 @@ export default class ButtonClickEvent extends Event {
       message: interaction.message,
     };
 
-    this.manager.services.engine.event.emit('buttonClick', context);
+    const variables: Variable[] = [{ name: 'button_custom_id', value: interaction.customId }];
+
+    this.manager.services.engine.event.emit('buttonClick', context, variables);
   }
 };

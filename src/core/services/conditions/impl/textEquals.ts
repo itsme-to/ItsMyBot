@@ -1,4 +1,4 @@
-import { Condition, ConditionArgumentValidator, ConditionData, Context, Variable } from '@itsmybot';
+import { Condition, ConditionArgumentValidator, ConditionData, Context, Utils, Variable } from '@itsmybot';
 import { IsBoolean, IsDefined, IsOptional, IsString } from 'class-validator';
 
 class ArgumentsValidator extends ConditionArgumentValidator {
@@ -19,9 +19,9 @@ export default class TextEqualsCondition extends Condition {
   id = "textEquals";
   argumentsValidator = ArgumentsValidator;
 
-  isMet(condition: ConditionData, context: Context, variables: Variable[]) {
-    const input = condition.args.getString("input")
-    const output = condition.args.getStrings("output");
+  async isMet(condition: ConditionData, context: Context, variables: Variable[]) {
+    const input = await Utils.applyVariables(condition.args.getString("input"), variables, context);
+    const output = await Promise.all(condition.args.getStrings("output").map(async (text) => await Utils.applyVariables(text, variables, context)));
 
     const ignoreCase = condition.args.getBoolOrNull("ignore-case") ?? false;
 
