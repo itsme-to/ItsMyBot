@@ -194,7 +194,7 @@ export default class MetaCommand extends Command {
         await meta[subcommand](value); // dynamic call to .add() or .subtract()
         
         return interaction.reply(await this.manager.lang.buildMessage({
-          key: `messages.meta.${subcommand}`,
+          key: `meta.${subcommand}`,
           ephemeral: true,
           variables: [
             { name: "meta_key", value: key },
