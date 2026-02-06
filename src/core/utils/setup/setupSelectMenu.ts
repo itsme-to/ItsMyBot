@@ -14,10 +14,10 @@ export async function setupSelectMenu(settings: SelectMenuSettings) {
   const variables = settings.variables || [];
   const context = settings.context;
 
-  const customId = config.getString("custom-id");
+  const customId = await Utils.applyVariables(config.getString("custom-id"), variables, context);
   const disabled = config.getBoolOrNull("disabled") || false;
 
-  const placeholder = config.getStringOrNull("placeholder", true);
+  const placeholder = await Utils.applyVariables(config.getStringOrNull("placeholder", true), variables, context);
   const minSelect = config.getNumberOrNull("min-values")
   const maxSelect = config.getNumberOrNull("max-values") || 1;
   const options = config.getSubsectionsOrNull("options");
@@ -31,8 +31,7 @@ export async function setupSelectMenu(settings: SelectMenuSettings) {
     
   if (minSelect) selectMenu.setMinValues(minSelect);
 
-  const placeholderValue = await Utils.applyVariables(placeholder, variables, context);
-  if (placeholderValue) selectMenu.setPlaceholder(placeholderValue);
+  if (placeholder) selectMenu.setPlaceholder(placeholder);
 
   if (dataSource && template) {
     const data = context.data?.get(dataSource);
