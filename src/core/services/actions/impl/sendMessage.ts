@@ -1,8 +1,8 @@
-import { Action, ActionData, Context, FollowUpActionArgumentsValidator, Variable, Utils } from '@itsmybot';
+import { Action, ActionData, Context, Variable, Utils, FollowUpActionArgumentsValidatorWithMessage } from '@itsmybot';
 
 export default class SendMessageAction extends Action {
   id = "sendMessage";
-  argumentsValidator = FollowUpActionArgumentsValidator;
+  argumentsValidator = FollowUpActionArgumentsValidatorWithMessage;
 
   async onTrigger(script: ActionData, context: Context, variables: Variable[]) {
     if (!context.channel || !context.channel.isTextBased() || context.channel.isDMBased()) return script.missingContext("channel", context);

@@ -1,11 +1,19 @@
-import { Action, ActionData, Context, FollowUpActionArgumentsValidator, Variable, Utils } from '@itsmybot';
+import { Action, ActionData, Context, Variable, Utils, ActionArgumentsValidator, ActionValidator } from '@itsmybot';
+
+class ArgumentsValidator extends ActionArgumentsValidator {
+  actions: ActionValidator[]
+}
 
 export default class RandomAction extends Action {
   id = "randomAction";
-  argumentsValidator = FollowUpActionArgumentsValidator;
+  argumentsValidator = ArgumentsValidator;
 
   async onTrigger(script: ActionData, context: Context, variables: Variable[]) {
-    script.followUpActions = [Utils.getRandom(script.followUpActions)]
-    this.triggerFollowUpActions(script, context, variables);
+
+    const actions = this.manager.services.action.parseActions(script.args.getSubsections("actions"));
+
+    const action = Utils.getRandom(actions);
+
+    await action.run(context, variables); 
   }
 }

@@ -1,7 +1,7 @@
 
 import { Type } from 'class-transformer';
 import { IsString, IsInt, ValidateNested, IsOptional, ValidateIf, IsDefined, Max, Min, IsPositive, IsArray, IsBoolean, IsNumber, Validate } from 'class-validator';
-import { IsPermissionFlag, IsValidActionArgs, IsValidActionId, IsValidConditionArgs, IsValidConditionId, MessageValidator } from '@itsmybot';
+import { IsPermissionFlag, IsValidActionArgs, IsValidActionId, IsValidConditionArgs, IsValidConditionId, MessageValidator, ModalValidator } from '@itsmybot';
 
 export class ConditionArgumentValidator {
   @IsOptional()
@@ -135,41 +135,69 @@ export class PermissionOverwrites {
   deny: string[]
 }
 
-export class ActionArgumentsValidator extends MessageValidator {
-  @IsOptional()
-  @IsInt()
-  @IsPositive()
-  every: number
-
-  @IsOptional()
-  @IsInt()
-  @IsPositive()
-  cooldown: number
-
-  @IsOptional()
-  @IsInt()
-  @IsPositive()
-  delay: number
-
-  @IsOptional()
-  @IsInt()
-  @Min(0)
-  @Max(100)
-  chance: number
+class Bare {}
+class MessageBase extends MessageValidator {}
+class ModalBase extends ModalValidator {
+  @IsDefined()
+  @IsString()
+  customId: string;
 }
 
-export class FollowUpActionArgumentsValidator extends ActionArgumentsValidator {
-  @IsOptional()
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => ActionValidator)
-  actions: ActionValidator[]
+export class ActionArgumentsValidator extends applyActionArgumentFields(Bare) {}
 
-  @IsOptional()
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => ActionValidator)
-  'follow-up-actions': ActionValidator[]
+export class ActionArgumentsValidatorWithMessage extends applyActionArgumentFields(MessageBase) {}
+
+export class ActionArgumentsValidatorWithModal extends applyActionArgumentFields(ModalBase) {}
+
+export class FollowUpActionArgumentsValidator extends applyFollowUpFields(ActionArgumentsValidator) {}
+
+export class FollowUpActionArgumentsValidatorWithMessage extends applyFollowUpFields(ActionArgumentsValidatorWithMessage) {}
+
+export class FollowUpActionArgumentsValidatorWithModal extends applyFollowUpFields(ActionArgumentsValidatorWithModal) {}
+
+function applyActionArgumentFields<TBase extends new (...args: any[]) => {}>(Base: TBase) {
+  class Extended extends Base {
+    @IsOptional()
+    @IsInt()
+    @IsPositive()
+    every: number;
+
+    @IsOptional()
+    @IsInt()
+    @IsPositive()
+    cooldown: number;
+
+    @IsOptional()
+    @IsInt()
+    @IsPositive()
+    delay: number;
+
+    @IsOptional()
+    @IsInt()
+    @Min(0)
+    @Max(100)
+    chance: number;
+  };
+
+  return Extended;
+}
+
+function applyFollowUpFields<TBase extends new (...args: any[]) => {}>(Base: TBase) {
+  class Extended extends Base {
+    @IsOptional()
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => ActionValidator)
+    actions: ActionValidator[];
+
+    @IsOptional()
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => ActionValidator)
+    'follow-up-actions': ActionValidator[];
+  };
+
+  return Extended;
 }
 
 export class ActionValidator {
