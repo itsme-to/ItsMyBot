@@ -27,6 +27,8 @@ export default class RoleExpansion extends Expansion {
         return context.role.managed ? 'true' : 'false';
       case 'mentionable':
         return context.role.mentionable ? 'true' : 'false';
+      case 'member_count':
+        return context.role.members.size.toString();
     }
   }
 }
