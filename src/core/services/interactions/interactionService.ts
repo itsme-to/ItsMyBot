@@ -137,17 +137,15 @@ export default class InteractionService extends Service {
   }
 
   resolveInteraction(interaction: RepliableInteraction | AutocompleteInteraction): ResolvableInteraction | undefined {
+    if (interaction.isChatInputCommand() || interaction.isAutocomplete() || interaction.isContextMenuCommand()) {
+      return this.getCommand(interaction.commandName) || undefined;
+    }
+
     if (interaction.isButton()) {
       return this.getButton(interaction.customId) || undefined;
     }
     if (interaction.isAnySelectMenu()) {
       return this.getSelectMenu(interaction.customId) || undefined;
-    }
-    if (interaction.isChatInputCommand() || interaction.isAutocomplete()) {
-      return this.getCommand(interaction.commandName) || undefined;
-    }
-    if (interaction.isContextMenuCommand()) {
-      return this.getCommand(interaction.commandName) || undefined;
     }
     if (interaction.isModalSubmit()) {
       return this.getModal(interaction.customId) || undefined;
