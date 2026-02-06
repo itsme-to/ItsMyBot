@@ -6,6 +6,10 @@ export default class VoiceStateUpdateEvent extends Event {
     priority = 0;
 
     async execute(oldState: VoiceState, newState: VoiceState) {
+        if (oldState.channelId === newState.channelId) {
+            return;
+        }
+
         if (oldState.channel) {
             this.manager.client.emit(Events.VoiceLeave, oldState);
         }
