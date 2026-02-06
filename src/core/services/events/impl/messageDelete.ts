@@ -4,8 +4,10 @@ import { Event, Context, Events, Utils } from '@itsmybot';
 export default class MessageDeleteEvent extends Event {
   name = Events.MessageDelete;
 
-  async execute(message: Message<true>) {
+  async execute(message: Message) {
     if (!message.guild || message.guild.id !== this.manager.primaryGuildId) return;
+    if (!message.author) return;
+    
     const user = message.member ? await this.manager.services.user.findOrCreate(message.member) : await this.manager.services.user.findOrNull(message.author.id);
 
     if (!user) return;
