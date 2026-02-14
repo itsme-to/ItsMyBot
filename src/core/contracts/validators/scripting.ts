@@ -140,7 +140,7 @@ class MessageBase extends MessageValidator {}
 class ModalBase extends ModalValidator {
   @IsDefined()
   @IsString()
-  customId: string;
+  'custom-id': string;
 }
 
 export class ActionArgumentsValidator extends applyActionArgumentFields(Bare) {}
