@@ -112,6 +112,7 @@ export class Manager {
           host: dataConfigFile.getString('host'),
           dialect: dataConfigFile.getString('type') as 'mysql' | 'mariadb',
           logging: dataConfigFile.getBool('debug'),
+          port: dataConfigFile.getNumber('port'),
           dialectOptions: {
             connectTimeout: dataConfigFile.getNumber('connect-timeout'),
           },
