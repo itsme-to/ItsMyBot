@@ -1,5 +1,5 @@
 import { Op } from 'sequelize';
-import { User, Leaderboard, Utils } from '@itsmybot';
+import { User, Leaderboard, Variable, Utils, LeaderboardEntry } from '@itsmybot';
 
 export default class MessagesLeaderboard extends Leaderboard {
   name = "messages"
@@ -16,17 +16,20 @@ export default class MessagesLeaderboard extends Leaderboard {
       }
     });
 
-    const messageFormat = this.manager.lang.getString("leaderboard.messages-format")
-
     const formattedData = data.map((user, index) => {
-      const variables = [
-        { name: "position", value: index + 1 },
-        ...Utils.userVariables(user, 'position_user')
-      ];
-
-      return Utils.applyVariables(messageFormat, variables, { user: user })
+      return { position: index + 1, userId: user.id, value: user.messages };
     })
 
-    return Promise.all(formattedData)
+    return formattedData
+  }
+
+  async formatValue(entry: LeaderboardEntry) {
+    const variables: Variable[] = [
+      { name: "value", value: entry.value }
+    ];
+
+    const format = this.manager.lang.getString('leaderboard.value.messages');
+
+    return Utils.applyVariables(format, variables);
   }
 }
