@@ -15,6 +15,10 @@ class ArgumentsValidator extends FollowUpActionArgumentsValidatorWithMessage {
   @IsOptional()
   @IsBoolean()
   private: boolean
+
+  @IsOptional()
+  @IsString({ each: true })
+  tags: string | string[]
 }
 
 export default class CreateThreadAction extends Action {
