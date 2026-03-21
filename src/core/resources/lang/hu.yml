@@ -82,9 +82,11 @@ pagination:
   previous-page: Előző
 
 leaderboard:
-  messages-format: "`[[position]].` [[position_user_mention]] • **[[position_user_messages]]** üzenet küldve"
   title: "### 🏆 Ranglista – [[leaderboard_name]]"
   footer: Oldal [[pagination_current_page]]/[[pagination_total_pages]]
+  entry: "`[[position]].` [[user_mention]] • [[value]]"
+  value:
+    messages: "**[[value]]** elküldött üzenetek"
 
 addons:
   title: Az alábbiakban található a rendelkezésre álló bővítmények listája.

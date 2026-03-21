@@ -82,9 +82,11 @@ pagination:
   previous-page: Önceki
 
 leaderboard:
-  messages-format: "`[[position]].` [[position_user_mention]] • **[[position_user_messages]]** gönderilen mesaj"
   title: "### 🏆 Liderlik Tablosu – [[leaderboard_name]]"
   footer: Sayfa [[pagination_current_page]]/[[pagination_total_pages]]
+  entry: "`[[position]].` [[user_mention]] • [[value]]"
+  value:
+    messages: "**[[value]]** gönderilen mesajlar"
 
 addons:
   title: Aşağıda mevcut eklentilerin listesi bulunmaktadır.
