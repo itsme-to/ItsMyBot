@@ -236,3 +236,15 @@ export class IsValidConditionArgs implements ValidatorConstraintInterface {
     return `Invalid condition arguments for condition ${object?.id ?? '(unknown)'}:`;
   }
 }
+
+@ValidatorConstraint({ name: 'isNumberAndUserMeta', async: false })
+export class IsNumberAndUserMeta implements ValidatorConstraintInterface {
+  validate(value: any, args: ValidationArguments) {
+    const config = args.object as any;
+    return config.type === 'number' && (config.mode === 'user' || config.mode === 'channel');
+  }
+
+  defaultMessage(validationArguments?: ValidationArguments): string {
+    return `The leaderboard configuration is only valid for metas of type number and mode user or channel.`;
+  }
+}

@@ -1,4 +1,4 @@
-import { Manager, MetaData, Service, ConfigFolder, Context } from '@itsmybot';
+import { Manager, MetaData, Service, ConfigFolder, Context, Config, Leaderboard, Utils, manager, Variable, LeaderboardEntry } from '@itsmybot';
 import MetaConfig from '../../../resources/scripting/meta.js';
 
 interface Meta {
@@ -40,17 +40,62 @@ export default class MetaHandler extends Service {
     const metas = await new ConfigFolder(this.manager.logger, 'scripting/metas', 'build/core/resources/scripting/metas').initialize(MetaConfig);
     for (const filePath of metas) {
       for (const config of filePath[1].getSubsections('metas')) {
-        this.registerMeta(
-          config.getString("key"),
-          config.getString("mode") as MetaMode,
-          config.getString("type") as MetaType,
-          config.getStringOrNull("default")
-        );
+        this.registerMeta(config);
       }
     }
   }
 
-  async registerMeta(key: string, mode: MetaMode, type: MetaType, defaultValue?: string) {
+  async registerMeta(config: Config) {
+    const key = config.getString("key");
+    const mode = config.getString("mode") as MetaMode;
+    const type = config.getString("type") as MetaType;
+    let defaultValue = config.getStringOrNull("default");
+
+    const leaderboardConfig = config.getSubsectionOrNull("leaderboard");
+    if (leaderboardConfig && type === MetaType.NUMBER && mode === MetaMode.USER) {
+      const enabled = leaderboardConfig.getBool("enabled");
+      if (enabled) {
+        const name = leaderboardConfig.getString("name");
+        const description = leaderboardConfig.getString("description");
+        const format = leaderboardConfig.getStringOrNull("format")
+        
+        class LeaderboardMeta extends Leaderboard {
+          name = name;
+          description = description;
+        
+          async getData() {
+            const data = await MetaData.findAll({
+              where: {
+                key,
+                mode: mode
+              },
+              order: [['value', 'DESC']]
+            });
+        
+            const formattedData = data.map((metaData, index) => {
+              return { position: index + 1, userId: metaData.scopeId, value: parseFloat(metaData.value) };
+            });
+        
+            return formattedData;
+          }
+
+          formatValue(entry: LeaderboardEntry) {
+            if (!format) return entry.value.toString();
+
+            const variables: Variable[] = [
+              { name: "value", value: entry.value }
+            ];
+
+            return Utils.applyVariables(format, variables);
+            
+          }
+        }
+
+        this.manager.services.leaderboard.registerLeaderboard(new LeaderboardMeta(manager));
+      }
+    }
+
+
     if (this.metas.has(key)) {
       this.manager.logger.warn(`Meta with key ${key} is already registered.`);
       return;
