@@ -82,9 +82,11 @@ pagination:
   previous-page: Vorige
 
 leaderboard:
-  messages-format: "`[[position]].` [[position_user_mention]] • **[[position_user_messages]]** berichten verzonden"
   title: "### 🏆 Ranglijst – [[leaderboard_name]]"
   footer: Pagina [[pagination_current_page]]/[[pagination_total_pages]]
+  entry: "`[[position]].` [[user_mention]] • [[value]]"
+  value:
+    messages: "**[[value]]** berichten verzonden"
 
 addons:
   title: Zie hieronder de lijst met beschikbare addons.

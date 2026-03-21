@@ -1,4 +1,4 @@
-import { Manager, Leaderboard, Command, Addon, Service, Utils, Pagination, CommandBuilder, MessageComponentBuilder } from '@itsmybot';
+import { Manager, Leaderboard, Command, Addon, Service, Utils, Pagination, CommandBuilder, MessageComponentBuilder, Variable, LeaderboardEntry } from '@itsmybot';
 import { ChatInputCommandInteraction, Collection, ContainerBuilder, TextDisplayBuilder } from 'discord.js';
 import { glob } from 'fs/promises';
 import { join, dirname } from 'path';
@@ -9,10 +9,12 @@ import { fileURLToPath } from 'url';
  */
 export default class LeaderboardService extends Service{
   leaderboards: Collection<string, Leaderboard<Addon | undefined>>;
+  cachedData: Map<string, { data: LeaderboardEntry[], timestamp: number }>;
 
   constructor(manager: Manager) {
     super(manager);
     this.leaderboards = new Collection();
+    this.cachedData = new Map();
   }
 
   async initialize() {
@@ -50,6 +52,19 @@ export default class LeaderboardService extends Service{
     }
   }
 
+  async getLeaderboardData(leaderboard: Leaderboard<Addon | undefined>): Promise<LeaderboardEntry[]> {
+    if (this.cachedData.has(leaderboard.name)) {
+      const cached = this.cachedData.get(leaderboard.name)!;
+      if (Date.now() - cached.timestamp < 60000) {
+        return cached.data;
+      }
+    }
+
+    const data = await leaderboard.getData();
+    this.cachedData.set(leaderboard.name, { data, timestamp: Date.now() });
+    return data;
+  }
+
   async registerLeaderboards() {
     class LeaderboardCommands extends Command {
 
@@ -75,24 +90,15 @@ export default class LeaderboardService extends Service{
     this.manager.services.interaction.registerCommand(new LeaderboardCommands(this.manager));
   }
 
-  async leaderboardCommand(interaction: ChatInputCommandInteraction<'cached'>, indentifier: string) {
-    const leaderboard = this.leaderboards.get(indentifier)
+  async leaderboardCommand(interaction: ChatInputCommandInteraction<'cached'>, identifier: string) {
+    const leaderboard = this.leaderboards.get(identifier)
     if (!leaderboard) return interaction.reply("Leaderboard not found.");
 
-    const leaderboardData = await leaderboard.getData();
+    const leaderboardData = await this.getLeaderboardData(leaderboard);
     const leaders = []
-    let rank = 0;
 
     for (const row of leaderboardData) {
-      const variables = [
-        { name: "leaderboard_position", value: rank++ },
-        { name: "leaderboard_message", value: row }
-      ];
-
-      leaders.push({
-        item: row,
-        variables: variables,
-      });
+      leaders.push({ item: row });
     }
 
     new Pagination(leaders)
@@ -107,7 +113,18 @@ export default class LeaderboardService extends Service{
         
         const messages = [];
         for (const item of items) {
-          messages.push(item.item);
+          if (!item.item) continue;
+          const user = await this.manager.services.user.findOrNull(item.item.userId);
+          if (!user) continue;
+          const formatedValue = await leaderboard.formatValue(item.item);
+
+          const variables: Variable[] = [
+            { name: "position", value: item.item.position },
+            { name: "value", value: formatedValue },
+            ...Utils.userVariables(user)
+          ];
+
+          messages.push(await this.manager.lang.getParsedString("leaderboard.entry", variables, context));
         }
         container.addTextDisplayComponents(
           new TextDisplayBuilder()

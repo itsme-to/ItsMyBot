@@ -1,8 +1,8 @@
-import { Action, ActionData, Context, FollowUpActionArgumentsValidator, Variable, Utils } from '@itsmybot';
+import { Action, ActionData, Context, Variable, Utils, FollowUpActionArgumentsValidatorWithMessage } from '@itsmybot';
 import { IsInt, IsPositive, IsOptional, IsString, IsBoolean } from 'class-validator';
 import { AnyThreadChannel, ChannelType } from 'discord.js';
 
-class ArgumentsValidator extends FollowUpActionArgumentsValidator {
+class ArgumentsValidator extends FollowUpActionArgumentsValidatorWithMessage {
   @IsOptional()
   @IsString({ each: true})
   value: string | string[]
@@ -15,6 +15,10 @@ class ArgumentsValidator extends FollowUpActionArgumentsValidator {
   @IsOptional()
   @IsBoolean()
   private: boolean
+
+  @IsOptional()
+  @IsString({ each: true })
+  tags: string | string[]
 }
 
 export default class CreateThreadAction extends Action {

@@ -5,7 +5,9 @@ enum BotEvents {
   EveryMinute = 'everyMinute',
   EveryDay = 'everyDay',
   ButtonClick = 'buttonClick',
+  /** @deprecated Use Events.SelectMenuSubmit instead */
   SelectMenu = 'selectMenu',
+  SelectMenuSubmit = 'selectMenuSubmit',
   ModalSubmit = 'modalSubmit',
   VoiceJoin = 'voiceJoin',
   VoiceLeave = 'voiceLeave',

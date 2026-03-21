@@ -1,8 +1,8 @@
-import { Action, ActionData, Context, FollowUpActionArgumentsValidator, Variable, Utils } from '@itsmybot';
+import { Action, ActionData, Context, Variable, Utils, FollowUpActionArgumentsValidatorWithMessage } from '@itsmybot';
 
 export default class SendPrivateMessageAction extends Action {
   id = "sendPrivateMessage";
-  argumentsValidator = FollowUpActionArgumentsValidator;
+  argumentsValidator = FollowUpActionArgumentsValidatorWithMessage;
 
   async onTrigger(script: ActionData, context: Context, variables: Variable[]) {
     if (!context.member) return script.missingContext("member", context);

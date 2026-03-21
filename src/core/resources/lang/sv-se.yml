@@ -82,9 +82,11 @@ pagination:
   previous-page: Föregående
 
 leaderboard:
-  messages-format: "`[[position]].` [[position_user_mention]] • **[[position_user_messages]]** skickade meddelanden"
   title: "### 🏆 Topplista – [[leaderboard_name]]"
   footer: Sida [[pagination_current_page]]/[[pagination_total_pages]]
+  entry: "`[[position]].` [[user_mention]] • [[value]]"
+  value:
+    messages: "**[[value]]** skickade meddelanden"
 
 addons:
   title: Nedan finns listan över tillgängliga tillägg.

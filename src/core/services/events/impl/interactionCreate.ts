@@ -6,19 +6,19 @@ export default class InteractionCreateEvent extends Event {
   name = Events.InteractionCreate;
 
   public async execute(interaction: Interaction<'cached'>) {
-
     const user = interaction.member
       ? await this.manager.services.user.findOrCreate(interaction.member)
       : await this.manager.services.user.findOrNull(interaction.user.id) as User;
 
     if (interaction.isChatInputCommand() || interaction.isAutocomplete() || interaction.isModalSubmit() || interaction.isContextMenuCommand() || interaction.isMessageComponent()) {
       const interactionComponent = this.manager.services.interaction.resolveInteraction(interaction);
-      if (!interactionComponent) {
+
+      if (!interactionComponent && (interaction.isButton() || interaction.isAnySelectMenu() || interaction.isModalSubmit())) {
         if (interaction.isButton()) {
           return this.manager.client.emit(Events.ButtonClick, interaction, user);
         }
         if (interaction.isAnySelectMenu()) {
-          return this.manager.client.emit(Events.SelectMenu, interaction, user);
+          return this.manager.client.emit(Events.SelectMenuSubmit, interaction, user);
         }
         if (interaction.isModalSubmit()) {
           return this.manager.client.emit(Events.ModalSubmit, interaction, user);

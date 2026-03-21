@@ -82,9 +82,11 @@ pagination:
   previous-page: Trước
 
 leaderboard:
-  messages-format: "`[[position]].` [[position_user_mention]] • **[[position_user_messages]]** tin nhắn đã gửi"
   title: "### 🏆 Bảng xếp hạng – [[leaderboard_name]]"
   footer: Trang [[pagination_current_page]]/[[pagination_total_pages]]
+  entry: "`[[position]].` [[user_mention]] • [[value]]"
+  value:
+    messages: "**[[value]]** tin nhắn đã gửi"
 
 addons:
   title: Dưới đây là danh sách addon có sẵn.

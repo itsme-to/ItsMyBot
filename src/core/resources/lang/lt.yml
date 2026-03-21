@@ -82,9 +82,11 @@ pagination:
   previous-page: Ankstesnis
 
 leaderboard:
-  messages-format: "`[[position]].` [[position_user_mention]] • **[[position_user_messages]]** išsiųstų pranešimų"
   title: "### 🏆 Reitingų lenta – [[leaderboard_name]]"
   footer: Puslapis [[pagination_current_page]]/[[pagination_total_pages]]
+  entry: "`[[position]].` [[user_mention]] • [[value]]"
+  value:
+    messages: "**[[value]]** išsiųstų pranešimų"
 
 addons:
   title: Žemiau rasite prieinamų priedų sąrašą.
