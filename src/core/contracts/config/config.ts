@@ -134,7 +134,7 @@ export class Config {
     const value = this.get(path);
 
     if (TypeCheckers.isStringArray(value)) return value
-    if (TypeCheckers.isString(value)) return [value]
+    if (TypeCheckers.isString(value)) return [value];
 
     throw this.logger.error(`Expected string array at path "${path}"`);
   }

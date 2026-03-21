@@ -71,3 +71,10 @@ export type ResolvableInteraction =
   | Modal<Addon | undefined>;
 
 export type LabelComponentBuilder = TextInputBuilder | StringSelectMenuBuilder | MentionableSelectMenuBuilder | ChannelSelectMenuBuilder | RoleSelectMenuBuilder | UserSelectMenuBuilder | FileUploadBuilder;
+
+export interface LeaderboardEntry<T = any> {
+  position: number;
+  userId: string;
+  value: number;
+  additionalData?: T;
+}
