@@ -93,8 +93,6 @@ export default class ModalSubmitEvent extends Event {
       }
     }
 
-    console.log(`Emitting modalSubmit event for customId: ${customId} with variables:`, variables);
-
     this.manager.services.engine.event.emit('modalSubmit', context, variables);
   }
 };

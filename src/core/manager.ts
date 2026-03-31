@@ -2,7 +2,6 @@ import { Client, Collection } from 'discord.js';
 import { existsSync, mkdirSync } from 'fs';
 import { ClientOptions, ManagerOptions, Services, ConfigFile, Addon, Logger, LangDirectory } from '@itsmybot'
 import { Sequelize } from 'sequelize-typescript';
-
 import EventService from './services/events/eventService.js';
 import UserService from './services/users/userService.js';
 import InteractionService from './services/interactions/interactionService.js';
@@ -103,6 +102,8 @@ export class Manager {
   private async initializeDatabase() {
     this.logger.info('Initializing database...');
     const dataConfigFile = this.configs.config.getSubsection('database');
+    const connectTimeout = dataConfigFile.getNumber('connect-timeout');
+
     if (['mysql', 'mariadb'].includes(dataConfigFile.getString('type'))) {
       this.database = new Sequelize(
         dataConfigFile.getString('database'),
@@ -114,7 +115,7 @@ export class Manager {
           logging: dataConfigFile.getBool('debug'),
           port: dataConfigFile.getNumber('port'),
           dialectOptions: {
-            connectTimeout: dataConfigFile.getNumber('connect-timeout'),
+            connectTimeout: connectTimeout,
           },
           pool: {
             acquire: 30000,
@@ -129,6 +130,10 @@ export class Manager {
           dialect: 'sqlite',
           storage: 'database.sqlite',
           logging: dataConfigFile.getBool('debug'),
+          retry: {
+            max: Math.max(5, Math.ceil(connectTimeout / 500)),
+            match: [/SQLITE_BUSY/, /database is locked/i],
+          },
         });
     }
 
@@ -147,5 +152,4 @@ export class Manager {
     }
   }
 }
-
 
