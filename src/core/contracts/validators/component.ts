@@ -120,6 +120,10 @@ class CheckboxOptionValidator {
   value: string | string[]
 
   @IsOptional()
+  @IsString({ each: true })
+  description: string | string[]
+
+  @IsOptional()
   @Validate(IsBooleanOrString)
   default: boolean | string
 }
@@ -143,11 +147,15 @@ class RadioGroupValidator extends ComponentValidator {
 class RadioGroupOptionValidator {
   @IsDefined()
   @IsString({ each: true })
-  label: string | string[]
+  value: string | string[]
 
   @IsDefined()
   @IsString({ each: true })
-  value: string | string[]
+  label: string | string[]
+
+  @IsOptional()
+  @IsString({ each: true })
+  description: string | string[]
 
   @IsOptional()
   @Validate(IsBooleanOrString)

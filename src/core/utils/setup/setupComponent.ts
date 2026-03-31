@@ -226,12 +226,15 @@ export async function setupComponent<T extends SetupComponentType = SetupCompone
       for (const optionConfig of options) {
         const label = await Utils.applyVariables(optionConfig.getString('label'), variables, context);
         const value = await Utils.applyVariables(optionConfig.getString('value'), variables, context);
+        const description = await Utils.applyVariables(optionConfig.getStringOrNull('description', true), variables, context);
         const defaultOption = optionConfig.getBoolOrNull('default') || false;
 
         const checkBoxOption = new CheckboxGroupOptionBuilder()
           .setLabel(label)
           .setValue(value)
           .setDefault(defaultOption)
+
+        if (description) checkBoxOption.setDescription(description);
 
         checkboxGroup.addOptions(checkBoxOption);
       }
@@ -254,12 +257,15 @@ export async function setupComponent<T extends SetupComponentType = SetupCompone
       for (const optionConfig of options) {
         const label = await Utils.applyVariables(optionConfig.getString('label'), variables, context);
         const value = await Utils.applyVariables(optionConfig.getString('value'), variables, context);
+        const description = await Utils.applyVariables(optionConfig.getStringOrNull('description', true), variables, context);
         const defaultOption = optionConfig.getBoolOrNull('default') || false;
 
         const radioOption = new RadioGroupOptionBuilder()
           .setLabel(label)
           .setValue(value)
           .setDefault(defaultOption)
+
+        if (description) radioOption.setDescription(description);
 
         radioGroup.addOptions(radioOption);
       }
