@@ -1,14 +1,19 @@
 {
   "name": "itsmybot",
-  "version": "3.10.0",
+  "version": "3.11.0",
   "description": "",
   "main": "build/index.js",
+  "private": true,
+  "workspaces": [
+    "build/addons/*",
+    "src/addons/*"
+  ],
   "scripts": {
     "make:addon": "node ./build/core/tools/makeAddon.js",
     "tools:translate": "node --env-file=.env ./build/core/tools/translate/index.js",
     "build:clean": "rm -rf ./build",
     "build:itsmybot": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
-    "build:copy": "cpy \"src/**/*.yml\" \"build/\" --parents",
+    "build:copy": "cpy \"src/**/*.{yml,json}\" \"build/\" --parents",
     "build:success": "echo '[ItsMyBot] Build completed successfully!'",
     "build": "npm run build:clean && npm run build:itsmybot && npm run build:copy && npm run build:success",
     "start": "node ./build/index.js"
@@ -25,7 +30,6 @@
   },
   "devDependencies": {
     "@types/inquirer": "^9.0.9",
-    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^22.10.2",
     "cpy-cli": "^5.0.0",
     "inquirer": "^9.2.23",
@@ -38,13 +42,10 @@
     "chalk": "^5.4.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
-    "discord.js": "^14.25.1",
+    "discord.js": "^14.26.0",
     "filtrex": "^3.1.0",
-    "jsonwebtoken": "^9.0.2",
     "mariadb": "^3.4.0",
     "mysql2": "^3.12.0",
-    "openai": "^5.12.2",
-    "selfsigned": "^2.4.1",
     "sequelize": "^6.37.5",
     "sequelize-typescript": "^2.1.6",
     "sqlite3": "^6.0.1",

@@ -17,6 +17,7 @@ export default class EngineService extends Service {
   metaHandler: MetaHandler = new MetaHandler(this.manager);
 
   async initialize() {
+    this.event.setMaxListeners(500);
     await this.loadScripts();
     this.manager.logger.info('Script engine initialized.');
   }
@@ -195,4 +196,3 @@ interface CommandApplicationOption {
   choices: undefined | { name: string, value: string | number }[]
   toJSON(): any
 }
-

@@ -1,9 +1,4 @@
-import { Addon, ConfigFile } from '@itsmybot';
-import DefaultConfig from './resources/config.js';
-
-interface MCStatsConfig {
-  config: ConfigFile;
-}
+import { Addon } from '@itsmybot';
 
 interface VersionStats {
   name_raw: string;
@@ -41,29 +36,25 @@ export interface ServerStats {
 }
 
 export default class MCStatsAddon extends Addon {
-  version = "1.3.0"
+  version = "2.0.0"
   authors = ["Théo"]
   description = "Get the status of a Minecraft server"
   website = "https://docs.itsmy.studio/itsmybot/addons/mcstatus"
-
-  configs: MCStatsConfig = {} as MCStatsConfig;
   
-  async load() {
-    this.configs.config = await this.createConfig('config.yml', DefaultConfig);
-  }
+  async load() { }
 
-  async fetchStatus(address: string, port: number = 25565) {
+  async fetchStatus(address: string) {
     try {
-      const response = await fetch(`https://api.mcstatus.io/v2/status/java/${address}:${port}`);
+      const response = await fetch(`https://api.mcstatus.io/v2/status/java/${address}`);
       const data = await response.json();
       return data as ServerStats;
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error';
-      this.logger.warn(`Could not retrieve Minecraft server status (${address}:${port}).`, message);
+      this.logger.warn(`Could not retrieve Minecraft server status (${address}).`, message);
       return {
         online: false,
-        host: address,
-        port,
+        host: address.split(":")[0],
+        port: 25565,
         ip_address: null,
         eula_blocked: false,
         version: null,

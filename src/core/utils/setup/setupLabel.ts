@@ -1,5 +1,5 @@
 import { Config, Context, Variable, Utils, LabelComponentBuilder } from '@itsmybot';
-import { LabelBuilder } from 'discord.js';
+import { CheckboxBuilder, CheckboxGroupBuilder, LabelBuilder, RadioGroupBuilder } from 'discord.js';
 
 interface TextDisplaySettings {
   config: Config,
@@ -19,7 +19,7 @@ export async function setupLabel(settings: TextDisplaySettings)  {
     
   if (description) label.setDescription(await Utils.applyVariables(description, variables, context));
 
-  const components = await Utils.setupComponent<LabelComponentBuilder>({ config: config.getSubsection('component'), variables, context });
+  const components = await Utils.setupComponent<LabelComponentBuilder | CheckboxBuilder | RadioGroupBuilder | CheckboxGroupBuilder>({ config: config.getSubsection('component'), variables, context });
   if (components?.length) label.data.component = components[0];
 
   return label
