@@ -48,8 +48,8 @@ class WithCondition {
 export abstract class ComponentValidator extends WithCondition {
   @IsDefined()
   @IsString()
-  @IsIn(['button', 'select-menu', 'text-display', 'action-row', 'separator', 'section', 'media-gallery', 'file', 'container', 'repeat', 'thumbnail', 'text-input', 'modal', 'label', 'file-upload'])
-  type: 'button' | 'select-menu' | 'text-display' | 'action-row' | 'separator' | 'section' | 'media-gallery' | 'file' | 'container' | 'repeat' | 'thumbnail' | 'text-input' | 'label' | 'file-upload';
+  @IsIn(['button', 'select-menu', 'text-display', 'action-row', 'separator', 'section', 'media-gallery', 'file', 'container', 'repeat', 'thumbnail', 'text-input', 'modal', 'label', 'file-upload', 'checkbox', 'checkbox-group', 'radio-group'])
+  type: 'button' | 'select-menu' | 'text-display' | 'action-row' | 'separator' | 'section' | 'media-gallery' | 'file' | 'container' | 'repeat' | 'thumbnail' | 'text-input' | 'label' | 'file-upload' | 'checkbox' | 'checkbox-group' | 'radio-group';
 }
 
 class TextInputValidator extends ComponentValidator {
@@ -82,6 +82,76 @@ class TextInputValidator extends ComponentValidator {
   @IsString()
   @Validate(IsTextInputStyle)
   style: string
+}
+
+class CheckboxValidator extends ComponentValidator {
+  @IsDefined()
+  @IsString({ each: true })
+  'custom-id': string | string[]
+
+  @IsOptional()
+  @IsBoolean()
+  required: boolean
+}
+
+class CheckboxGroupValidator extends ComponentValidator {
+  @IsDefined()
+  @IsString({ each: true })
+  'custom-id': string | string[]
+
+  @IsOptional()
+  @IsBoolean()
+  required: boolean
+
+  @IsDefined()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CheckboxOptionValidator)
+  options: CheckboxOptionValidator[]
+}
+
+class CheckboxOptionValidator {
+  @IsDefined()
+  @IsString({ each: true })
+  label: string | string[]
+
+  @IsDefined()
+  @IsString({ each: true })
+  value: string | string[]
+
+  @IsOptional()
+  @Validate(IsBooleanOrString)
+  default: boolean | string
+}
+
+class RadioGroupValidator extends ComponentValidator {
+  @IsDefined()
+  @IsString({ each: true })
+  'custom-id': string | string[]
+
+  @IsOptional()
+  @IsBoolean()
+  required: boolean
+
+  @IsDefined()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => RadioGroupOptionValidator)
+  options: RadioGroupOptionValidator[]
+}
+
+class RadioGroupOptionValidator {
+  @IsDefined()
+  @IsString({ each: true })
+  label: string | string[]
+
+  @IsDefined()
+  @IsString({ each: true })
+  value: string | string[]
+
+  @IsOptional()
+  @Validate(IsBooleanOrString)
+  default: boolean | string
 }
 
 class FileUploadValidator extends ComponentValidator {
@@ -216,12 +286,15 @@ class LabelValidator extends ComponentValidator {
       subTypes: [
         { value: TextInputValidator, name: 'text-input' },
         { value: SelectMenuValidator, name: 'select-menu' },
-        { value: FileUploadValidator, name: 'file-upload' }
+        { value: FileUploadValidator, name: 'file-upload' },
+        { value: CheckboxValidator, name: 'checkbox' },
+        { value: CheckboxGroupValidator, name: 'checkbox-group' },
+        { value: RadioGroupValidator, name: 'radio-group' }
       ],
     },
     keepDiscriminatorProperty: true
   })
-  component: TextInputValidator | SelectMenuValidator | FileUploadValidator
+  component: TextInputValidator | SelectMenuValidator | FileUploadValidator | CheckboxValidator | CheckboxGroupValidator | RadioGroupValidator
 }
 
 export class ModalValidator {

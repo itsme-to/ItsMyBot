@@ -1,5 +1,5 @@
 import { manager, Config, Context, Variable, Utils, LabelComponentBuilder } from '@itsmybot';
-import { ActionRowComponent, MessageComponentBuilder, ContainerComponentBuilder, ActionRowBuilder, MessageActionRowComponentBuilder, SeparatorBuilder, SectionBuilder, MediaGalleryBuilder, FileBuilder, MediaGalleryItemBuilder, TextInputBuilder, TextInputStyle, FileUploadBuilder } from 'discord.js';
+import { ActionRowComponent, MessageComponentBuilder, ContainerComponentBuilder, ActionRowBuilder, MessageActionRowComponentBuilder, SeparatorBuilder, SectionBuilder, MediaGalleryBuilder, FileBuilder, MediaGalleryItemBuilder, TextInputBuilder, TextInputStyle, FileUploadBuilder, CheckboxBuilder, CheckboxGroupBuilder, CheckboxGroupOptionBuilder, RadioGroupBuilder, RadioGroupOptionBuilder } from 'discord.js';
 
 interface ComponentSettings {
   config: Config,
@@ -7,7 +7,7 @@ interface ComponentSettings {
   context: Context,
 }
 
-export type SetupComponentType = MessageComponentBuilder | ContainerComponentBuilder | ActionRowComponent | LabelComponentBuilder | undefined;
+export type SetupComponentType = MessageComponentBuilder | ContainerComponentBuilder | ActionRowComponent | LabelComponentBuilder | CheckboxGroupBuilder | CheckboxBuilder | RadioGroupBuilder | undefined;
 
 export async function setupComponent<T extends SetupComponentType = SetupComponentType>(settings: ComponentSettings): Promise<T[] | undefined> {
   const config = settings.config;
@@ -191,6 +191,80 @@ export async function setupComponent<T extends SetupComponentType = SetupCompone
       if (minSelect) fileUpload.setMinValues(minSelect);
 
       return [fileUpload as T];
+    }
+
+    case 'checkbox': {
+      let cCustomId = config.getString("custom-id");
+      const defaultValue = config.getBoolOrNull("default") || false;
+
+      cCustomId = await Utils.applyVariables(cCustomId, variables, context);
+
+      const checkbox = new CheckboxBuilder()
+        .setCustomId(cCustomId)
+        .setDefault(defaultValue)
+
+      return [checkbox as T];
+    }
+
+    case 'checkbox-group': {
+      let cCustomId = config.getString("custom-id");
+      const required = config.getBoolOrNull("required") || false;
+      let minValues = config.getNumberOrNull("min-values");
+      let maxValues = config.getNumberOrNull("max-values");
+
+      cCustomId = await Utils.applyVariables(cCustomId, variables, context);
+
+      const checkboxGroup = new CheckboxGroupBuilder()
+        .setCustomId(cCustomId)
+        .setRequired(required)
+
+      if (minValues) checkboxGroup.setMinValues(minValues);
+      if (maxValues) checkboxGroup.setMaxValues(maxValues);
+
+      const options = config.getSubsections('options');
+
+      for (const optionConfig of options) {
+        const label = await Utils.applyVariables(optionConfig.getString('label'), variables, context);
+        const value = await Utils.applyVariables(optionConfig.getString('value'), variables, context);
+        const defaultOption = optionConfig.getBoolOrNull('default') || false;
+
+        const checkBoxOption = new CheckboxGroupOptionBuilder()
+          .setLabel(label)
+          .setValue(value)
+          .setDefault(defaultOption)
+
+        checkboxGroup.addOptions(checkBoxOption);
+      }
+
+      return [checkboxGroup as T];
+    }
+
+    case 'radio-group': {
+      let cCustomId = config.getString("custom-id");
+      const required = config.getBoolOrNull("required") || false;
+
+      cCustomId = await Utils.applyVariables(cCustomId, variables, context);
+
+      const radioGroup = new RadioGroupBuilder()
+        .setCustomId(cCustomId)
+        .setRequired(required)
+
+      const options = config.getSubsections('options');
+
+      for (const optionConfig of options) {
+        const label = await Utils.applyVariables(optionConfig.getString('label'), variables, context);
+        const value = await Utils.applyVariables(optionConfig.getString('value'), variables, context);
+        const defaultOption = optionConfig.getBoolOrNull('default') || false;
+
+        const radioOption = new RadioGroupOptionBuilder()
+          .setLabel(label)
+          .setValue(value)
+          .setDefault(defaultOption)
+
+        radioGroup.addOptions(radioOption);
+      }
+
+      return [radioGroup as T];
     }
   }
 }

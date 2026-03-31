@@ -38,7 +38,7 @@
     "chalk": "^5.4.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
-    "discord.js": "^14.25.1",
+    "discord.js": "^14.26.0",
     "filtrex": "^3.1.0",
     "jsonwebtoken": "^9.0.2",
     "mariadb": "^3.4.0",
