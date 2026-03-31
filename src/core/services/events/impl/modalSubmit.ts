@@ -43,33 +43,57 @@ export default class ModalSubmitEvent extends Event {
 
         switch (component.type) {
           case ComponentType.TextInput:
-            variables.push({ name: `modal_text_input_${component.customId}`, value: component.value });
+            variables.push({ name: `modal_${component.customId}`, value: component.value });
             break;
           case ComponentType.StringSelect:
             variables.push(
-              { name: `modal_select_${component.customId}_values_count`, value: component.values.length },
-              { name: `modal_select_${component.customId}_values`,value: component.values.join(', ') },
+              { name: `modal_${component.customId}_values_count`, value: component.values.length },
+              { name: `modal_${component.customId}_values`,value: component.values.join(', ') },
             );
 
             for (let i = 0; i < component.values.length; i++) {
-              variables.push({ name: `modal_select_${component.customId}_value_${i}`, value: component.values[i] });
+              variables.push({ name: `modal_${component.customId}_value_${i}`, value: component.values[i] });
             }
 
             break;
           case ComponentType.FileUpload:
-            variables.push({ name: `modal_file_upload_${component.customId}_attachments_count`, value: component.attachments.size });
+            if (!component.attachments) {
+              variables.push({ name: `modal_${component.customId}_attachments_count`, value: 0 });
+              break;
+            }
+          
+            variables.push({ name: `modal_${component.customId}_attachments_count`, value: component.attachments.size });
 
             let index = 0;
 
             component.attachments.forEach(attachment => {
-              variables.push({ name: `modal_file_upload_${component.customId}_attachment_${index}`, value: attachment.url });
+              variables.push({ name: `modal_${component.customId}_attachment_${index}`, value: attachment.url });
               index++;
             });
 
             break;
+          case ComponentType.Checkbox:
+            variables.push({ name: `modal_${component.customId}`, value: component.value.toString() });
+            break;
+          case ComponentType.CheckboxGroup:
+            variables.push(
+              { name: `modal_${component.customId}_values_count`, value: component.values.length },
+              { name: `modal_${component.customId}_values`, value: component.values.join(', ') },
+            );
+
+            for (let i = 0; i < component.values.length; i++) {
+              variables.push({ name: `modal_${component.customId}_value_${i}`, value: component.values[i] });
+            }
+
+            break;
+          case ComponentType.RadioGroup:
+            variables.push({ name: `modal_${component.customId}`, value: component.value || '' });
+            break;
         }
       }
     }
+
+    console.log(`Emitting modalSubmit event for customId: ${customId} with variables:`, variables);
 
     this.manager.services.engine.event.emit('modalSubmit', context, variables);
   }
