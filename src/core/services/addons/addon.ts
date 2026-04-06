@@ -46,7 +46,11 @@ export abstract class Addon {
 
   async init() {
     await this.loadDatabaseModels();
-    await this.lang.initialize();
+    try {
+      await this.lang.initialize();
+    } catch (error) {
+      this.logger.debug(`No language files found for addon ${this.name}, skipping lang initialization.`);
+    }
     await this.load();
     await this.initialize();
     await this.registerInteractions();
@@ -55,6 +59,8 @@ export abstract class Addon {
 
   public async registerModules() {
     const basePath = this.path;
+    if (!existsSync(basePath)) return;
+
     const directories = readdirSync(basePath).filter((name: string) => {
       const fullPath = join(basePath, name);
       return statSync(fullPath).isDirectory();
@@ -88,11 +94,15 @@ export abstract class Addon {
 
   public async registerInteractions() {
     const interactionDir = join(this.path, 'interactions');
+    if (!existsSync(interactionDir)) return;
     await this.manager.services.interaction.registerFromDir(interactionDir, this);
   }
 
   private async loadDatabaseModels() {
-    const models = await Array.fromAsync(glob(join(this.path, 'models', '*.js').replace(/\\/g, '/')));
+    const modelsDir = join(this.path, 'models');
+    if (!existsSync(modelsDir)) return;
+
+    const models = await Array.fromAsync(glob(join(modelsDir, '*.js').replace(/\\/g, '/')));
     
     await Promise.all(models.map(async (model) => {
       const modelUrl = new URL('file://' + model.replace(/\\/g, '/')).href;
