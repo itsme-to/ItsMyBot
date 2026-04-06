@@ -2,6 +2,7 @@ import chalk from 'chalk';
 import { stdout } from 'process';
 
 export class Logger {
+  static debugEnabled = false;
   prefix: string;
 
   constructor(prefix: string = "ItsMyBot") {
@@ -58,6 +59,7 @@ export class Logger {
   }
 
   public debug(...text: any[]) {
+    if (!Logger.debugEnabled) return;
     const timestamp = this.getCurrentTimestamp();
     const message = `[${timestamp}] ${chalk.bold(chalk.hex("#17D5F7")("[DEBUG]"))}: [${this.prefix}] ${text.join('\n')}`;
 

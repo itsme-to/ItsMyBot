@@ -48,6 +48,7 @@ export class Manager {
       process.exit(1)
     }
 
+    Logger.debugEnabled = this.configs.config.getBool('debug');
     this.primaryGuildId = this.configs.config.getString("primary-guild");
 
     this.lang = new LangDirectory(this.logger, 'lang/core', 'build/core/resources/lang', 'en-US');
