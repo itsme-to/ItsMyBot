@@ -129,8 +129,11 @@ export class Pagination<T> {
    * Send the pagination message
    */
   async reply(interaction: RepliableInteraction) {
-    const message = await interaction.reply(await this.buildMessage('initial'));
-    this.createCollector(message);
+    const payload = await this.buildMessage('initial');
+    const message = interaction.deferred 
+      ? await interaction.editReply(payload) 
+      : await interaction.reply(payload);
+    this.createCollector(message as any);
     return message;
   }
 
