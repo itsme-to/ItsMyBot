@@ -91,10 +91,14 @@ export default class LeaderboardService extends Service{
   }
 
   async leaderboardCommand(interaction: ChatInputCommandInteraction<'cached'>, identifier: string) {
+    await interaction.deferReply();
     const leaderboard = this.leaderboards.get(identifier)
-    if (!leaderboard) return interaction.reply("Leaderboard not found.");
+    if (!leaderboard) return interaction.editReply("Leaderboard not found.");
 
     const leaderboardData = await this.getLeaderboardData(leaderboard);
+    if (leaderboardData.length === 0) {
+      return interaction.editReply(await this.manager.lang.getString("pagination.no-items"));
+    }
     const leaders = []
 
     for (const row of leaderboardData) {
@@ -128,7 +132,7 @@ export default class LeaderboardService extends Service{
         }
         container.addTextDisplayComponents(
           new TextDisplayBuilder()
-            .setContent(messages.join('\n')),
+            .setContent(messages.join('\n') || await this.manager.lang.getString("pagination.no-items")),
           new TextDisplayBuilder()
             .setContent(await this.manager.lang.getParsedString("leaderboard.footer", variables, context)));
 
