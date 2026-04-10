@@ -1,6 +1,6 @@
 import { Events, Message } from 'discord.js';
 import { Event } from '@itsmybot';
-import PresetsAddon from '..';
+import PresetsAddon from '../index.js';
 import Preset from '../models/preset.js';
 
 export default class MessageDeleteEvent extends Event<PresetsAddon> {

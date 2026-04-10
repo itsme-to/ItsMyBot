@@ -1,5 +1,5 @@
 import { Action, ActionArgumentsValidator, ActionData, Context, Variable, Utils } from '@itsmybot';
-import PresetsAddon from '..';
+import PresetsAddon from '../index.js';
 import { IsDefined, IsString } from 'class-validator';
 
 class ArgumentsValidator extends ActionArgumentsValidator {

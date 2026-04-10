@@ -1,7 +1,7 @@
 
 import { Command, User, CommandBuilder, Utils } from '@itsmybot';
 import { AutocompleteInteraction, ChannelType, ChatInputCommandInteraction, PermissionFlagsBits } from 'discord.js';
-import PresetsAddon from '..';
+import PresetsAddon from '../index.js';
 import Preset from '../models/preset.js';
 
 export default class PresetCommand extends Command<PresetsAddon> {

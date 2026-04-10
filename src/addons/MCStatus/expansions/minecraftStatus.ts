@@ -1,5 +1,5 @@
 import { Expansion, Context, Cooldown } from '@itsmybot';
-import MCStatsAddon, { ServerStats } from '..';
+import MCStatsAddon, { ServerStats } from '../index.js';
 
 export default class MCStatusExpansion extends Expansion<MCStatsAddon> {
   name = 'mcstatus';

@@ -1,6 +1,6 @@
 {
   "name": "itsmybot",
-  "version": "3.11.0",
+  "version": "3.11.1",
   "description": "",
   "main": "build/index.js",
   "private": true,
@@ -39,6 +39,7 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
+    "@vscode/sqlite3": "^5.1.12-vscode",
     "chalk": "^5.4.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
@@ -48,7 +49,6 @@
     "mysql2": "^3.12.0",
     "sequelize": "^6.37.5",
     "sequelize-typescript": "^2.1.6",
-    "sqlite3": "^6.0.1",
     "yaml": "^2.7.0"
   }
 }

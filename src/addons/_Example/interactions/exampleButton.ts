@@ -1,4 +1,4 @@
-import ExampleAddon from '..';
+import ExampleAddon from '../index.js';
 import { User, Button } from '@itsmybot';
 import { ButtonInteraction } from 'discord.js';
 

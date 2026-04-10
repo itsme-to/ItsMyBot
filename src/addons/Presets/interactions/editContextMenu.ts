@@ -1,13 +1,13 @@
-import { LabelBuilder, MessageContextMenuCommandInteraction, ModalBuilder, PermissionFlagsBits, StringSelectMenuBuilder, TextInputBuilder } from 'discord.js';
+import { ApplicationCommandType, LabelBuilder, MessageContextMenuCommandInteraction, ModalBuilder, PermissionFlagsBits, StringSelectMenuBuilder, TextInputBuilder } from 'discord.js';
 import { User, ContextMenu, ContextMenuBuilder } from '@itsmybot';
-import PresetsAddon from '..';
+import PresetsAddon from '../index.js';
 import Preset from '../models/preset.js';
 
 export default class EditContextMenuCommand extends ContextMenu<PresetsAddon> {
   build() {
     return new ContextMenuBuilder()
       .setName(this.addon.lang.getString("commands.preset.context-menu"))
-      .setType(3)
+      .setType(ApplicationCommandType.Message)
       .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
   }
 

@@ -1,5 +1,5 @@
 import { Event, Events } from '@itsmybot';
-import StatsChannelAddon from '..';
+import StatsChannelAddon from '../index.js';
 import { Guild } from 'discord.js';
 
 export default class BotReadyEvent extends Event<StatsChannelAddon> {

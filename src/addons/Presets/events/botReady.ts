@@ -1,5 +1,5 @@
 import { Event, Events } from '@itsmybot';
-import PresetsAddon from '..';
+import PresetsAddon from '../index.js';
 import Preset from '../models/preset.js';
 import { Guild } from 'discord.js';
 

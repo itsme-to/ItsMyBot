@@ -1,5 +1,5 @@
 import { Command, User, CommandBuilder, Utils, Config } from '@itsmybot';
-import StatsChannelAddon from '..';
+import StatsChannelAddon from '../index.js';
 import { ChannelType, PermissionFlagsBits, AutocompleteInteraction, ChatInputCommandInteraction } from 'discord.js';
 
 export default class StatsChannelCommand extends Command<StatsChannelAddon> {

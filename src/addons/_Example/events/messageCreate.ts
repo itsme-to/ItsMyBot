@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { Event, Events } from '@itsmybot';
-import ExampleAddon from '..';
+import ExampleAddon from '../index.js';
 
 export default class MessageCreateEvent extends Event<ExampleAddon> {
   name = Events.MessageCreate; // This is the event name

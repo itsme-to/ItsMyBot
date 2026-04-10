@@ -1,6 +1,6 @@
 import { ComponentType, Events, Interaction } from 'discord.js';
 import { Event, Utils } from '@itsmybot';
-import PresetsAddon from '..';
+import PresetsAddon from '../index.js';
 import Preset from '../models/preset.js';
 
 export default class InteractionCreateEvent extends Event<PresetsAddon> {

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "module": "ESNext",
-    "moduleResolution": "node",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "target": "ESNext",
     "outDir": "./build",
     "noUnusedLocals": true,
@@ -15,11 +15,9 @@
     "lib": [
       "ESNext"
     ],
-    "baseUrl": "./src/",
+    "rootDir": "./src/",
     "paths": {
-      "@itsmybot": [
-        "./index.js"
-      ],
+      "@itsmybot": [ "./src/index.js" ]
     }
   }
 }

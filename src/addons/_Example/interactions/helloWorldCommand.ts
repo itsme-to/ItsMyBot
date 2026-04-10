@@ -1,5 +1,5 @@
 import { Command, User, CommandBuilder } from '@itsmybot';
-import ExampleAddon from '..';
+import ExampleAddon from '../index.js';
 import { AutocompleteInteraction, ChatInputCommandInteraction, PermissionFlagsBits } from 'discord.js';
 
 export default class HelloWorldCommand extends Command<ExampleAddon> {

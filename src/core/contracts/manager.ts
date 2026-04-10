@@ -6,8 +6,8 @@ import ExpansionService from '../services/expansions/expansionService.js'
 import AddonService from '../services/addons/addonService.js'
 import UserService from '../services/users/userService.js'
 import LeaderboardService from '../services/leaderboards/leaderboardService.js'
-import ConditionService from 'core/services/conditions/conditionService.js'
-import ActionService from 'core/services/actions/actionService.js'
+import ConditionService from '../services/conditions/conditionService.js'
+import ActionService from '../services/actions/actionService.js'
 
 export interface ClientOptions {
   intents: GatewayIntentBits[],

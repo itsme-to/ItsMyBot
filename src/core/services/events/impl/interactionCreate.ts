@@ -1,5 +1,5 @@
 import { Command, Event, User, Events, Button, SelectMenu, Modal } from '@itsmybot';
-import { CommandModel } from 'core/services/interactions/command.model.js';
+import { CommandModel } from '../../../services/interactions/command.model.js';
 import { AnySelectMenuInteraction, ButtonInteraction, ChatInputCommandInteraction, ContextMenuCommandInteraction, Interaction, MessageComponentInteraction, ModalSubmitInteraction } from 'discord.js';
 
 export default class InteractionCreateEvent extends Event {

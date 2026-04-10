@@ -11,7 +11,7 @@ import ExpansionService from './services/expansions/expansionService.js';
 import LeaderboardService from './services/leaderboards/leaderboardService.js';
 import ConditionService from './services/conditions/conditionService.js';
 import ActionService from './services/actions/actionService.js';
-import DefaultConfig from 'core/resources/config.js';
+import DefaultConfig from './resources/config.js';
 
 interface ManagerConfigs {
   config: ConfigFile
