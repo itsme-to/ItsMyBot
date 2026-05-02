@@ -1,14 +1,13 @@
-import { ComponentType, Events, Interaction } from 'discord.js';
-import { Event, Utils } from '@itsmybot';
+import { ComponentType, ModalSubmitInteraction } from 'discord.js';
+import { Event, Utils, Events } from '@itsmybot';
 import PresetsAddon from '../index.js';
 import Preset from '../models/preset.js';
 
-export default class InteractionCreateEvent extends Event<PresetsAddon> {
-  name = Events.InteractionCreate;
+export default class ModalSubmitEvent extends Event<PresetsAddon> {
+  name = Events.ModalSubmit;
 
-  async execute(interaction: Interaction) {
+  async execute(interaction: ModalSubmitInteraction<'cached'>) {
     if (!interaction.guild || !interaction.channel) return;
-    if (!interaction.isModalSubmit()) return;
     if (!interaction.customId.startsWith('presets-edit_')) return;
 
     const [, channelId, messageId] = interaction.customId.split('_');
@@ -59,7 +58,7 @@ export default class InteractionCreateEvent extends Event<PresetsAddon> {
     const presetMessage = await Utils.setupMessage({
       config: presetConfig,
       context: {
-        guild: message.channel.guild,
+        guild: interaction.guild,
         channel: message.channel
       }
     });

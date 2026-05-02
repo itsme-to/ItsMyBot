@@ -1,5 +1,5 @@
 import { Addon, ConfigFile } from '@itsmybot';
-import { TextChannel, Collection } from 'discord.js';
+import { Collection } from 'discord.js';
 
 import PresetConfig from './resources/preset.js';
 
@@ -8,7 +8,7 @@ interface PresetsConfig {
 }
 
 export default class PresetsAddon extends Addon {
-  version = "2.0.0"
+  version = "2.0.2"
   authors = ["Théo"]
   description = "An addon to create and manage preset messages."
   website = "https://docs.itsmy.studio/itsmybot/addons/presets"
@@ -23,8 +23,7 @@ export default class PresetsAddon extends Addon {
   async fetchMessage(channelId: string, messageId: string) {
     try {
       const channel = await this.manager.client.channels.fetch(channelId)
-      if (!channel) return
-      if (!(channel instanceof TextChannel)) return
+      if (!channel || !channel.isTextBased()) return
 
       const message = await channel.messages.fetch(messageId)
       return message;

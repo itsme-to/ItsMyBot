@@ -33,7 +33,7 @@ export default class EveryMinuteEvent extends Event<PresetsAddon> {
       const presetMessage = await Utils.setupMessage({
         config: presetConfig,
         context: {
-          guild: message.channel.guild,
+          guild: primaryGuild,
           channel: message.channel
         }
       });
