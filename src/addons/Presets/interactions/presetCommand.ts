@@ -21,16 +21,16 @@ export default class PresetCommand extends Command<PresetsAddon> {
               .addChannelTypes(ChannelType.GuildText, ChannelType.AnnouncementThread, ChannelType.GuildAnnouncement, ChannelType.PrivateThread, ChannelType.PublicThread)
               .setRequired(false)));
   }
-
   async autocomplete(interaction: AutocompleteInteraction) {
-    const focusedValue = interaction.options.getFocused();
-    const presets = this.addon.configs.presets;
-    if (focusedValue) presets.filter((preset, key) => key.includes(focusedValue));
-    await interaction.respond(
-      presets.map((choice, key) => {
-        return { name: key, value: key };
-      })
-    );
+    const focusedValue = interaction.options.getFocused().toLowerCase();
+
+    const choices = [...this.addon.configs.presets.keys()]
+      .filter(key => key.toLowerCase().includes(focusedValue))
+      .sort((a, b) => a.localeCompare(b))
+      .slice(0, 25)
+      .map(key => ({ name: key, value: key }));
+
+    await interaction.respond(choices);
   }
 
   async send(interaction: ChatInputCommandInteraction<'cached'>, user: User) {

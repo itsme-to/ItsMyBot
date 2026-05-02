@@ -69,7 +69,6 @@ export default class EditContextMenuCommand extends ContextMenu<PresetsAddon> {
       label.setStringSelectMenuComponent(selectMenu);
     }
 
-
     const editModal = new ModalBuilder()
       .setCustomId(`presets-edit_${message.channel.id}_${message.id}`)
       .setTitle(this.addon.lang.getString("modals.edit.title"))
