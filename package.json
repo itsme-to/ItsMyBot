@@ -1,11 +1,10 @@
 {
   "name": "itsmybot",
-  "version": "3.11.1",
+  "version": "3.11.2",
   "description": "",
   "main": "build/index.js",
   "private": true,
   "workspaces": [
-    "build/addons/*",
     "src/addons/*"
   ],
   "scripts": {
