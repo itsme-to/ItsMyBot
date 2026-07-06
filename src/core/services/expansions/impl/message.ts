@@ -21,5 +21,20 @@ export default class MessageExpansion extends Expansion {
       case 'attachment_count':
         return context.message.attachments.size.toString();
     }
+
+    if (placeholder.startsWith('attachment_')) {
+      const index = parseInt(placeholder.split('_')[1]);
+      const attachment = context.message.attachments.at(index);
+      if (!attachment) return;
+
+      switch (placeholder.split('_')[2]) {
+        case 'url':
+          return attachment.url;
+        case 'filename':
+          return attachment.name;
+        case 'size':
+          return attachment.size.toString();
+      }
+    }
   }
 }

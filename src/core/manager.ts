@@ -1,5 +1,6 @@
 import { Client, Collection } from 'discord.js';
 import { existsSync, mkdirSync } from 'fs';
+import sqlite3 from "@vscode/sqlite3";
 import { ClientOptions, ManagerOptions, Services, ConfigFile, Addon, Logger, LangDirectory } from '@itsmybot'
 import { Sequelize } from 'sequelize-typescript';
 import EventService from './services/events/eventService.js';
@@ -128,6 +129,7 @@ export class Manager {
     } else {
         this.database = new Sequelize({
           dialect: 'sqlite',
+          dialectModule: sqlite3,
           storage: 'database.sqlite',
           logging: dataConfigFile.getBool('debug'),
           retry: {
