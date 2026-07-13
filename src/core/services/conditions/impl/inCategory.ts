@@ -1,5 +1,5 @@
 import { Condition, ConditionData, Context, Variable, ConditionArgumentValidator, Utils } from '@itsmybot';
-import { ChannelType, GuildChannel } from 'discord.js';
+import { GuildChannel } from 'discord.js';
 import { IsDefined, IsString } from 'class-validator';
 
 class ArgumentsValidator extends ConditionArgumentValidator {
@@ -18,18 +18,13 @@ export default class InCategoryCondition extends Condition {
     if (!(context.channel instanceof GuildChannel)) return false;
 
     for (const category of arg) {
-      const dChannel = Utils.findChannel(category, context.guild);
-      if (!dChannel) {
+      const dCategory = Utils.findCategory(category, context.guild);
+      if (!dCategory) {
         this.logger.warn(`Category ${category} not found in guild ${context.guild?.name}`);
         continue;
       }
 
-      if (dChannel.type !== ChannelType.GuildCategory) {
-        this.logger.warn(`Channel ${category} is not a category in guild ${context.guild?.name}`);
-        continue;
-      }
-
-      if (context.channel.id === dChannel.id || context.channel.parent?.id === dChannel.id) return true;
+      if (context.channel.parent?.id === dCategory.id) return true;
     }
 
     return false;
