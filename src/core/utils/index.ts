@@ -1,6 +1,6 @@
 import { getPermissionFlags, getButtonStyle, getActivityType, getTextInputStyle, getPresenceStatus, getCommandOptionType, getChannelType } from './converters.js';
 import * as fs from 'fs/promises';
-import { findRole, findChannel, findTextChannel, findCategory } from './find.js';
+import { findRole, findChannel, findTextChannel } from './find.js';
 import { setupEmbed } from './setup/setupEmbed.js';
 import { setupMessage } from './setup/setupMessage.js';
 import { setupComponent } from './setup/setupComponent.js';
@@ -62,13 +62,6 @@ export class Utils {
    * @param guild The guild to search the channel in, if not provided, the primary guild will be used
    */
   static findTextChannel = findTextChannel;
-
-  /**
-   * Find a category by its name or id
-   * @param identifier The category name or id
-   * @param guild The guild to search the category in, if not provided, the primary guild will be used
-   */
-  static findCategory = findCategory;
 
   static setupEmbed = setupEmbed;
   static setupMessage = setupMessage;

@@ -76,9 +76,21 @@ export class Config {
   private get(path: string): unknown {
     const value = this.getOrNull(path);
     if (TypeCheckers.isNullOrUndefined(value)) {
-      throw `No config value found for "${this.getPath(path)}"` + (this.filePath ? ` in file ${this.filePath}` : "");
+      throw new Error(`No config value found for "${this.getPath(path)}"` + (this.filePath ? ` in file ${this.filePath}` : ""));
     }
     return value;
+  }
+
+  /**
+   * Log a type error and return it as an Error to throw.
+   * @param expected Description of the expected type.
+   * @param path The path where the value was expected.
+   * @returns The Error to throw.
+   */
+  private typeError(expected: string, path: string): Error {
+    const message = `Expected ${expected} at path "${this.getPath(path)}"` + (this.filePath ? ` in file ${this.filePath}` : "");
+    this.logger.error(message);
+    return new Error(message);
   }
 
   /**
@@ -99,7 +111,7 @@ export class Config {
     if (TypeCheckers.isBoolean(value)) return value.toString()
     if (TypeCheckers.isNumber(value)) return value.toString()  
 
-    throw this.logger.error(`Expected string at path "${path}"`);
+    throw this.typeError("string", path);
   }
 
   /**
@@ -136,7 +148,7 @@ export class Config {
     if (TypeCheckers.isStringArray(value)) return value
     if (TypeCheckers.isString(value)) return [value];
 
-    throw this.logger.error(`Expected string array at path "${path}"`);
+    throw this.typeError("string array", path);
   }
 
   /**
@@ -164,7 +176,7 @@ export class Config {
 
     if (TypeCheckers.isBoolean(value)) return value;
 
-    throw this.logger.error(`Expected boolean at path "${path}"`);
+    throw this.typeError("boolean", path);
   }
 
   /**
@@ -196,7 +208,7 @@ export class Config {
       return Utils.getRandom(value);
     }
 
-    throw this.logger.error(`Expected number at path "${path}"`);
+    throw this.typeError("number", path);
   }
 
   /**
@@ -230,7 +242,7 @@ export class Config {
     if (TypeCheckers.isNumberArray(value)) return value
     if (TypeCheckers.isNumber(value)) return [value]
 
-    throw this.logger.error(`Expected number array at path "${path}"`);
+    throw this.typeError("number array", path);
   }
 
   /**
@@ -263,7 +275,7 @@ export class Config {
       return Utils.getRandom(value);
     }
 
-    throw this.logger.error(`Expected subsection at path "${path}"`);
+    throw this.typeError("subsection", path);
   }
 
   /**
@@ -297,7 +309,7 @@ export class Config {
     if (TypeCheckers.isConfigArray(value)) return value;
     if (TypeCheckers.isConfig(value)) return [value];
 
-    throw this.logger.error(`Expected subsection array at path "${path}"`);
+    throw this.typeError("subsection array", path);
   }
 
   /**
@@ -325,7 +337,7 @@ export class Config {
     const value = this.get(path);
     if (TypeCheckers.isConfig(value)) return value.toJSON();
 
-    throw this.logger.error(`Expected object at path "${path}"`);
+    throw this.typeError("object", path);
   }
 
   /**

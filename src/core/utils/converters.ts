@@ -121,7 +121,7 @@ const commandOptionTypeValue = {
   'Role': ['role', '8'],
   'Mentionable': ['mentionable', '9'],
   'Number': ['number', '10'],
-  'Attachement': ['attachement', '11'],
+  'Attachment': ['attachment', 'attachement', '11'],
 }
 export function getCommandOptionType(value: string): ApplicationCommandOptionType | undefined {
   const result = checkEnum(value, commandOptionTypeValue)
