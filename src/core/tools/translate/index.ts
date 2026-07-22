@@ -1,24 +1,24 @@
 
 import { Logger } from '../../utils/logger.js';
 
-import inquirer from 'inquirer';
+import { select } from '@inquirer/prompts';
 import translateFile from './commands/translateFile.js';
 import updateFile from './commands/updateFile.js';
 import addNewLanguage from './commands/addNewLanguage.js';
 
 const actions = ["Translate File", "Update File", "Add a new Language"];
-type Action = typeof actions[number];
 
 async function startCLI() {
   const logger = new Logger("Translation");
   
   while (true) {
-    const { action } = await inquirer.prompt<{ action: Action }>([
-      { type: "list", name: "action", message: "What do you want to do?", choices: actions },
-    ]);
+    const answer = await select({
+      message: "What do you want to do?",
+      choices: actions.map((action) => ({ name: action, value: action }))
+    });
 
     try {
-      switch (action) {
+      switch (answer) {
         case "Translate File": await translateFile(); break;
         case "Update File":    await updateFile(); break;
         case "Add a new Language": await addNewLanguage(); break;

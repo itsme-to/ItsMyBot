@@ -1,5 +1,5 @@
 import { MessageComponentInteraction, StringSelectMenuInteraction, RepliableInteraction, InteractionResponse, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle, TextDisplayBuilder, MessageFlags, BitFieldResolvable, MessageActionRowComponentBuilder } from 'discord.js';
-import { manager, Context, Variable, Utils, MessageComponentBuilder } from '@itsmybot'
+import { manager, Context, Variable, Utils, MessageComponentBuilder } from '@itsmybot';
 
 interface Item<T> {
   label?: string;

@@ -1,4 +1,4 @@
-import { manager, Logger, Utils, Variable, Context, MessageOutput } from "@itsmybot";
+import { manager, Logger, Utils, Variable, Context, MessageOutput } from '@itsmybot'
 import { join, resolve } from 'path';
 import * as fs from 'fs/promises';
 import { parse } from 'yaml';

@@ -1,5 +1,5 @@
-import { MessageValidator } from "@itsmybot";
-import { IsNumber, IsOptional, Min } from "class-validator";
+import { MessageValidator } from '@itsmybot'
+import { IsNumber, IsOptional, Min } from 'class-validator';
 
 export default class DefautConfig extends MessageValidator {
     @IsOptional()

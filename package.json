@@ -1,6 +1,6 @@
 {
   "name": "itsmybot",
-  "version": "3.11.4",
+  "version": "3.11.5",
   "description": "",
   "main": "build/index.js",
   "private": true,
@@ -11,10 +11,9 @@
     "make:addon": "node ./build/core/tools/makeAddon.js",
     "tools:translate": "node --env-file=.env ./build/core/tools/translate/index.js",
     "build:clean": "rm -rf ./build",
-    "build:itsmybot": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
-    "build:copy": "cpy \"src/**/*.{yml,json}\" \"build/\" --parents",
-    "build:success": "echo '[ItsMyBot] Build completed successfully!'",
-    "build": "npm run build:clean && npm run build:itsmybot && npm run build:copy && npm run build:success",
+    "build:itsmybot": "tsc --project tsconfig.json && tsc-alias --project tsconfig.json",
+    "build:copy": "node ./build/core/tools/copyBuildAssets.js",
+    "build": "npm run build:clean && npm run build:itsmybot && npm run build:copy && echo '[ItsMyBot] Build completed successfully!'",
     "start": "node ./build/index.js"
   },
   "type": "module",
@@ -28,27 +27,26 @@
     "url": "https://github.com/itsme-to/ItsMyBot/issues"
   },
   "devDependencies": {
-    "@types/inquirer": "^9.0.9",
-    "@types/node": "^22.10.2",
-    "cpy-cli": "^5.0.0",
-    "inquirer": "^9.2.23",
+    "@inquirer/prompts": "^8.5.2",
     "reflect-metadata": "^0.2.2",
-    "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.10",
-    "typescript": "^5.4.5"
+    "typescript": "^7.0.2"
   },
   "dependencies": {
     "@vscode/sqlite3": "^5.1.14-vscode",
-    "chalk": "^5.4.1",
+    "chalk": "^5.6.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
-    "discord.js": "^14.26.0",
+    "discord.js": "^14.27.0",
     "filtrex": "^3.1.0",
-    "mariadb": "^3.4.0",
-    "mysql2": "^3.12.0",
-    "sequelize": "^6.37.5",
+    "mariadb": "^3.5.3",
+    "mysql2": "^3.23.1",
+    "sequelize": "^6.37.8",
     "sequelize-typescript": "^2.1.6",
-    "sqlite3": "^6.0.1",
-    "yaml": "^2.7.0"
+    "yaml": "^2.9.0"
+  },
+  "allowScripts": {
+    "@vscode/sqlite3": true,
+    "fsevents": true
   }
 }

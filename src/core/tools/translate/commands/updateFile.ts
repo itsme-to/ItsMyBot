@@ -1,4 +1,4 @@
-import inquirer from "inquirer";
+import { select, checkbox } from "@inquirer/prompts";
 import fg from "fast-glob";
 import { Logger } from '../../../utils/logger.js';
 
@@ -11,25 +11,27 @@ export default async function run() {
   const files = await fg("src/addons/**/resources/lang/en-US.yml", { onlyFiles: true });
   files.push('src/core/resources/lang/en-US.yml');
 
-  const { file } = await inquirer.prompt<{ file: string }>([
-    { type: "list", name: "file", message: "Choose an asset type to update", choices: files.map(p => p.replace('/resources/lang/en-US.yml', '')) },
-  ]);
+  const answer = await select({
+    message: "Choose an asset type to update",
+    choices: files.map(p => p.replace('/resources/lang/en-US.yml', ''))
+  });
 
-  const folder = path.join(file, 'resources/lang/');
+  const folder = path.join(answer, 'resources/lang/');
   const langs = await fg(`${folder}/*.yml`, {
     onlyFiles: true,
-    ignore: [path.join(file, 'resources/lang/en-US.yml')],
+    ignore: [path.join(answer, 'resources/lang/en-US.yml')],
   })
 
-  const { targets } = await inquirer.prompt<{ targets: string[] }>([
-    { type: "checkbox", name: "targets", message: "Choose languages", choices: langs.map(p => p.split("/").slice(-1)[0].replace('.yml', '')) },
-  ]);
+  const answers = await checkbox({
+    message: "Choose languages",
+    choices: langs.map(p => p.split("/").slice(-1)[0].replace('.yml', ''))
+  });
 
-  if (!targets.length) {
+  if (!answers.length) {
     logger.warn?.("No languages selected.");
     return;
   }
 
-  await updateFileToLanguages(path.join(folder, 'en-US.yml'), targets);
-  logger.info(`Assets "${file}" updated for: ${targets.join(", ")}`);
+  await updateFileToLanguages(path.join(folder, 'en-US.yml'), answers);
+  logger.info(`Assets "${answer}" updated for: ${answers.join(", ")}`);
 }

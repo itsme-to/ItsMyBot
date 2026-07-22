@@ -1,5 +1,5 @@
 
-import inquirer from "inquirer";
+import { select } from "@inquirer/prompts";
 import fg from "fast-glob";
 import { availableLangs, translateFileToLanguages } from "../handlers/index.js";
 import { Logger } from '../../../utils/logger.js';
@@ -8,11 +8,12 @@ import { Logger } from '../../../utils/logger.js';
 export default async function run() {
   const logger = new Logger("Translation");
 
-  const { lang } = await inquirer.prompt<{ lang: string }>([
-    { type: "list", name: "lang", message: "Select the new language to add", choices: availableLangs },
-  ]);
+  const answer = await select({
+    message: "Select the new language to add",
+    choices: availableLangs.map((lang) => ({ name: lang, value: lang }))
+  });
 
-  const newLang = lang.toLowerCase();
+  const newLang = answer.toLowerCase();
 
   const files = await fg("src/addons/**/resources/lang/en-US.yml", { onlyFiles: true });
   files.push('src/core/resources/lang/en-US.yml');
