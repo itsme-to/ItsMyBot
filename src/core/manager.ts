@@ -1,6 +1,6 @@
 import { Client, Collection } from 'discord.js';
 import { existsSync, mkdirSync } from 'fs';
-import sqlite3 from "@vscode/sqlite3";
+import sqlite3 from "sqlite3";
 import { ClientOptions, ManagerOptions, Services, ConfigFile, Addon, Logger, LangDirectory } from '@itsmybot'
 import { Sequelize } from 'sequelize-typescript';
 import EventService from './services/events/eventService.js';
