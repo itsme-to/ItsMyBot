@@ -173,11 +173,11 @@ class FileUploadValidator extends ComponentValidator {
 
   @IsOptional()
   @IsNumber()
-  'max-length': number
+  'max-values': number
 
   @IsOptional()
   @IsNumber()
-  'min-length': number
+  'min-values': number
 }
 
 export class ButtonValidator extends ComponentValidator {
